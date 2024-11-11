@@ -10,7 +10,7 @@
     <nav class="topnav">
         <a class="company">Crafty Creations</a>
         <ul>
-            <a href="#">Log In</a>
+            <a href="loginPage.php">Log In</a>
         </ul>
     </nav>
 
