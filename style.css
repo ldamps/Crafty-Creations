@@ -8,7 +8,10 @@
 
 .topnav {
     overflow: hidden;
-    background-color: #afebf1;
+    border-bottom: #000000;
+    border-style: solid;
+    border-width: 1px;
+    height: 70px;
 }
 
 .topnav a {
@@ -17,6 +20,29 @@
     color: black;
     text-align: center;
     padding: 14px 16px;
+    font-family: Arial;
+    font-weight: 750;
+}
+
+.company {
+    font-size: 30pt;
+}
+
+#logInText {
+    margin-top: 12.5px;
+    margin-right: 5px;
+    border-radius: 10px;
+    padding-left: 7px;
+    padding-right: 7px;
+    transition: transform 0.1s;
+}
+
+#logInText:hover {
+    box-shadow: 5px 5px #000000;
+    border-style: solid;
+    border-color: #0000002d;
+    border-width: 1px;
+    transform: translate3d(-2px, -2px, 0);
 }
 
 .topnav ul a {
@@ -29,31 +55,51 @@
 
 .selection {
     overflow: hidden;
-    background-color: #70797a;
+    box-shadow: 0px 3px 5px #000000cb;
 }
 
 .selection input[type=text] {
     float: left;
     padding: 10px;
-    border: none;
-    margin-top: 4px;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     margin-left: 16px;
     font-size: 17px;
 }
 
+.selection input:focus {
+    outline:none;
+}
+
+.yarn, .fabric, .paint {
+    float: right;
+    overflow: hidden;
+    transition: transform 0.1s;
+    margin-top:8px;
+    border-radius: 10px;
+}
+
 .yarn {
-    float: right;
-    overflow: hidden;
+    margin-right: 5px;
 }
 
-.yarn .dropbtn {
-    color: white;
+.yarn:hover, .fabric:hover, .paint:hover {
+    box-shadow: 5px 5px #000000;
+    border-style: solid;
+    border-color: #0000002d;
+    border-width: 1px;
+    transform: translate3d(-2px, -2px, 0);
+}
+
+.dropbtn {
     padding: 14px 16px;
     background-color: inherit;
     margin: 0;
+    border:none;
 }
 
-.yarn-selection {
+.yarn-selection, .fabric-selection, .paint-selection {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
@@ -62,7 +108,7 @@
     z-index: 1;
 }
 
-.yarn-selection a {
+.yarn-selection a, .fabric-selection a, .paint-selection a {
     float: none;
     color: black;
     padding: 12px 16px;
@@ -71,87 +117,70 @@
     text-align: left;
 }
 
-.yarn-selection a:hover {
+.yarn-selection a:hover, .fabric-selection a:hover, .paint-selection a:hover {
     background-color: #ddd;
 }
 
-.yarn:hover .yarn-selection {
+.yarn:hover .yarn-selection, .fabric:hover .fabric-selection, .paint:hover .paint-selection {
     display: block;
 }
 
-
-.fabric {
-    float: right;
+#productContainer {
+    display: table;
     overflow: hidden;
+    margin: auto;
+    width: 750px;
+    margin-top: 30px;
+    border-spacing: 25px;
 }
 
-.fabric .dropbtn {
-    color: white;
-    padding: 14px 16px;
-    background-color: inherit;
-    margin: 0;
+.productRow {
+    display: table-row;
 }
 
-.fabric-selection {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.fabric-selection a {
-    float: none;
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-}
-
-.fabric-selection a:hover {
-    background-color: #ddd;
-}
-
-.fabric:hover .fabric-selection {
-    display: block;
-}
-
-.paint {
-    float: right;
+.product {
+    display: table-cell;
+    width: 225px;
+    border-radius: 10px;
+    padding: 0;
     overflow: hidden;
+    transition: transform 0.2s;
 }
 
-.paint .dropbtn {
-    color: white;
-    padding: 14px 16px;
-    background-color: inherit;
-    margin: 0;
+.product:hover {
+    box-shadow: 7.5px 7.5px #000000;
+    border-style: solid;
+    border-color: #0000002d;
+    border-width: 1px;
+    transform: translate3d(-3px, -3px, 0);
 }
 
-.paint-selection {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+.productName {
+    font-family: Arial;
+    font-weight: 600;
+    font-size: 15pt;
+    margin: 5px;
 }
 
-.paint-selection a {
-    float: none;
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
+.productImage {
+    width: 225px;
+    height: 200px;
 }
 
-.paint-selection a:hover {
-    background-color: #ddd;
+.productInfo {
+    margin: 5px;
+    font-family: Arial;
+    font-size: 12pt;
+    color: #000000c5;
 }
 
-.paint:hover .paint-selection {
-    display: block;
+.productClick {
+    animation-name: productClick;
+    animation-duration: 0.4s;
+    animation-timing-function: linear;
+}
+
+@keyframes productClick {
+    40% {transform: translate3d(3.3px, 3.3px, 0);}
+    100% {transform: translate3d(3px 3px 0);}
 }
