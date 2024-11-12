@@ -184,3 +184,114 @@
     40% {transform: translate3d(3.3px, 3.3px, 0);}
     100% {transform: translate3d(3px 3px 0);}
 }
+
+#heroProductContainer {
+    display: table;
+    overflow: hidden;
+    margin: auto;
+    width: 750px;
+    margin-top: 30px;
+}
+
+#heroProductName {
+    display: table-row;
+    text-align: left;
+    font-family: Arial;
+    font-weight: 700;
+    font-size: 30pt;
+}
+
+#heroProductImages {
+    display: table-cell;
+    width: 350px;
+}
+
+#heroProductHeroImage {
+    height: 350px;
+    width: 350px;
+}
+
+#heroProductOtherImagesBox {
+    display: block;
+    float: none;
+}
+
+.heroProductOtherImage {
+    height: 50px;
+    width: 50px;
+}
+
+#heroProductPurchasing {
+    display: table-cell;
+    width: 350px;
+    height: 400px;
+    padding: 20px;
+}
+
+#quantitySelector {
+    margin-left: 100px;
+    height: 50px;
+    width: 200px;
+    padding:0;
+}
+
+#quantity, #quantityDown, #quantityUp {
+    display: inline;
+    float: left;
+    height: 50px;
+    text-align: center;
+    padding-top: 8px;
+    font-family: Arial;
+    font-size: 10pt;
+    border-radius: 10px;
+}
+
+#quantity {
+    width: 100px;
+    border-style: solid;
+    border-width: 2px;
+}
+
+#quantityDown, #quantityUp {
+    width: 50px;
+    transition: transform 0.1s;
+}
+
+#quantityDown:hover, #quantityUp:hover, #addToCart:hover, #buy:hover {
+    box-shadow: 5px 5px #000000;
+    border-style: solid;
+    border-color: #0000002d;
+    border-width: 1px;
+    transform: translate3d(-2px, -2px, 0);
+}
+
+#addToCart, #buy {
+    margin-left: 100px;
+    text-align: center;
+    width: 200px;
+    height: 50px;
+    padding-top: 10px;
+    font-family: Arial;
+    font-size: 10pt;
+    margin-top: 10px;
+    border-radius: 10px;
+    transition: transform 0.1s;
+
+}
+
+#addToCart h1, #buy h1 {
+    font-weight: 500;
+}
+
+.buttonClick {
+    animation-name: buttonClick;
+    animation-duration: 0.75s;
+}
+
+@keyframes buttonClick {
+    40% {transform: translate3d(4px, 4px, 0); box-shadow: -6.5px -6.5px #000000;}
+    65% {transform: translate3d(-3px, -3px, 0); box-shadow: 5px 5px #000000;}
+    100% {transform: translate3d(-2px, -2px, 0); box-shadow: 0;}
+}
+
+
