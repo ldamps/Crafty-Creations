@@ -1,5 +1,7 @@
 var p = document.getElementsByClassName('product');
 let product = Array.from(p);
+var b = document.getElementsByClassName('button');
+let button = Array.from(b);
 console.log(product);
 
 var quantityUp = document.getElementById('quantityUp');
@@ -12,10 +14,19 @@ if (product != null)
     });
 }
 
+if (button != null)
+{
+    button.forEach(element => {
+        element.addEventListener('click', buttonOnClick);
+        element.addEventListener('mouseleave', buttonMouseOut);
+        element.addEventListener('mouseenter', buttonMouseEnter);
+    })
+}
+
 if (quantityUp != null)
 {
-    quantityUp.addEventListener('click', buttonOnClick);
-    quantityDown.addEventListener('click', buttonOnClick);
+    quantityUp.addEventListener('click', quantityAdjust);
+    quantityDown.addEventListener('click', quantityAdjust);
 }
 
 function productOnClick(element)
@@ -31,20 +42,53 @@ function productOnClick(element)
 
 function buttonOnClick(element)
 {
-    element.currentTarget.classList.add('buttonClick');
-    element.currentTarget.boxShadow = '-3px -3px #000000';
-    element.currentTarget.onanimationend = (element) => {
-        element.currentTarget.classList.remove('buttonClick');
-        element.currentTarget.style.boxShadow = '';
+    let button = element.currentTarget;
+    button.classList.add('buttonClickDown');
+    button.onanimationend = async () => {
+        await new Promise(r => setTimeout(r, 40));
+        button.classList.remove('buttonClickDown');
+        button.classList.add('buttonClickUp');
+        button.onanimationend = () => {
+            button.classList.remove('buttonClickUp');
+        }
     }
-    var quantityText = document.getElementById('quantityText')
+}
+
+function buttonMouseOut(element)
+{
+    let button = element.currentTarget;
+    button.classList.add('buttonReturn');
+    button.onanimationend = () => {
+        button.classList.remove('buttonReturn');
+        clearButtonListeners(button);
+    }
+}
+
+function buttonMouseEnter(element)
+{
+    let button = element.currentTarget;
+    clearButtonListeners(button);
+}
+
+function clearButtonListeners(button)
+{
+    button.classList.remove('buttonReturn');
+    button.classList.remove('buttonClickUp');
+    button.classList.remove('buttonClickDown');
+    button.classList.remove('buttonMouseOut');
+}
+
+function quantityAdjust(element)
+{
+    let quantityButton = element.currentTarget;
+    let quantityText = document.getElementById('quantityText');
     let quantity = Number(quantityText.innerHTML);
-    if (element.currentTarget.id == 'quantityDown' && quantity > 0)
-    {
-        quantityText.innerHTML = quantity - 1;
-    }
-    else if (element.currentTarget.id == 'quantityUp')
+    if (quantityButton.id == 'quantityUp')
     {
         quantityText.innerHTML = quantity + 1;
+    }
+    else if (quantity > 0)
+    {
+        quantityText.innerHTML = quantity - 1;
     }
 }

@@ -28,21 +28,24 @@
     font-size: 30pt;
 }
 
+.button:hover {
+    box-shadow: 5px 5px #000000;
+    border-style: solid;
+    border-color: #0000002d;
+    border-width: 1px;
+    transform: translate3d(-2px, -2px, 0);
+}
+
+.button {
+    transition: transform 0.3s;
+}
+
 #logInText {
     margin-top: 12.5px;
     margin-right: 5px;
     border-radius: 10px;
     padding-left: 7px;
     padding-right: 7px;
-    transition: transform 0.1s;
-}
-
-#logInText:hover {
-    box-shadow: 5px 5px #000000;
-    border-style: solid;
-    border-color: #0000002d;
-    border-width: 1px;
-    transform: translate3d(-2px, -2px, 0);
 }
 
 .topnav ul a {
@@ -82,14 +85,6 @@
 
 .yarn {
     margin-right: 5px;
-}
-
-.yarn:hover, .fabric:hover, .paint:hover {
-    box-shadow: 5px 5px #000000;
-    border-style: solid;
-    border-color: #0000002d;
-    border-width: 1px;
-    transform: translate3d(-2px, -2px, 0);
 }
 
 .dropbtn {
@@ -228,6 +223,10 @@
     padding: 20px;
 }
 
+#purchasingBox {
+    transform: translateY(-150px);
+}
+
 #quantitySelector {
     margin-left: 100px;
     height: 50px;
@@ -247,22 +246,21 @@
 }
 
 #quantity {
-    width: 100px;
+    width: 80px;
     border-style: solid;
     border-width: 2px;
 }
 
 #quantityDown, #quantityUp {
     width: 50px;
-    transition: transform 0.1s;
 }
 
-#quantityDown:hover, #quantityUp:hover, #addToCart:hover, #buy:hover {
-    box-shadow: 5px 5px #000000;
-    border-style: solid;
-    border-color: #0000002d;
-    border-width: 1px;
-    transform: translate3d(-2px, -2px, 0);
+#quantityDown {
+    margin-right: 10px;
+}
+
+#quantityUp {
+    margin-left: 10px;
 }
 
 #addToCart, #buy {
@@ -275,23 +273,45 @@
     font-size: 10pt;
     margin-top: 10px;
     border-radius: 10px;
-    transition: transform 0.1s;
-
 }
 
 #addToCart h1, #buy h1 {
     font-weight: 500;
 }
 
-.buttonClick {
-    animation-name: buttonClick;
-    animation-duration: 0.75s;
+.buttonClickDown {
+    animation-name: buttonClickDown;
+    animation-duration: 0.30s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
 }
 
-@keyframes buttonClick {
-    40% {transform: translate3d(4px, 4px, 0); box-shadow: -6.5px -6.5px #000000;}
-    65% {transform: translate3d(-3px, -3px, 0); box-shadow: 5px 5px #000000;}
-    100% {transform: translate3d(-2px, -2px, 0); box-shadow: 0;}
+@keyframes buttonClickDown {
+    60% {transform: translate3d(6px, 6px, 0); box-shadow: -6px -6px #000000;}
+    100% {transform: translate3d(3px, 3px, 0); box-shadow: -5px -5px #000000;}
+}
+
+.buttonClickUp {
+    animation-name: buttonClickUp;
+    animation-duration: 0.40s;
+    animation-timing-function: linear;
+}
+
+@keyframes buttonClickUp {
+    0% {transform: translate3d(3px, 3px, 0); box-shadow: -5px -5px #000000;}
+    50% {transform: translate3d(-5px, -5px, 0); box-shadow: 7px 7px 0 #000000;}
+    100% {transform: translate3d(-2px, -2px, 0); box-shadow: 5px 5px 0 #000000}
+}
+
+.buttonReturn {
+    animation-name: buttonReturn;
+    animation-duration: 0.4s;
+}
+
+@keyframes buttonReturn {
+    0% {transform: translate3d(-2px, -2px, 0); box-shadow: 5px 5px #000000;}
+    40% {transform: translate3d(1.5px, 1.5px, 0); box-shadow: -2px -2px #000000;}
+    100% {transform: translate3d(0, 0, 0);}
 }
 
 
