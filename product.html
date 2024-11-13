@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Name</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <nav class="topnav">
         <a class="company" href="index.html">Crafty Creations</a>
         <ul>
-            <a id='logInText' href="#">log in | sign up</a>
+            <a id='logInText' class="button" href="#">log in | sign up</a>
         </ul>
     </nav>
 
     <nav class="selection">
         <input type="text" placeholder="Search..">
 
-        <div class="yarn">
+        <div class="yarn button">
             <button class="dropbtn">Yarn
                 <i class="fa fa-caret-down"></i>
             </button>
@@ -27,7 +29,7 @@
             </div>
         </div>
 
-        <div class="fabric">
+        <div class="fabric button">
             <button class="dropbtn">Fabric
                 <i class="fa fa-caret-down"></i>
             </button>
@@ -36,7 +38,7 @@
             </div>
         </div>
 
-        <div class="paint">
+        <div class="paint button">
             <button class="dropbtn">Paint
                 <i class="fa fa-caret-down"></i>
             </button>
@@ -56,26 +58,29 @@
             </div>
         </div>
         <div id="heroProductPurchasing">
-            <div id="quantitySelector">
-                <div id="quantityDown">
-                    <h1>-</h1>
+            <div id="purchasingBox">
+                <div id="quantitySelector">
+                    <div id="quantityDown" class="button">
+                        <h1>-</h1>
+                    </div>
+                    <div id="quantity">
+                        <h1 id="quantityText">1</h1>
+                    </div>
+                    <div id="quantityUp" class="button">
+                        <h1>+</h1>
+                    </div>
                 </div>
-                <div id="quantity">
-                    <h1 id="quantityText">1</h1>
+                <div id="addToCart" class="button">
+                    <h1>add to cart</h1>
                 </div>
-                <div id="quantityUp">
-                    <h1>+</h1>
+                <div id="buy" class="button">
+                    <h1>buy now</h1>
                 </div>
-            </div>
-            <div id="addToCart">
-                <h1>add to cart</h1>
-            </div>
-            <div id="buy">
-                <h1>buy now</h1>
             </div>
         </div>
         <div id="heroProductInfo"></div>
     </div>
 </body>
 <script src="script.js"></script>
+
 </html>
