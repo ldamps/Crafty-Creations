@@ -26,15 +26,16 @@ CREATE TABLE `Customer` (
   `LastName` varchar(45) NOT NULL,
   `PhoneNumber` int(11) NOT NULL,
   `EmailAddress` varchar(45) NOT NULL,
+  `Password` varchar(60) NOT NULL,
   PRIMARY KEY (`CustomerID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `Customer` WRITE;
 /*!40000 ALTER TABLE `Customer` DISABLE KEYS */;
 
-INSERT INTO `Customer` (`Title`, `FirstName`, `LastName`, `PhoneNumber`, `EmailAddress`)
+INSERT INTO `Customer` (`Title`, `FirstName`, `LastName`, `PhoneNumber`, `EmailAddress`, `Password`)
 VALUES
-    ('Mr', 'Fred', 'Smith', 123, 'fred.smith@gmail.com');
+    ('Mr', 'Fred', 'Smith', 123, 'fred.smith@gmail.com', 'password');
 
 /*!40000 ALTER TABLE `Customer` ENABLE KEYS */;
 
