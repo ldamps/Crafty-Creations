@@ -32,7 +32,7 @@ if (quantityUp != null)
 function productOnClick(element)
 {
     element.currentTarget.classList.add('productClick');
-    element.currentTarget.style.boxShadow = 'inset 7.5px 7.5px #000000';
+    element.currentTarget.style.boxShadow = '-4px -4px #000000';
     element.currentTarget.onanimationend = (element) => {
         element.currentTarget.classList.remove('productClick');
         location.replace("product.html?" + element.currentTarget.id);
@@ -44,10 +44,12 @@ function buttonOnClick(element)
 {
     let button = element.currentTarget;
     button.classList.add('buttonClickDown');
+    button.style.backgroundImage = "";
     button.onanimationend = async () => {
         await new Promise(r => setTimeout(r, 40));
         button.classList.remove('buttonClickDown');
         button.classList.add('buttonClickUp');
+        button.style.backgroundImage = "url('rainbowTexture1.png')";
         button.onanimationend = () => {
             button.classList.remove('buttonClickUp');
         }
@@ -57,6 +59,7 @@ function buttonOnClick(element)
 function buttonMouseOut(element)
 {
     let button = element.currentTarget;
+    button.style.backgroundImage = "";
     button.classList.add('buttonReturn');
     button.onanimationend = () => {
         button.classList.remove('buttonReturn');
@@ -67,6 +70,7 @@ function buttonMouseOut(element)
 function buttonMouseEnter(element)
 {
     let button = element.currentTarget;
+    button.style.backgroundImage = "url('rainbowTexture1.png')";
     clearButtonListeners(button);
 }
 
@@ -87,7 +91,7 @@ function quantityAdjust(element)
     {
         quantityText.innerHTML = quantity + 1;
     }
-    else if (quantity > 0)
+    else if (quantity > 1)
     {
         quantityText.innerHTML = quantity - 1;
     }
