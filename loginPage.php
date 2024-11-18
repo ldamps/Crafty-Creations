@@ -1,3 +1,58 @@
+<?php
+require 'db.php';  
+
+$message = "";  // variable to store the feedback message
+
+echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'NOT SET') . "<br>";
+
+// if form was submitted
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    //capture email and password from form
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    
+    //DEBUG
+    //echo "Email entered: $email<br>";
+    //echo "Password entered: $password<br>";
+    
+    // prep SQL statement preventing SQL injection
+    $stmt = $mysql->prepare("SELECT Password FROM Customer WHERE EmailAddress = :email");
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    
+    //DEBUG
+    //echo "Rows found: " . $stmt->rowCount() . "<br>";
+
+    //if email exists in database
+    if ($stmt->rowCount() == 1) {
+        // fetch hashed password from database
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $db_password = $row['Password'];
+
+        // DEBUG
+        //echo "Fetched password from DB: $db_password<br>";
+
+        
+        // verifying entered password with hashed pass
+        if ($password === $db_password) {  // replace with password_verify() if hashing is used
+            $message = "Login successful. Welcome!";
+            // redirect to protected page or user dashboard here
+        } else {
+            $message = "Invalid password. Please try again.";
+        }
+    } else {
+        $message = "No account found with that email.";
+
+        // DEBUG
+        $errorInfo = $stmt->errorInfo();
+        echo "SQLSTATE Error Code: " . $errorInfo[0] . "<br>";
+        echo "Driver-specific Error Code: " . $errorInfo[1] . "<br>";
+        echo "Driver-specific Error Message: " . $errorInfo[2] . "<br>";
+        
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +60,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crafty Creations Login Page</title>
     <link rel="stylesheet" href="style.css">
+
     <style>
         .loginContainer {
             padding: 25px;
@@ -37,56 +93,29 @@
             <a id='logInText' class="button" href="loginPage.html">log in | sign up</a>
         </ul>
     </nav>
-    <nav class="selection">
-        <input type="text" placeholder="Search..">
 
-        <div class="yarn button">
-            <button class="dropbtn">Yarn
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="yarn-selection">
-                <a href="#">Show All</a>
-                <a href="#">Acrylic Yarn</a>
-            </div>
-        </div>
+    <center><h1>Please Log In Below:</h1></center>
 
-        <div class="fabric button">
-            <button class="dropbtn">Fabric
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="fabric-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
+    <!-- feedback message -->
+    <?php if ($message): ?>
+        <p style="color: red; text-align: center;"><?php echo $message; ?></p>
+    <?php endif; ?>
 
-        <div class="paint button">
-            <button class="dropbtn">Paint
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="paint-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-    </nav>
-    <br>
-    <center><h1>Please Log In Below: </h1></center>
-    <br>
-    <form>
+    <form action="loginPage.php" method="post">
         <div class="loginContainer">
             <label>Email: </label>
-            <input type="text1" placeholder="Email address..." required>
+            <input type="text1" name="email" placeholder="Email address..." required>
             <br>
             <label>Password: </label>
-            <input type="password" placeholder="Password..." required>
+            <input type="password" name="password" placeholder="Password..." required>
             <br>
-            <center><ul>
-                <a id='logInText' class="button" href="loginPage.html">Log In</a>
-            </ul></center>
+            <center><input type="submit" value="Log In" class="button"></center>
             <br>
             <center><ul>
                 <a id='logInText' class="button" href="createAccount.php">Create Account</a>
-                <a id='logInText' class="button" href="loginPage.php">Fogot Password</a>
-            </ul> </center>
+                <a id='logInText' class="button" href="forgotPassword.php">Forgot Password</a>
+            </ul></center>
         </div>
     </form>
 </body>
+</html>
