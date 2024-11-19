@@ -40,6 +40,8 @@ echo "<div>";
     }
 
 echo "</div>";
+include 'footer.html';
 ?>
 
 <script type = "text/javascript" src="script.js"></script>
+
