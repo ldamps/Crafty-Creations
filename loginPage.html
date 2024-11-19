@@ -33,9 +33,9 @@
 
 <body>
     <nav class="topnav">
-        <a class="company">Crafty Creations</a>
+        <a class="company" href="index.php">Crafty Creations</a>
         <ul>
-            <a id='logInText' class="button" href="loginPage.html">log in | sign up</a>
+            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
         </ul>
     </nav>
 
@@ -54,7 +54,7 @@
             <label>Password: </label>
             <input type="password" name="password" placeholder="Password..." required>
             <br>
-            <center><input type="submit" value="Log In" class="button"></center>
+            <center><button type="submit" id='logInText' class="button" name="submit" value="submit">Log In</button></center>
             <br>
             <center><ul>
                 <a id='logInText' class="button" href="createAccount.php">Create Account</a>
@@ -62,5 +62,6 @@
             </ul></center>
         </div>
     </form>
+    <br>
 </body>
 </html>

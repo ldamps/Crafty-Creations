@@ -83,6 +83,18 @@
     border-radius: 10px;
 }
 
+.about {
+    float: right;
+    overflow: hidden;
+    transition: transform 0.1s;
+    margin-top:8px;
+    border-radius: 10px;
+    padding: 14px 16px;
+    background-color: inherit;
+    margin: 0;
+    border:none;
+}
+
 .yarn {
     margin-right: 5px;
 }
@@ -313,5 +325,4 @@
     40% {transform: translate3d(1.5px, 1.5px, 0); box-shadow: -2px -2px #000000;}
     100% {transform: translate3d(0, 0, 0);}
 }
-
 
