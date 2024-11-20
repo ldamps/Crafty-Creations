@@ -22,7 +22,6 @@
         }
     }
 
-
     class Product {
         public $name;
         public $description;
