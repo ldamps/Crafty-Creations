@@ -1,6 +1,13 @@
 <?php
-    require 'db.php'; 
+    require 'db.php';
     include 'index.html';
+
+    // get number of products from the database
+    $res = $mysql->query("SELECT COUNT(*) FROM Product");
+    $numProducts = $res->fetchColumn();
+    echo $numProducts;
+
+    $increment = 40;
     session_start();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -12,8 +19,21 @@
 
         // if the button is pressed, load another 6
         if (isset($_POST['loadMore'])) {
-            $_SESSION['currentlyLoaded'] += 6; // increment value by 6
 
+            // check that incrementing won't put over the number of available products
+            if ($_SESSION['currentlyLoaded']+$increment <= $numProducts)
+            {
+                $_SESSION['currentlyLoaded'] += $increment; // increment value by 6
+            }
+            else
+            {
+                // only load as many as will not go over the number of products in the table
+                while ($_SESSION['currentlyLoaded'] < $numProducts)
+                {
+                    $_SESSION['currentlyLoaded'] += 1;
+                }
+            }
+                
         }
 
         // remove all extras
@@ -29,11 +49,13 @@
     
         public $brand;
         public $image;
+
+        public $id;
     }
     
     $products = array();
     
-    $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand FROM Product");
+    $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product");
     $query->execute();
     $result = $query->fetchAll();
     
@@ -43,6 +65,7 @@
         $product->description = $result[$i]["ProductDescription"];
         $product->price = $result[$i]["Price"];
         $product->brand = $result[$i]["Brand"];
+        $product->id = $result[$i]["ProductID"];
         $products[$i] = $product; 
     }
     
@@ -58,6 +81,7 @@
             echo "<p class = productInfo>".$products[$i]->description."</p>";
             echo "<p class = productInfo>£".$products[$i]->price."</p>";
             echo "<p class = productInfo>Brand: ".$products[$i]->brand."</p>";
+            echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
             echo "</div>";
             if (($i+1) % 3 == 0) {
                 echo "</div>";
@@ -67,10 +91,19 @@
     
     echo "</div>";
     
-    echo "<div>";
-    echo "<center><form method='post'><button class = 'button'  type='submit' name='loadMore'>Show 6 More</button></form></center>";
+
+    // only display load more if all products have not already been loaded
+    if ($_SESSION['currentlyLoaded'] < $numProducts)
+    {
+        echo "<center><form method='post'><button class = 'button'  type='submit' name='loadMore'>Show 6 More</button></form></center>";
+    }
+    else
+    {
+        echo "<center><p>All Items Loaded</p></center>";
+    }
+
     echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
-    echo "</div>";
+    
     include 'footer.html';
 
 ?>
