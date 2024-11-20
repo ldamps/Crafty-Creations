@@ -2,14 +2,11 @@ var p = document.getElementsByClassName('product');
 let product = Array.from(p);
 var b = document.getElementsByClassName('button');
 let button = Array.from(b);
-console.log(product);
 
 
 
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
-loadMore = document.getElementById('loadMore');
-loadMore.addEventListener('click', loadMore);
 
 if (product != null)
 {
@@ -107,12 +104,4 @@ function quantityAdjust(element)
     {
         quantityText.innerHTML = quantity - 1;
     }
-}
-
-// this doesn't work, but it might in the future
-function loadMore(element)
-{
-    console.log(amountLoaded);
-    amountLoaded = Number(amountLoaded) + 6;
-    console.log(amountLoaded);
 }
