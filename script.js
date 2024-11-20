@@ -4,13 +4,24 @@ var b = document.getElementsByClassName('button');
 let button = Array.from(b);
 console.log(product);
 
+
+
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
+loadMore = document.getElementById('loadMore');
+loadMore.addEventListener('click', loadMore);
 
 if (product != null)
 {
     product.forEach(element => {
-        element.addEventListener('click', productOnClick);
+        // creating unique image for each product
+        // IDs are set from 0, and product IDs from 1, which is why there is a +1
+        var SSID = Number(element.id) +1;
+        src  = `images/${SSID}.png`;
+        img  = element.querySelector("img");
+        img.setAttribute("src", src);
+        
+        element.addEventListener('click', productOnClick, SSID);
     });
 }
 
@@ -31,11 +42,12 @@ if (quantityUp != null)
 
 function productOnClick(element)
 {
+    ID = Number(element.currentTarget.id)+Number(1);
     element.currentTarget.classList.add('productClick');
     element.currentTarget.style.boxShadow = '-4px -4px #000000';
     element.currentTarget.onanimationend = (element) => {
         element.currentTarget.classList.remove('productClick');
-        location.replace("product.html?" + element.currentTarget.id);
+        location.replace("product.html?" + ID);
         element.currentTarget.style.boxShadow = '';
     };
 }
@@ -95,4 +107,12 @@ function quantityAdjust(element)
     {
         quantityText.innerHTML = quantity - 1;
     }
+}
+
+// this doesn't work, but it might in the future
+function loadMore(element)
+{
+    console.log(amountLoaded);
+    amountLoaded = Number(amountLoaded) + 6;
+    console.log(amountLoaded);
 }
