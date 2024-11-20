@@ -18,7 +18,7 @@
             margin: auto;
         }
 
-        input[type=text1], input[type=password] {
+        input[type=email], input[type=password] {
             width: 100%;
             margin: 8px 0;
             padding: 12px 20px;
@@ -26,9 +26,8 @@
             border: 2px solid #000;
             box-sizing: border-box;
         }
-
-
     </style>
+
 </head>
 
 <body>
@@ -39,7 +38,9 @@
         </ul>
     </nav>
 
+    <br>
     <center><h1>Please Log In Below:</h1></center>
+    <br>
 
     <!-- feedback message -->
     <?php if ($message): ?>
@@ -49,7 +50,7 @@
     <form action="loginPage.php" method="post">
         <div class="loginContainer">
             <label>Email: </label>
-            <input type="text1" name="email" placeholder="Email address..." required>
+            <input type="email" name="email" placeholder="Email address..." required>
             <br>
             <label>Password: </label>
             <input type="password" name="password" placeholder="Password..." required>

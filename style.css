@@ -66,10 +66,10 @@ body {
 
 .topnav ul a {
     float: right;
-    display: block;
-    color: var(--secondary-color);
-    text-align: center;
-    padding: 14px 16px;
+    overflow: hidden;
+    transition: transform 0.1s;
+    margin-top:8px;
+    border-radius: 10px;
 }
 
 .selection {
@@ -92,7 +92,7 @@ body {
     outline:none;
 }
 
-.yarn, .fabric, .paint {
+.yarn, .fabric, .paint, .tool, .about {
     float: right;
     overflow: hidden;
     transition: transform 0.1s;
@@ -100,12 +100,7 @@ body {
     border-radius: 10px;
 }
 
-.about {
-    float: right;
-    overflow: hidden;
-    transition: transform 0.1s;
-    margin-top:8px;
-    border-radius: 10px;
+.about a {
     padding: 14px 16px;
     background-color: inherit;
     margin: 0;
@@ -116,6 +111,13 @@ body {
     margin-right: 5px;
 }
 
+.btn {
+    padding: 14px 16px;
+    background-color: inherit;
+    margin: 0;
+    border:none;
+}
+
 .dropbtn {
     padding: 14px 16px;
     background-color: inherit;
@@ -123,7 +125,7 @@ body {
     border:none;
 }
 
-.yarn-selection, .fabric-selection, .paint-selection {
+.yarn-selection, .fabric-selection, .paint-selection, .tool-selection {
     display: none;
     position: absolute;
     background-color: var(--primary-color);
@@ -132,7 +134,7 @@ body {
     z-index: 1;
 }
 
-.yarn-selection a, .fabric-selection a, .paint-selection a {
+.yarn-selection a, .fabric-selection a, .paint-selection a, .tool-selection a {
     float: none;
     color: var(--secondary-color);
     padding: 12px 16px;
@@ -145,7 +147,7 @@ body {
     background-color: var(--primary-color);
 }
 
-.yarn:hover .yarn-selection, .fabric:hover .fabric-selection, .paint:hover .paint-selection {
+.yarn:hover .yarn-selection, .fabric:hover .fabric-selection, .paint:hover .paint-selection, .tool:hover .tool-selection {
     display: block;
 }
 

@@ -5,6 +5,7 @@ $message = "";  // variable to store the feedback message
 
 echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'NOT SET') . "<br>";
 
+
 // if form was submitted
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     //capture email and password from form

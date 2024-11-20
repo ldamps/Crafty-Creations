@@ -8,9 +8,9 @@
 </head>
 <body>
     <nav class="topnav">
-        <a class="company">Crafty Creations</a>
+        <a class="company" href="index.php">Crafty Creations</a>
         <ul>
-            <a id='logInText' class="button" href="loginPage.html">log in | sign up</a>
+            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
         </ul>
     </nav>
 
@@ -43,6 +43,22 @@
             <div class="paint-selection">
                 <a href="#">Show All</a>
             </div>
+        </div>
+
+        <div class="tool button">
+            <button class="dropbtn">Tools
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="tool-selection">
+                <a href="#">Show All</a>
+            </div>
+        </div>
+
+        <div class="about button">
+            <!--<button class="btn" href="about.html">About Us</button>-->
+            <ul>
+                <a id='logInText' class="btn" href="about.html">About Us</a>
+            </ul>
         </div>
     </nav>
 
