@@ -101,8 +101,6 @@ echo "</div>";
 echo "<button id='loadMore' class='button' >Load More</button>";
 
 
-<script type = "text/javascript" src="script.js"></script>
-
 include 'footer.html';
 ?>
 
