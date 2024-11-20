@@ -81,7 +81,7 @@ if (isset($_POST['submit'])) {
     $_SESSION['message'] = "Account created successfully";
 
     // prevent resubmission
-     header("Location: loginPage.html"); //redirect to the login page
+     header("Location: loginPage.php"); //redirect to the login page
     exit(); 
     }
 }
