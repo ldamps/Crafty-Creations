@@ -34,7 +34,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 
         
         // verifying entered password with hashed pass
-        if ($password === $db_password) {  // replace with password_verify() if hashing is used
+        if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
             $message = "Login successful. Welcome!";
             // redirect to protected page or user dashboard here
         } else {
@@ -53,6 +53,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 }
 
 include 'loginPage.html';
-
+include 'footer.html';
 ?>
+
 

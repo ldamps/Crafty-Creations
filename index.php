@@ -100,7 +100,12 @@ echo "</div>";
 // load more does not work
 echo "<button id='loadMore' class='button' >Load More</button>";
 
+
+<script type = "text/javascript" src="script.js"></script>
+
+include 'footer.html';
 ?>
 
 <script type = "text/javascript" src="script.js"></script>
 </html>
+
