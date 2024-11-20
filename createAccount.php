@@ -107,4 +107,6 @@ if (isset($_SESSION['message'])) {
     echo "<p style='color: green;'>" . htmlspecialchars($_SESSION['message']) . "</p>";
     unset($_SESSION['message']); //clear after displaying
 }
+
+include 'footer.html';
 ?>
