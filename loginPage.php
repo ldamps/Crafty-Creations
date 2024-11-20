@@ -1,4 +1,38 @@
 <?php
+session_start();
+
+// check if there is a success message in the session
+if (isset($_SESSION['message_success'])):
+?>
+
+<!-- success modal -->
+<div id="successModal" class="modal" style="display: block;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Success</h2>
+        <p><?= htmlspecialchars($_SESSION['message_success']) ?></p>
+    </div>
+</div>
+
+<?php 
+    // stops it showing on page reload
+    unset($_SESSION['message_success']);
+endif;
+?>
+
+<script>
+    function closeModal() {
+        document.getElementById('successModal').style.display = 'none';
+    }
+
+    // if there is a success message, display it when loading the page
+    <?php if (isset($_SESSION['message_success'])): ?>
+        document.getElementById('successModal').style.display = 'block';
+    <?php endif; ?>
+</script>
+
+
+<?php
 require 'db.php';  
 
 $message = "";  // variable to store the feedback message
