@@ -62,6 +62,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         // fetch hashed password from database
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $db_password = $row['Password'];
+        $role = $row['Role'] ?? 'customer';
 
         // DEBUG
         //echo "Fetched password from DB: $db_password<br>";
@@ -71,6 +72,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
             $message = "Login successful. Welcome!";
             // redirect to protected page or user dashboard here
+
+            // storing user details in session
+            $_SESSION['email'] = $email;
+            $_SESSION['role'] = $role;
+
+            header("Location: dashboard.php");
+            exit;
+
         } else {
             $message = "Invalid password. Please try again.";
         }
