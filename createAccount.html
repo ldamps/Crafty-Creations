@@ -17,7 +17,7 @@
             margin: auto;
         }
 
-        input[type=text], input[type=password] {
+        input[type=text], input[type=password], input[type=email] {
             width: 100%;
             margin: 8px 0;
             padding: 12px 20px;
@@ -36,6 +36,10 @@
             margin: 0 auto;
         }
 
+        .required::before {
+            content: "*";
+            color: red;
+        }
     </style>
 </head>
 
@@ -82,7 +86,7 @@
     <br>
     <form name="Add New Customer Account" method="post" action="">
         <div class="createContainer">
-            <label for="title">Title: </label>
+            <label for="title" class="required">Title: </label>
             <select name="title" id="title" required>
                 <option value="Miss">Miss</option>
                 <option value="Mrs">Mrs</option>
@@ -91,22 +95,22 @@
                 <option value="Mr">Mr</option>
             </select><br>
 
-            <label for="firstname">First Name: </label>
+            <label for="firstname" class="required">First Name: </label>
             <input type="text" id="firstname" name="firstname" placeholder="First name..." required><br>
 
-            <label for="lastname">Last Name: </label>
+            <label for="lastname" class="required">Last Name: </label>
             <input type="text" id="lastname" name="lastname" placeholder="Last name..." required><br>
 
-            <label for="emailaddress">Email: </label>
-            <input type="text" id="emailaddress" name="emailaddress" placeholder="Email address..." required><br>
+            <label for="emailaddress" class="required">Email: </label>
+            <input type="email" id="emailaddress" name="emailaddress" placeholder="Email address..." required><br>
 
-            <label for="phonenumber">Phone Number: </label>
+            <label for="phonenumber" class="required">Phone Number: </label>
             <input type="text" id="phonenumber" name="phonenumber" placeholder="Phone number..." required><br>
 
-            <label for="password">Password: </label>
+            <label for="password" class="required">Password: </label>
             <input type="password" id="password" name="password" placeholder="Choose password..." required><br>
 
-            <label for="repeatpassword">Repeat Password: </label>
+            <label for="repeatpassword" class="required">Repeat Password: </label>
             <input type="password" id="repeatpassword" name="repeatpassword" placeholder="Repeat password..." required><br>
 
             <center><button type="submit" id='logInText' class="button" name="submit" value="submit">Create</button></center>
