@@ -10,7 +10,7 @@
     echo $numProducts;
 
     $increment = 40;
-    session_start();
+    //session_start();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // initialize variable on first run

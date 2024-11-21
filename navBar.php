@@ -5,12 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crafty Creations</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> <!--allow jquery-->
+    <script src="https://kit.fontawesome.com/f06d9443ee.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <nav class="topnav">
         <a class="company" href="index.php">Crafty Creations</a>
         <ul>
-            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
+        <?php
+            session_start();
+            //unset($_SESSION["LoggedIn"]);
+             // remove all extras
+            if (isset($_POST['logout']) || isset($_POST['my_form'])) {
+                unset($_SESSION["LoggedIn"]);
+                // delete user cookie
+                setcookie("ID", "", time() - 3600);
+            }
+            if (isset($_SESSION["LoggedIn"])) {
+                echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
+                echo "<form method='post'><button class='logoutBtn' class='button' name='logout' href='index.php' >Log Out</button></form>";
+            }
+            else
+            {
+                echo "<a class='button' href='loginPage.php'>log in | sign up</a>";
+            }
+        ?>
         </ul>
     </nav>
 
