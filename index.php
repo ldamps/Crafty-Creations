@@ -1,3 +1,5 @@
+<?php include('navBar.php'); ?>
+
 <?php
     require 'db.php';
     include 'index.html';

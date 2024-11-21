@@ -1,3 +1,5 @@
+<?php include('navBar.php'); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,12 +80,6 @@
     </style>
 </head>
 <body>
-    <nav class="topnav">
-        <a class="company" href="index.php">Crafty Creations</a>
-        <ul>
-            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
-        </ul>
-    </nav>
     <br>
     <h1>About Crafty Creations</h1>
     <br>
