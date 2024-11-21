@@ -5,51 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crafty Creations Create Page</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .createContainer {
-            padding: 25px;
-            background-color: #ffff;
-        }
-
-        form {
-            width: 75%;
-            border: 3px solid #000;
-            margin: auto;
-        }
-
-        input[type=text], input[type=password], input[type=email] {
-            width: 100%;
-            margin: 8px 0;
-            padding: 12px 20px;
-            display: inline-block;
-            border: 2px solid #000;
-            box-sizing: border-box;
-        }
-
-        select {
-            margin-bottom: 10px;
-            margin-top: 10px;
-        }
-
-        label {
-            display: flex;
-            margin: 0 auto;
-        }
-
-        .required::before {
-            content: "*";
-            color: red;
-        }
-    </style>
 </head>
 
 <body>
     <nav class="topnav">
-        <a class="company" href="index.php">Crafty Creations</a>
+        <a class="company" href="index.html">Crafty Creations</a>
         <ul>
-            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
+            <a id='logInText' class="button" href="#">log in | sign up</a>
         </ul>
     </nav>
+
     <nav class="selection">
         <input type="text" placeholder="Search..">
 
@@ -81,41 +46,40 @@
             </div>
         </div>
     </nav>
-    <br>
-    <center><h1>Create an Account:</h1></center>
-    <br>
+    <h1 id="formHeading">create an account:</h1>
+    <div id="formBox">
     <form name="Add New Customer Account" method="post" action="">
-        <div class="createContainer">
-            <label for="title" class="required">Title: </label>
+        <div class="formContainer">
+            <label for="title" class="required">title: </label>
             <select name="title" id="title" required>
-                <option value="Miss">Miss</option>
-                <option value="Mrs">Mrs</option>
-                <option value="Ms">Ms</option>
-                <option value="Dr">Dr</option>
-                <option value="Mr">Mr</option>
+                <option value="Miss">miss</option>
+                <option value="Mrs">mrs</option>
+                <option value="Ms">ms</option>
+                <option value="Dr">dr</option>
+                <option value="Mr">mr</option>
             </select><br>
 
-            <label for="firstname" class="required">First Name: </label>
-            <input type="text" id="firstname" name="firstname" placeholder="First name..." required><br>
+            <label for="firstname" class="required">first name: </label>
+            <input type="text" id="firstname" name="firstname" placeholder="first name..." required><br>
 
-            <label for="lastname" class="required">Last Name: </label>
-            <input type="text" id="lastname" name="lastname" placeholder="Last name..." required><br>
+            <label for="lastname" class="required">last name: </label>
+            <input type="text" id="lastname" name="lastname" placeholder="last name..." required><br>
 
-            <label for="emailaddress" class="required">Email: </label>
-            <input type="email" id="emailaddress" name="emailaddress" placeholder="Email address..." required><br>
+            <label for="emailaddress" class="required">email: </label>
+            <input type="email" id="emailaddress" name="emailaddress" placeholder="email address..." required><br>
 
-            <label for="phonenumber" class="required">Phone Number: </label>
-            <input type="text" id="phonenumber" name="phonenumber" placeholder="Phone number..." required><br>
+            <label for="phonenumber" class="required">phone number: </label>
+            <input type="text" id="phonenumber" name="phonenumber" placeholder="phone number..." required><br>
 
-            <label for="password" class="required">Password: </label>
-            <input type="password" id="password" name="password" placeholder="Choose password..." required><br>
+            <label for="password" class="required">password: </label>
+            <input type="password" id="password" name="password" placeholder="choose password..." required><br>
 
-            <label for="repeatpassword" class="required">Repeat Password: </label>
-            <input type="password" id="repeatpassword" name="repeatpassword" placeholder="Repeat password..." required><br>
+            <label for="repeatpassword" class="required">repeat password: </label>
+            <input type="password" id="repeatpassword" name="repeatpassword" placeholder="repeat password..." required><br>
 
-            <center><button type="submit" id='logInText' class="button" name="submit" value="submit">Create</button></center>
+            <button type="submit" class="button" name="submit" value="submit">create</button>
             
         </div>
     </form>
-    <br>
+    </div>
 </body>
