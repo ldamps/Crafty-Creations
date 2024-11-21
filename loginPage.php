@@ -1,4 +1,38 @@
 <?php
+session_start();
+
+// check if there is a success message in the session
+if (isset($_SESSION['message_success'])):
+?>
+
+<!-- success modal -->
+<div id="successModal" class="modal" style="display: block;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Success</h2>
+        <p><?= htmlspecialchars($_SESSION['message_success']) ?></p>
+    </div>
+</div>
+
+<?php 
+    // stops it showing on page reload
+    unset($_SESSION['message_success']);
+endif;
+?>
+
+<script>
+    function closeModal() {
+        document.getElementById('successModal').style.display = 'none';
+    }
+
+    // if there is a success message, display it when loading the page
+    <?php if (isset($_SESSION['message_success'])): ?>
+        document.getElementById('successModal').style.display = 'block';
+    <?php endif; ?>
+</script>
+
+
+<?php
 require 'db.php';  
 
 $message = "";  // variable to store the feedback message
@@ -34,7 +68,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 
         
         // verifying entered password with hashed pass
-        if ($password === $db_password) {  // replace with password_verify() if hashing is used
+        if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
             $message = "Login successful. Welcome!";
             // redirect to protected page or user dashboard here
         } else {
@@ -53,6 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 }
 
 include 'loginPage.html';
-
+include 'footer.html';
 ?>
+
 

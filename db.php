@@ -5,5 +5,4 @@ $password = "password123";
 $database = "CraftyCreationsDatabase";
 $mysql = new PDO("mysql:host=".$host.";dbname=".$database,
 $username, $password);
-echo "Database Linked <br>";
-?> 
+?>
