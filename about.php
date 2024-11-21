@@ -1,3 +1,4 @@
+
 <?php include('navBar.php'); ?>
 
 <!DOCTYPE html>
@@ -101,6 +102,8 @@
             <li><a href="#">Fabric</a></li>
             <li><a href="#">Yarn</a></li>
             <li><a href="termsConditions.html">Terms and Conditions</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+
         </div>
         <div class="column Contact">
             <h2>Contact Us</h2>

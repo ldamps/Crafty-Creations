@@ -1,0 +1,101 @@
+EmployeeID,Password,FirstName,Surname,Role,hoursWorked,EmailAddress
+1,password,John,Swift,Manager,40,JohnSwift@gmail.com
+2,password,Robert,Lee,"Assistant Manager",35,RobertLee@gmail.com
+3,password,Liam,White,Supervisor,30,LiamWhite@gmail.com
+4,password,Chloe,Martin,Supervisor,30,ChloeMartin@gmail.com
+5,password,Eli,Scott,"Shop Assistant",25,EliScott@gmail.com
+6,password,Zoe,Adams,"Shop Assistant",25,ZoeAdams@gmail.com
+7,password,Jackson,Nelson,"Shop Assistant",25,JacksonNelson@gmail.com
+8,password,Victoria,Carter,"Shop Assistant",25,VictoriaCarter@gmail.com
+9,password,Leo,Mitchell,"Shop Assistant",25,LeoMitchell@gmail.com
+10,password,Lily,Perez,"Shop Assistant",25,LilyPerez@gmail.com
+11,password,Jane,Doe,Manager,40,JaneDoe@gmail.com
+12,password,Sophia,Kim,"Assistant Manager",35,SophiaKim@gmail.com
+13,password,Lucas,Lee,Supervisor,30,LucasLee@gmail.com
+14,password,Mia,Perez,Supervisor,30,MiaPerez@gmail.com
+15,password,Alexander,Thompson,"Shop Assistant",25,AlexanderThompson@gmail.com
+16,password,Ella,Lopez,"Shop Assistant",25,EllaLopez@gmail.com
+17,password,Benjamin,Clark,"Shop Assistant",25,BenjaminClark@gmail.com
+18,password,Grace,Walker,"Shop Assistant",25,GraceWalker@gmail.com
+19,password,Jack,Allen,"Shop Assistant",25,JackAllen@gmail.com
+20,password,Harper,Young,"Shop Assistant",25,HarperYoung@gmail.com
+21,password,Michael,Johnson,Manager,40,MichaelJohnson@gmail.com
+22,password,William,Lopez,"Assistant Manager",35,WilliamLopez@gmail.com
+23,password,Ethan,Thomas,Supervisor,30,EthanThomas@gmail.com
+24,password,Isabella,Anderson,Supervisor,30,IsabellaAnderson@gmail.com
+25,password,Ethan,Campbell,"Shop Assistant",25,EthanCampbell@gmail.com
+26,password,Amelia,Baker,"Shop Assistant",25,AmeliaBaker@gmail.com
+27,password,Oliver,Edwards,"Shop Assistant",25,OliverEdwards@gmail.com
+28,password,Isabella,Graham,"Shop Assistant",25,IsabellaGraham@gmail.com
+29,password,Henry,Evans,"Shop Assistant",25,HenryEvans@gmail.com
+30,password,Mason,Turner,"Shop Assistant",25,MasonTurner@gmail.com
+31,password,Emily,Williams,Manager,40,EmilyWilliams@gmail.com
+32,password,Olivia,Gonzalez,"Assistant Manager",35,OliviaGonzalez@gmail.com
+33,password,Ella,Martin,Supervisor,30,EllaMartin@gmail.com
+34,password,Lucas,Rodriguez,Supervisor,30,LucasRodriguez@gmail.com
+35,password,Lily,Parker,"Shop Assistant",25,LilyParker@gmail.com
+36,password,Nolan,Collins,"Shop Assistant",25,NolanCollins@gmail.com
+37,password,Madison,James,"Shop Assistant",25,MadisonJames@gmail.com
+38,password,Elliot,Stewart,"Shop Assistant",25,ElliotStewart@gmail.com
+39,password,Grace,Allen,"Shop Assistant",25,GraceAllen@gmail.com
+40,password,Liam,Mitchell,"Shop Assistant",25,LiamMitchell@gmail.com
+41,password,David,Brown,Manager,40,DavidBrown@gmail.com
+42,password,Daniel,Wilson,"Assistant Manager",35,DanielWilson@gmail.com
+43,password,Benjamin,Clark,Supervisor,30,BenjaminClark@gmail.com
+44,password,Grace,Taylor,Supervisor,30,GraceTaylor@gmail.com
+45,password,Sophie,Martinez,"Shop Assistant",25,SophieMartinez@gmail.com
+46,password,James,Morris,"Shop Assistant",25,JamesMorris@gmail.com
+47,password,Lucas,Gonzalez,"Shop Assistant",25,LucasGonzalez@gmail.com
+48,password,Grace,Rodriguez,"Shop Assistant",25,GraceRodriguez@gmail.com
+49,password,Jack,Scott,"Shop Assistant",25,JackScott@gmail.com
+50,password,Charlotte,Ward,"Shop Assistant",25,CharlotteWard@gmail.com
+51,password,Sarah,Jones,Manager,40,SarahJones@gmail.com
+52,password,Matthew,Garcia,"Assistant Manager",35,MatthewGarcia@gmail.com
+53,password,Liam,White,Supervisor,30,LiamWhite@gmail.com
+54,password,Chloe,Martin,Supervisor,30,ChloeMartin@gmail.com
+55,password,Lucas,Harris,"Shop Assistant",25,LucasHarris@gmail.com
+56,password,Mia,Palmer,"Shop Assistant",25,MiaPalmer@gmail.com
+57,password,Ava,Ross,"Shop Assistant",25,AvaRoss@gmail.com
+58,password,Noah,Gibson,"Shop Assistant",25,NoahGibson@gmail.com
+59,password,Ethan,Harris,"Shop Assistant",25,EthanHarris@gmail.com
+60,password,Charlotte,Baker,"Shop Assistant",25,CharlotteBaker@gmail.com
+61,password,Matthew,Rodriguez,Manager,40,MatthewRodriguez@gmail.com
+62,password,Laura,Martinez,"Assistant Manager",35,LauraMartinez@gmail.com
+63,password,Jack,Allen,Supervisor,30,JackAllen@gmail.com
+64,password,Benjamin,Lopez,Supervisor,30,BenjaminLopez@gmail.com
+65,password,Jackson,Hayes,"Shop Assistant",25,JacksonHayes@gmail.com
+66,password,Emma,Cooper,"Shop Assistant",25,EmmaCooper@gmail.com
+67,password,Aiden,Murphy,"Shop Assistant",25,AidenMurphy@gmail.com
+68,password,Sofia,Perry,"Shop Assistant",25,SofiaPerry@gmail.com
+69,password,Mason,King,"Shop Assistant",25,MasonKing@gmail.com
+70,password,Lily,Ramirez,"Shop Assistant",25,LilyRamirez@gmail.com
+71,password,Peter,Bodman,Manager,40,PeterBodman@gmail.com
+72,password,Mary,Hernandez,"Assistant Manager",35,MaryHernandez@gmail.com
+73,password,Lila,Bennett,Supervisor,30,LilaBennett@gmail.com
+74,password,David,Gonzalez,Supervisor,30,DavidGonzalez@gmail.com
+75,password,Benjamin,Carter,"Shop Assistant",25,BenjaminCarter@gmail.com
+76,password,Sophia,Simmons,"Shop Assistant",25,SophiaSimmons@gmail.com
+77,password,Mia,Palmer,"Shop Assistant",25,MiaPalmer@gmail.com
+78,password,Ava,Ross,"Shop Assistant",25,AvaRoss@gmail.com
+79,password,Noah,Gibson,"Shop Assistant",25,NoahGibson@gmail.com
+80,password,Ethan,Harris,"Shop Assistant",25,EthanHarris@gmail.com
+81,password,Alice,Johnson,CEO,40,AliceJohnson@gmail.com
+82,password,Sophia,Williams,Payroll,40,SophiaWilliams@gmail.com
+83,password,Liam,Brown,Payroll,40,LiamBrown@gmail.com
+84,password,Olivia,Davis,"Human Resources",40,OliviaDavis@gmail.com
+85,password,Noah,Miller,"Human Resources",40,NoahMiller@gmail.com
+86,password,Ethan,Taylor,"Website Development",40,EthanTaylor@gmail.com
+87,password,Mia,Anderson,"Website Development",40,MiaAnderson@gmail.com
+88,password,Charlotte,Moore,"IT Support",40,CharlotteMoore@gmail.com
+89,password,Jack,Wilson,"IT Support",40,JackWilson@gmail.com
+90,password,Amelia,White,Administration,40,AmeliaWhite@gmail.com
+91,password,James,Lee,Administration,40,JamesLee@gmail.com
+92,password,Lucas,Martinez,Administration,40,LucasMartinez@gmail.com
+93,password,Ava,Clark,Administration,40,AvaClark@gmail.com
+94,password,Benjamin,Perez,Administration,40,BenjaminPerez@gmail.com
+95,password,Ella,Thomas,Administration,40,EllaThomas@gmail.com
+96,password,Eli,Taylor,Payroll,40,EliTaylor@gmail.com
+97,password,Harper,Rodriguez,"Human Resources",40,HarperRodriguez@gmail.com
+98,password,Grace,Gonzalez,"IT Support",40,GraceGonzalez@gmail.com
+99,password,David,Adams,"Website Development",40,DavidAdams@gmail.com
+100,password,Lily,Scott,"Human Resources",40,LilyScott@gmail.com
