@@ -1,3 +1,6 @@
+
+<?php include('navBar.php'); ?>
+                      
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +16,7 @@
         body a {
             text-decoration: underline;
         }
+
 
         footer {
             background-color: #E2F8FB;
@@ -81,46 +85,7 @@
         }
     </style>
 </head>
-<body>
-    <nav class="topnav">
-        <a class="company" href="index.php">Crafty Creations</a>
-        <ul>
-            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
-        </ul>
-    </nav>
-
-    <nav class="selection">
-        <input type="text" placeholder="Search..">
-
-        <div class="yarn button">
-            <button class="dropbtn">Yarn
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="yarn-selection">
-                <a href="#">Show All</a>
-                <a href="#">Acrylic Yarn</a>
-            </div>
-        </div>
-
-        <div class="fabric button">
-            <button class="dropbtn">Fabric
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="fabric-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-
-        <div class="paint button">
-            <button class="dropbtn">Paint
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="paint-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-    </nav>
-    
+<body>  
     <br>
     <h3>Terms and Conditions of Crafty Creations</h3>
     <h4>Last Updated: 11/2024</h4>
@@ -131,6 +96,11 @@
     <br>
     <h5>1. General Information</h5>
     <p>1.1 **Company Name**: Crafty Creations</p>
+    <p>1.2 **Website**: [www.craftycreations.com]</p>
+    <p>1.3 **Contact Information**: [Insert Contact Email, Address, and Phone Number]</p>
+    <br>
+    <h5>2. Acceptance of Terms</h5>
+    <p>By using our website, placing an order, or accessing any services provided by [Craft Company Name], you confirm that you have read, understood, and agree to comply with these Terms and all applicable laws and regulations.</p>
     <p>1.2 **Website**: www.craftycreations.com</p>
     <p>1.3 **Contact Information**: craftyEnquires@craftycreations.com and/or +44 07856987654</p>
     <br>
@@ -144,6 +114,13 @@
     <br>
     <h5>4. Orders and Payments</h5>
     <p>4.1 **Order Confirmation**: After placing an order, you will receive an order confirmation email. This does not mean that your order has been accepted. We reserve the right to refuse or cancel any order for any reason.</p>
+    <p>4.2 **Pricing and Payment**: All prices are listed in [currency] and are subject to change without notice. Payments can be made through the available payment methods at checkout, including [credit card, PayPal, etc.].</p>
+    <p>4.3 **Sales Tax**: Depending on your location, sales tax may be applied to your order.</p>
+    <p>4.4 **Order Cancellation**: You may cancel your order within [X] hours of placing it. After this period, we may have already processed and shipped your order, and cancellation will not be possible.</p>
+    <br>
+    <h5>Shipping and Delivery</h5>
+    <p>5.1 **Shipping Method**: We offer various shipping methods based on your location. Shipping fees and estimated delivery times will be calculated during checkout.</p>
+    <p>5.2 **Processing Time**: Orders will be processed within [X] business days from the date of purchase, excluding weekends and holidays.</p>
     <p>4.2 **Pricing and Payment**: All prices are listed in £ and are subject to change without notice. Payments can be made through the available payment methods at checkout, including credit cards.</p>
     <p>4.3 **Sales Tax**: Depending on your location, sales tax may be applied to your order.</p>
     <p>4.4 **Order Cancellation**: You may cancel your order within 5 hours of placing it. After this period, we may have already processed and shipped your order, and cancellation will not be possible.</p>
@@ -155,6 +132,7 @@
     <p>5.4 **Address Accuracy**: You are responsible for providing accurate and complete shipping information. We are not liable for delays or lost shipments due to incorrect addresses.</p>
     <br>
     <h5>Returns and Exchanges</h5>
+    <p>6.1 **Return Policy**: We offer returns for most products within [X] days from the delivery date, subject to the following conditions:  
     <p>6.1 **Return Policy**: We offer returns for most products within 7 days from the delivery date, subject to the following conditions:  
     <p>- The item must be unused and in its original condition.</p>
     <p>- Customized or personalized items are not eligible for returns unless defective</p>
@@ -163,6 +141,12 @@
     <p>6.4 **Return Shipping**: Customers are responsible for return shipping costs unless the product is defective or we made an error in fulfilling the order.</p>
     <br>
     <h5>7. Product Warranty</h5>
+    <p>7.1 We offer a limited warranty on our products, covering defects in materials or craftsmanship for [X] days from the date of purchase.</p>
+    <p>7.2 This warranty does not cover damage caused by misuse, accidents, or normal wear and tear.</p>
+    <p>7.3 To claim a warranty, please contact us at [customer support email] with proof of purchase and images of the damaged product.</p>
+    <br>
+    <h5>8. Intellectual Property</h5>
+    <p>8.1 All content on this website, including but not limited to text, images, logos, videos, and graphics, is the property of [Craft Company Name] and is protected by copyright, trademark, and other intellectual property laws.</p>
     <p>7.1 We offer a limited warranty on our products, covering defects in materials or craftsmanship for 2 days from the date of purchase.</p>
     <p>7.2 This warranty does not cover damage caused by misuse, accidents, or normal wear and tear.</p>
     <p>7.3 To claim a warranty, please contact us at craftyEnquires@craftycreations.com with proof of purchase and images of the damaged product.</p>
@@ -176,6 +160,14 @@
     <p>9.2 You are prohibited from engaging in any activity that interferes with the operation of the website, including but not limited to transmitting malware, spam, or other harmful content.</p>
     <br>
     <h5>10. Privacy Policy</h5>
+    <p>10.1 Your use of our website is also governed by our Privacy Policy, which outlines how we collect, use, and protect your personal information. Please review the Privacy Policy [link to Privacy Policy].</p>
+    <br>
+    <h5>Limitation of Liability</h5>
+    <p>11.1 To the fullest extent permitted by law, [Craft Company Name] is not liable for any indirect, incidental, special, or consequential damages arising from the use of our website or products.</p>
+    <p>11.2 In no event shall our total liability exceed the amount paid by you for the specific product or service giving rise to the claim.</p>
+    <br>
+    <h5>12. Indemnification</h5>
+    <p>You agree to indemnify, defend, and hold harmless [Craft Company Name], its officers, employees, and affiliates from any claims, losses, liabilities, damages, or expenses (including legal fees) arising from your violation of these Terms, use of our products, or misuse of our website.</p>
     <p>10.1 Your use of our website is also governed by our Privacy Policy, which outlines how we collect, use, and protect your personal information. Please review the Privacy Policy:
     <a href="privacy.html">here</a></p>
     <br>
@@ -208,6 +200,7 @@
         <div class="column Links">
             <h2>Quick Links</h2>
             <li><a href="loginPage.php">Log In</a></li>
+            <li><a href="#">About Us</a></li>
             <li><a href="about.html">About Us</a></li>
             <li><a href="#">Tools</a></li>
             <li><a href="#">Paint</a></li>
