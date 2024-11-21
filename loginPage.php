@@ -1,3 +1,5 @@
+<?php include('navBar.php'); ?>
+
 <?php
 session_start();
 
