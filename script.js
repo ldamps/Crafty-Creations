@@ -4,7 +4,7 @@ var b = document.getElementsByClassName('button');
 let button = Array.from(b);
 
 
-
+var searchBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
@@ -37,6 +37,10 @@ if (quantityUp != null)
     quantityDown.addEventListener('click', quantityAdjust);
 }
 
+if (searchBar != null)
+{
+    searchBar.addEventListener('keypress', searchProducts);
+}
 function productOnClick(element)
 {
     ID = Number(element.currentTarget.id)+Number(1);
@@ -95,6 +99,7 @@ function quantityAdjust(element)
 {
     let quantityButton = element.currentTarget;
     let quantityText = document.getElementById('quantityText');
+    console.log(quantityText);
     let quantity = Number(quantityText.innerHTML);
     if (quantityButton.id == 'quantityUp')
     {
@@ -104,4 +109,33 @@ function quantityAdjust(element)
     {
         quantityText.innerHTML = quantity - 1;
     }
+}
+
+
+    
+function searchProducts(element){
+    element.currentTarget.onkeypress = (element) => {
+        if (element.key === 'Enter')
+        {
+            console.log(element.currentTarget.value);
+            const xhhtp = new XMLHttpRequest();
+            xhhtp.open('POST', 'index.php', true);
+            xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhhtp.onreadystatechange = function() {
+                if (xhhtp.readyState === XMLHttpRequest.DONE){
+                    console.log(xhhtp.status);
+                    if (xhhtp.status === 200){
+                        console.log(xhhtp.responseText);
+                    }
+                    else{
+                        console.log(xhhtp.status);
+                    }
+                }
+            }    
+
+            let search ="Search=" + encodeURIComponent(element.currentTarget.value);
+            xhhtp.send(search);
+        }
+    }
+    
 }
