@@ -1,43 +1,12 @@
-<?php
-session_start();
-
-// check if there is a success message in the session
-if (isset($_SESSION['message_success'])):
-?>
-
-<!-- success modal -->
-<div id="successModal" class="modal" style="display: block;">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Success</h2>
-        <p><?= htmlspecialchars($_SESSION['message_success']) ?></p>
-    </div>
-</div>
-
-<?php 
-    // stops it showing on page reload
-    unset($_SESSION['message_success']);
-endif;
-?>
-
-<script>
-    function closeModal() {
-        document.getElementById('successModal').style.display = 'none';
-    }
-
-    // if there is a success message, display it when loading the page
-    <?php if (isset($_SESSION['message_success'])): ?>
-        document.getElementById('successModal').style.display = 'block';
-    <?php endif; ?>
-</script>
+<?php include('navBar.php'); ?>
 
 
 <?php
 require 'db.php';  
 
-$message = "";  // variable to store the feedback message
+//$message = "";  // variable to store the feedback message
 
-echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'NOT SET') . "<br>";
+//echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'NOT SET') . "<br>";
 
 // if form was submitted
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -50,7 +19,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
     //echo "Password entered: $password<br>";
     
     // prep SQL statement preventing SQL injection
-    $stmt = $mysql->prepare("SELECT Password FROM Customer WHERE EmailAddress = :email");
+    $stmt = $mysql->prepare("SELECT Password, CustomerID FROM Customer WHERE EmailAddress = :email");
     $stmt->bindParam(':email', $email);
     $stmt->execute();
     
@@ -62,6 +31,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         // fetch hashed password from database
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $db_password = $row['Password'];
+        $db_id = $row['CustomerID'];
 
         // DEBUG
         //echo "Fetched password from DB: $db_password<br>";
@@ -69,13 +39,25 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         
         // verifying entered password with hashed pass
         if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
-            $message = "Login successful. Welcome!";
+            //$message = "Login successful. Welcome!";
+            $_SESSION["LoggedIn"] = "customer";
+
+            // create a cookie of the users name and ID
+            $cookie_name = "ID";
+            $cookie_value = $db_id;
+            // set log in valid for 2 hours
+            setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
+            echo $_COOKIE["ID"];
+            // reload and go back to home page
+            header("Refresh:0; url=index.php");
+
+            
             // redirect to protected page or user dashboard here
         } else {
-            $message = "Invalid password. Please try again.";
+            //$message = "Invalid password. Please try again.";
         }
     } else {
-        $message = "No account found with that email.";
+        //$message = "No account found with that email.";
 
         // DEBUG
         $errorInfo = $stmt->errorInfo();
