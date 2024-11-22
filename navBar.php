@@ -34,7 +34,8 @@
     </nav>
 
     <nav class="selection">
-        <input type="text" placeholder="Search..">
+
+        <form method="post"><input type="text" placeholder="Search.." id="Search"></form>
 
         <div class="yarn button">
             <button class="dropbtn">Yarn
@@ -64,6 +65,14 @@
             </div>
         </div>
 
+        <div class="Tool button">
+            <button class="dropbtn">Tool
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="Tool-selection">
+                <a href="#">Show All</a>
+            </div>
+        </div>
     </nav>
 </body>
 

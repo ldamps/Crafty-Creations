@@ -1,4 +1,4 @@
-<?php include('navBar.php'); ?>
+<?php include 'navBar.php'; ?>
 
 <?php
     require 'db.php';
@@ -7,45 +7,21 @@
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
-    // echo $numProducts;
+    echo $numProducts;
 
-    class Product {
-        public $name;
-        public $description;
-        public $price;
     
-        public $brand;
-        public $image;
-
-        public $id;
-    }
     
-    $products = array();
-    
-    $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product");
-    $query->execute();
-    $result = $query->fetchAll();
-    
-    foreach($result as $item){
-        $product = new Product();
-        $product->name = $item["ProductName"];
-        $product->description = $item["ProductDescription"];
-        $product->price = $item["Price"];
-        $product->brand = $item["Brand"];
-        $product->id = $item["ProductID"];
-        array_push($products, $product);  
-
-    }
-
-
     $increment = 40;
-    //session_start();
+    // session_start();    
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // initialize variable on first run
         // session variables - https://www.w3schools.com/php/php_sessions.asp
         if (!isset($_SESSION['currentlyLoaded'])) {
             $_SESSION['currentlyLoaded'] = 6; // show 6 at a time but can make bigger later
+        }
+        if (!isset($_SESSION['Search'])) {
+            $_SESSION['Search'] = "";
         }
 
         // if the button is pressed, load another 6
@@ -66,49 +42,94 @@
             }
         }
 
-        // Searching for a product. 
-        $product = null; // This should be overwritten anyway. This is to just make sure it is empty, and doesn't have a Product class in it. 
-        $searchProducts = array(); // New array to hold the products that have been searched for. 
-
-        if (isset($_POST['Search'])){
-            foreach ($products as $product){
-                $class_vars = $product;
-                if (str_contains($product->name, $_POST['Search'])){
-                    array_push($searchProducts, $product);
-                }
-            }
-        }
-
         // remove all extras
         if (isset($_POST['showLess'])) {
             $_SESSION['currentlyLoaded'] = 6; // set back to only 6
         }
 
+        if (isset($_POST['Search'])){
+            $_SESSION['Search'] = $_POST['Search'];
+        }
         
     }
-    // echo "<center><form method='post'> <button class='button' type='submit' name='Search'>Search</button></form></center>";
+
+
+    /* Class for all products to be made into once read in */
+    class Product {
+        public $name;
+        public $description;
+        public $price;
+    
+        public $brand;
+        public $image;
+
+        public $id;
+    } 
+
+    $products = array();
+
+    if (isset($_SESSION['Search'])){
+        $type = $_SESSION['Search'];
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%'");
+        $query->execute();
+        $result = $query->fetchAll();
+        $results = array();
+
+        foreach($result as $item){
+            $id = $item["ProductID"];
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product WHERE ProductID = '$id'");
+            $query->execute();
+            $result = $query->fetchAll();
+            
+            array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
+        }
+
+    }
+    else{
+        $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product");
+        $query->execute();
+        $results = $query->fetchAll();
+    }
+
+   
+    
+    foreach($results as $item)
+    {
+        $product = new Product();
+        $product->name = $item["ProductName"];
+        $product->description = $item["ProductDescription"];
+        $product->price = $item["Price"];
+        $product->brand = $item["Brand"];
+        $product->id = $item["ProductID"];
+        array_push($products, $product);  
+
+    }
+    echo " ";
+    echo count($products);
+    echo " ";
+    echo $_SESSION['Search'];
 
     echo "<div id='productContainer'>";
     echo "<div>";
     echo '<input type="hidden" id="mydata">';
     
+    if ($_SESSION['currentlyLoaded'] > count($products)){
+       $maxShow = count($products);
+    }
+    else{
+        $maxShow = $_SESSION['currentlyLoaded'];
+    }
     
-    
-    for($i = 0; $i <($_SESSION['currentlyLoaded']); $i++) {
-        if (isset($_POST['Search'])){
-            $products_to_show = $searchProducts;
-        }
-        else{
-            $products_to_show = $products;
-        }
-
-        echo "<div class='product' id=$i>";
+    for($i = 0; $i <($maxShow); $i++) {
+        // echo $_SESSION['currentSearch'];
+        $PID = $products[$i]->id - 1;
+        echo "<div class='product' id=$PID>";
         echo "<img class=productImage src=''/img>";
-        echo "<h1 class = productName >".$products_to_show[$i]->name."</h1>";
-        echo "<p class = productInfo>".$products_to_show[$i]->description."</p>";
-        echo "<p class = productInfo>£".$products_to_show[$i]->price."</p>";
-        echo "<p class = productInfo>Brand: ".$products_to_show[$i]->brand."</p>";
-        echo "<p class = productInfo>Brand: ".$products_to_show[$i]->id."</p>";
+        echo "<h1 class = productName >".$products[$i]->name."</h1>";
+        echo "<p class = productInfo>".$products[$i]->description."</p>";
+        echo "<p class = productInfo>£".$products[$i]->price."</p>";
+        echo "<p class = productInfo>Brand: ".$products[$i]->brand."</p>";
+        echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
         echo "</div>";
         if (($i+1) % 3 == 0) {
             echo "</div>";
@@ -120,9 +141,6 @@
     
 
     // only display load more if all products have not already been loaded
-    if($_SESSION){
-            
-    }
 
     if ($_SESSION['currentlyLoaded'] < $numProducts)
     {
@@ -136,6 +154,8 @@
     if($_SESSION['currentlyLoaded'] > 6){ // only show the show less button if more than 6 items are loaded 
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
+
+
 
     
     

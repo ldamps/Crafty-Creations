@@ -3,7 +3,7 @@ let product = Array.from(p);
 var b = document.getElementsByClassName('button');
 let button = Array.from(b);
 
-
+var searchProductType = Array.from(document.getElementsByClassName('ProductSearch'));
 var searchBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
@@ -41,6 +41,13 @@ if (searchBar != null)
 {
     searchBar.addEventListener('keypress', searchProducts);
 }
+
+if (searchProductType != null){
+    searchProductType.forEach(element => {
+        addEventListener('click', searchProducts);
+    })
+}
+
 function productOnClick(element)
 {
     ID = Number(element.currentTarget.id)+Number(1);
@@ -114,28 +121,44 @@ function quantityAdjust(element)
 
     
 function searchProducts(element){
-    element.currentTarget.onkeypress = (element) => {
-        if (element.key === 'Enter')
-        {
-            console.log(element.currentTarget.value);
-            const xhhtp = new XMLHttpRequest();
-            xhhtp.open('POST', 'index.php', true);
-            xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhhtp.onreadystatechange = function() {
-                if (xhhtp.readyState === XMLHttpRequest.DONE){
-                    console.log(xhhtp.status);
-                    if (xhhtp.status === 200){
-                        console.log(xhhtp.responseText);
-                    }
-                    else{
-                        console.log(xhhtp.status);
-                    }
-                }
-            }    
-
-            let search ="Search=" + encodeURIComponent(element.currentTarget.value);
-            xhhtp.send(search);
+    // console.log("string");
+    // console.log(element.currentTarget);
+    if(element.currentTarget.id == 'Search'){
+        // console.log("ee");
+        element.currentTarget.onkeypress = (element) => {
+            if (element.key == 'Enter'){
+                console.log(element.currentTarget.value);
+                search("Search=" + encodeURIComponent(element.currentTarget.value));
+            }
         }
     }
+
+    if(element.currentTarget.id == 'ProductSearch'){
+        console.log(element.currentTarget.value);
+        search("ProductSearch=" + encodeURIComponent(element.currentTarget.value));
+    }
     
+
+    
+   
+
+function search(data){
+    const xhhtp = new XMLHttpRequest();
+    xhhtp.open('POST', 'index.php', true);
+    xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhhtp.onreadystatechange = function () {
+        if (xhhtp.readyState === XMLHttpRequest.DONE) {
+            console.log(xhhtp.status);
+            if (xhhtp.status === 200) {
+                console.log(xhhtp.responseText);
+            }
+            else {
+                console.log(xhhtp.status);
+            }
+        }
+    }
+    xhhtp.send(data);
+}
+
+
 }
