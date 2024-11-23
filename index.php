@@ -54,8 +54,8 @@
         if (isset($_POST['Search'])){
             $_SESSION['Search'] = $_POST['Search'];
         }
-        else{
-            session_reset();
+        else if (!isset($_SESSION['Search'])){
+            $_SESSION['Search'] = "";
         }
         
         
