@@ -22,16 +22,33 @@
                 setcookie("ID", "", time() - 3600);
             }
             if (isset($_SESSION["LoggedIn"])) {
-                echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
-                echo "<form method='post'><button class='logoutBtn' class='button' name='logout' href='index.php' >Log Out</button></form>";
-            }
-            else
-            {
+                echo "<a class='button' type='submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
+                echo "<form method='post'><button class='logoutBtn' class='button' name='logout' href='index.php'>Log Out</button></form>";
+
+                //getting role of user
+                $role = $_SESSION["LoggedIn"]; 
+
+                //change this later
+                //role specific buttons
+                if ($role === "customer") { 
+                    echo "<a class='button' href='orderHistory.php'>My Orders</a>";
+                    echo "<a class='button' href='cart.php'>Cart</a>";
+                } elseif ($role === "Manager" || $role === "CEO") { 
+                    echo "<a class='button' href='manageEmployees.php'>Manage Employees</a>";
+                    echo "<a class='button' href='salesReports.php'>Sales Reports</a>";
+                } elseif ($role === "IT Support" || $role === "Website Development") { 
+                    echo "<a class='button' href='systemStatus.php'>System Status</a>";
+                    echo "<a class='button' href='updateWebsite.php'>Update Website</a>";
+                } else { 
+                    echo "<a class='button' href='employeeDashboard.php'>Dashboard</a>";
+                }
+            } else {
                 echo "<a class='button' href='loginPage.php'>log in | sign up</a>";
             }
         ?>
         </ul>
     </nav>
+
 
     <nav class="selection">
         <input type="text" placeholder="Search..">
