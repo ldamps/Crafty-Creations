@@ -38,37 +38,29 @@
         <form method="post"><input type="text" placeholder="Search.." id="Search"></form>
 
         <div class="yarn button">
-            <button class="dropbtn">Yarn
-                <i class="fa fa-caret-down"></i>
-            </button>
+            <form method = "post"><button class="Selector dropbtn">Yarn<i class="fa fa-caret-down"></i></button></form>
             <div class="yarn-selection">
                 <a href="#">Show All</a>
                 <a href="#">Acrylic Yarn</a>
             </div>
         </div>
 
-        <div class="fabric button">
-            <button class="dropbtn">Fabric
-                <i class="fa fa-caret-down"></i>
-            </button>
+        <div class="Selector fabric button">
+            <form method = "post"><button class="dropbtn">Fabric<i class="fa fa-caret-down"></i></button></form>
             <div class="fabric-selection">
                 <a href="#">Show All</a>
             </div>
         </div>
 
-        <div class="paint button">
-            <button class="dropbtn">Paint
-                <i class="fa fa-caret-down"></i>
-            </button>
+        <div class="Selector paint button">
+            <form method ="post"><button class="dropbtn">Paint<i class="fa fa-caret-down"></i></button></form>
             <div class="paint-selection">
                 <a href="#">Show All</a>
             </div>
         </div>
 
-        <div class="Tool button">
-            <button class="dropbtn">Tool
-                <i class="fa fa-caret-down"></i>
-            </button>
+        <div class="Selector Tool button">
+            <form method = "post"><button class="dropbtn">Tool<i class="fa fa-caret-down"></i></button></form>
             <div class="Tool-selection">
                 <a href="#">Show All</a>
             </div>

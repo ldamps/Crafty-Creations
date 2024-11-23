@@ -2,8 +2,11 @@ var p = document.getElementsByClassName('product');
 let product = Array.from(p);
 var b = document.getElementsByClassName('button');
 let button = Array.from(b);
+var s = document.getElementsByClassName('Selector');
+let selector = Array.from(s);
+var PS = document.getElementsByClassName('ProductSearch');
+let searchProductType = Array.from(PS);
 
-var searchProductType = Array.from(document.getElementsByClassName('ProductSearch'));
 var searchBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
@@ -45,6 +48,12 @@ if (searchBar != null)
 if (searchProductType != null){
     searchProductType.forEach(element => {
         addEventListener('click', searchProducts);
+    })
+}
+
+if(selector != null){
+    selector.forEach(element => {
+        element.addEventListener('click', refineElements);
     })
 }
 
@@ -118,30 +127,6 @@ function quantityAdjust(element)
     }
 }
 
-
-    
-function searchProducts(element){
-    // console.log("string");
-    // console.log(element.currentTarget);
-    if(element.currentTarget.id == 'Search'){
-        // console.log("ee");
-        element.currentTarget.onkeypress = (element) => {
-            if (element.key == 'Enter'){
-                console.log(element.currentTarget.value);
-                search("Search=" + encodeURIComponent(element.currentTarget.value));
-            }
-        }
-    }
-
-    if(element.currentTarget.id == 'ProductSearch'){
-        console.log(element.currentTarget.value);
-        search("ProductSearch=" + encodeURIComponent(element.currentTarget.value));
-    }
-    
-
-    
-   
-
 function search(data){
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', 'index.php', true);
@@ -159,6 +144,34 @@ function search(data){
     }
     xhhtp.send(data);
 }
+
+function refineElements(element){
+    let data = element.srcElement.innerText;
+    search("Search=" + encodeURIComponent(data));
+}
+
+
+    
+function searchProducts(element){
+    // console.log("string");
+    // console.log(element.currentTarget);
+    if(element.currentTarget.id == 'Search'){
+        // console.log(element.currentTarget.value);
+        element.currentTarget.onkeypress = (element) => {
+            console.log(element.key);
+            if (element.key == 'Enter'){
+                // console.log(element.currentTarget.value);
+                search("Search=" + encodeURIComponent(element.currentTarget.value));
+            }
+        }
+    }
+
+    if(element.currentTarget.id == 'ProductSearch'){
+        console.log(element.currentTarget.value);
+        search("ProductSearch=" + encodeURIComponent(element.currentTarget.value));
+    }
+
+
 
 
 }

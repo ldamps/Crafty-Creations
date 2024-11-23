@@ -7,12 +7,16 @@
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
-    echo $numProducts;
+    // echo $numProducts;
 
     
     
     $increment = 40;
-    // session_start();    
+
+    if (!isset($_SESSION)){
+        session_start();    
+    }
+    
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // initialize variable on first run
@@ -50,6 +54,10 @@
         if (isset($_POST['Search'])){
             $_SESSION['Search'] = $_POST['Search'];
         }
+        else{
+            session_reset();
+        }
+        
         
     }
 
@@ -68,7 +76,7 @@
 
     $products = array();
 
-    if (isset($_SESSION['Search'])){
+    if (isset($_SESSION['Search']) && $_SESSION['Search'] != "") {
         $type = $_SESSION['Search'];
         $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%'");
         $query->execute();
@@ -83,6 +91,22 @@
             
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
+    if (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
+        $narrow = $_SESSION['Narrow'];
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$narrow%'");
+        $query->execute();
+        $result = $query->fetchAll();
+        $results = array();
+
+        foreach($result as $item){
+            $id = $item["ProductID"];
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product WHERE ProductID = '$id'");
+            $query->execute();
+            $result = $query->fetchAll();
+            
+            array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
+        }
+    }
 
     }
     else{
@@ -104,10 +128,10 @@
         array_push($products, $product);  
 
     }
-    echo " ";
-    echo count($products);
-    echo " ";
-    echo $_SESSION['Search'];
+    // echo " ";
+    // echo count($products);
+    // echo " ";
+    // echo $_SESSION['Search'];
 
     echo "<div id='productContainer'>";
     echo "<div>";
