@@ -92,7 +92,7 @@ body {
     outline:none;
 }
 
-.yarn, .fabric, .paint {
+.yarn, .fabric, .paint, .Tool {
     float: right;
     overflow: hidden;
     transition: transform 0.1s;
@@ -123,7 +123,7 @@ body {
     border:none;
 }
 
-.yarn-selection, .fabric-selection, .paint-selection {
+.yarn-selection, .fabric-selection, .paint-selection, .Tool-selection {
     display: none;
     position: absolute;
     background-color: var(--primary-color);
@@ -132,7 +132,7 @@ body {
     z-index: 1;
 }
 
-.yarn-selection a, .fabric-selection a, .paint-selection a {
+.yarn-selection a, .fabric-selection a, .paint-selection a, .Tool-selection a {
     float: none;
     color: var(--secondary-color);
     padding: 12px 16px;
@@ -141,11 +141,11 @@ body {
     text-align: left;
 }
 
-.yarn-selection a:hover, .fabric-selection a:hover, .paint-selection a:hover {
+.yarn-selection a:hover, .fabric-selection a:hover, .paint-selection a:hover, .Tool-selection a:hover {
     background-color: var(--primary-color);
 }
 
-.yarn:hover .yarn-selection, .fabric:hover .fabric-selection, .paint:hover .paint-selection {
+.yarn:hover .yarn-selection, .fabric:hover .fabric-selection, .paint:hover .paint-selection, .Tool:hover .Tool-selection {
     display: block;
 }
 
