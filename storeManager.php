@@ -46,12 +46,71 @@ $lowStockData = $stmtLowStock->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Manager Dashboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            padding: 0 15px; 
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+
+
+    </style>
+    
 </head>
 
 <body>
 
     <div class="container">
-        <h1>Manager Dashboard</h1>
+    <h1>Manage Store <span>Dashboard</span></h1>
+
+    <br></br>
+
+
 
         <!-- sales Report section -->
 
