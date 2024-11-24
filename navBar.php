@@ -9,21 +9,39 @@
     <script src="https://kit.fontawesome.com/f06d9443ee.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="topnav">
+    <nav id ="help" class="topnav">
         <a class="company" href="index.php">Crafty Creations</a>
         <ul>
         <?php
             session_start();
             //unset($_SESSION["LoggedIn"]);
              // remove all extras
-            if (isset($_POST['logout']) || isset($_POST['my_form'])) {
-                unset($_SESSION["LoggedIn"]);
+            if (isset($_POST['logout'])) {
                 // delete user cookie
-                setcookie("ID", "", time() - 3600);
+                setcookie("CustomerID", "", time() - 3600);
             }
-            if (isset($_SESSION["LoggedIn"])) {
+            if (isset($_COOKIE["CustomerID"])) {
+                
                 echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
-                echo "<form method='post'><button class='logoutBtn' class='button' name='logout' href='index.php' >Log Out</button></form>";
+
+                // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
+                echo "<form id='form' name='logoutForm' method='post'><input type='hidden' name='logout' value='true'></form>
+                <a id='logout' class='button' onclick='submit();' href='javascript:;' >log out</a>";
+            }
+            else if (isset($_COOKIE["ShopEmployeeID"]))
+            {
+                "<a class='button' href='stock.php'>Stock Levels</a>";
+                "<a class='button' href='orderHistory.php'>Order History</a>";
+            }
+            else if (isset($_COOKIE["ManagerID"]))
+            {
+                "<a class='button' href='supplier.php'>Supplier</a>";
+                "<a class='button' href='stock.php'>Stock Levels</a>";
+                "<a class='button' href='orderHistory.php'>Order History</a>";
+            }
+            else if (isset($_COOKIE["OfficeEmployeeID"]))
+            {
+                "<a class='button' href='payroll.php'>Payroll</a>";
             }
             else
             {
@@ -68,3 +86,24 @@
 </body>
 
 </html>
+<script>
+
+function submit()
+{
+    // took this from here - https://stackoverflow.com/questions/1960240/jquery-ajax-submit-form
+    // add logout to form data
+    var formData = new FormData();
+    formData.append('logout', 'true');
+    $.ajax({
+        type: "POST",
+        url: "index.php", // post to same page
+        data: formData,
+        processData: false,
+        contentType: false,
+        error: function(jqXHR, textStatus, errorMessage) {
+            console.log(errorMessage); 
+        },
+        success: function(data) {window.location.reload();} 
+    });
+}
+</script>
