@@ -1,5 +1,7 @@
+
+//try and get all elemnts from the page. Some elements exist on different pages.
 var p = document.getElementsByClassName('product');
-let product = Array.from(p);
+let product = Array.from(p); 
 var b = document.getElementsByClassName('button');
 let button = Array.from(b);
 var s = document.getElementsByClassName('Selector');
@@ -18,7 +20,7 @@ var quantityDown = document.getElementById('quantityDown');
 
 
 
-
+//Therefore, we need to check if the element exists before adding an event listener to it. Which is what the following if statements do.
 
 if (product != null){
     product.forEach(element => {
@@ -78,6 +80,10 @@ if (payButton != null){
     })
 }
 
+
+//Functions of the event listeners
+
+//When clicking on a product, the product is highlighted and the user is redirected to the product page.
 function productOnClick(element)
 {
     ID = Number(element.currentTarget.id)+Number(1);
@@ -90,6 +96,7 @@ function productOnClick(element)
     };
 }
 
+//When clicking on a button, the button is animated to show that it has been clicked.
 function buttonOnClick(element)
 {
     let button = element.currentTarget;
@@ -106,6 +113,7 @@ function buttonOnClick(element)
     }
 }
 
+//When the mouse leaves the button, the button is animated to show that the mouse has left.
 function buttonMouseOut(element)
 {
     let button = element.currentTarget;
@@ -117,6 +125,7 @@ function buttonMouseOut(element)
     }
 }
 
+//When the mouse enters the button, the button is animated to show that the mouse has entered.
 function buttonMouseEnter(element)
 {
     let button = element.currentTarget;
@@ -124,6 +133,7 @@ function buttonMouseEnter(element)
     clearButtonListeners(button);
 }
 
+//This function removes all the classes from the button that are used for the animations.
 function clearButtonListeners(button)
 {
     button.classList.remove('buttonReturn');
@@ -132,6 +142,7 @@ function clearButtonListeners(button)
     button.classList.remove('buttonMouseOut');
 }
 
+//This function adjusts the quantity of the product to be purchased.
 function quantityAdjust(element)
 {
     let quantityButton = element.currentTarget;
@@ -148,6 +159,7 @@ function quantityAdjust(element)
     }
 }
 
+//This function is used to send the post request to the server.
 function search(data, page){
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', page, true);
@@ -166,20 +178,19 @@ function search(data, page){
     xhhtp.send(data);
 }
 
+//This function restricts the products to be shown on index to be only one of the types of product.
 function refineElements(element){
     let data = element.srcElement.innerText;
     search("Search=" + encodeURIComponent(data), "index.php");
 }
-    
+
+
+//This function is used to search for products on the index page.
 function searchProducts(element){
-    // console.log("string");
-    // console.log(element.currentTarget);
     if(element.currentTarget.id == 'Search'){
-        // console.log(element.currentTarget.value);
         element.currentTarget.onkeypress = (element) => {
             console.log(element.key);
             if (element.key == 'Enter'){
-                // console.log(element.currentTarget.value);
                 search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
             }
         }
@@ -191,6 +202,7 @@ function searchProducts(element){
     }
 }
 
+//This function is used to search for a payee on the payroll page.
 function searchPayee(element){
     if(element.currentTarget.id == 'payeeInput'){
         element.currentTarget.onkeypress = (element) => {
@@ -206,6 +218,7 @@ function searchPayee(element){
     search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
 }
 
+//This function is used to pay a staff member on the payroll page.
 function payStaff(element){
     search("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
