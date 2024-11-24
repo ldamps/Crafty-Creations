@@ -16,6 +16,7 @@
     if (!isset($_SESSION)){
         session_start();    
     }
+
     
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -26,6 +27,9 @@
         }
         if (!isset($_SESSION['Search'])) {
             $_SESSION['Search'] = "";
+        }
+        if (!isset($_SESSION['Narrow'])) {
+            $_SESSION['Narrow'] = "";
         }
 
         // if the button is pressed, load another 6
@@ -58,9 +62,15 @@
             $_SESSION['Search'] = "";
         }
         
+        if (isset($_POST['ProductSearch'])){
+            $_SESSION['Narrow'] = $_POST['ProductSearch'];
+        }
+        else if (!isset($_SESSION['Narrow'])){
+            $_SESSION['Narrow'] = "";
+        }
+        
         
     }
-
 
     /* Class for all products to be made into once read in */
     class Product {
@@ -91,7 +101,8 @@
             
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
-    if (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
+    }
+    else if (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
         $narrow = $_SESSION['Narrow'];
         $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$narrow%'");
         $query->execute();
@@ -106,8 +117,6 @@
             
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
-    }
-
     }
     else{
         $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product");
