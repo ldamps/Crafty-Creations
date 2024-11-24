@@ -104,16 +104,16 @@ foreach($res as $employee){
 
 
 
-
+if (count($employees) != 0){
 // make table
-echo "<table>";
+echo "<br><table>";
 echo "<thead>";
 echo "<tr>";
-echo "<th>First Name</th>";
-echo "<th>Surname</th>";
-echo "<th>Position</th>";
+echo "<th>First Name  </th>";
+echo "<th>Surname     </th>";
+echo "<th>Position    </th>"; //This need styling
 echo "<th>Hours Worked</th>";
-echo "<th>Total Pay</th>";
+echo "<th>Total Pay   </th>";
 echo "</tr>";
 echo "</thead>";
 echo "<tbody>";
@@ -129,7 +129,10 @@ foreach($employees as $employee){
     echo "</tr>";
 }
 echo "</tbody>";
-echo "</table>";
-
+echo "</table></br>";
+}
+else{
+    echo "<br><h2>No employees found</h2></br>";
+}
 ?>
 <script type="text/javascript" src="script.js"></script>

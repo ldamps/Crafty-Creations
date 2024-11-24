@@ -172,17 +172,17 @@ function search(data, page){
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', page, true);
     xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhhtp.onreadystatechange = function () {
-        if (xhhtp.readyState === XMLHttpRequest.DONE) {
-            console.log(xhhtp.status);
-            if (xhhtp.status === 200) {
-                console.log(xhhtp.responseText);
-            }
-            else {
-                console.log(xhhtp.status);
-            }
-        }
-    }
+    // xhhtp.onreadystatechange = function () {
+    //     if (xhhtp.readyState === XMLHttpRequest.DONE) {
+    //         console.log(xhhtp.status);
+    //         if (xhhtp.status === 200) {
+    //             console.log(xhhtp.responseText);
+    //         }
+    //         else {
+    //             console.log(xhhtp.status);
+    //         }
+    //     }
+    // }
     xhhtp.send(data);
 }
 
@@ -197,7 +197,7 @@ function refineElements(element){
 function searchProducts(element){
     if(element.currentTarget.id == 'Search'){
         element.currentTarget.onkeypress = (element) => {
-            console.log(element.key);
+            // console.log(element.key);
             if (element.key == 'Enter'){
                 search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
             }
@@ -205,7 +205,7 @@ function searchProducts(element){
     }
 
     if(element.currentTarget.id == 'ProductSearch'){
-        console.log(element.currentTarget.value);
+        // console.log(element.currentTarget.value);
         search("ProductSearch=" + encodeURIComponent(element.currentTarget.value));
     }
 }
