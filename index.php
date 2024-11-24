@@ -7,23 +7,18 @@
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
-    // echo $numProducts;
-
-    
     
     $increment = 40;
-
     if (!isset($_SESSION)){
-        session_start();    
+        session_start();  
     }
-
-    
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // initialize variable on first run
         // session variables - https://www.w3schools.com/php/php_sessions.asp
         if (!isset($_SESSION['currentlyLoaded'])) {
             $_SESSION['currentlyLoaded'] = 6; // show 6 at a time but can make bigger later
+            echo "currently loaded";
         }
         if (!isset($_SESSION['Search'])) {
             $_SESSION['Search'] = "";
@@ -138,18 +133,18 @@
         $product->brand = $item["Brand"];
         $product->id = $item["ProductID"];
         array_push($products, $product);  
-
+    }
     echo "<div id='productContainer'>";
     echo "<div>";
     echo '<input type="hidden" id="mydata">';
-    
+
     if ($_SESSION['currentlyLoaded'] > count($products)){
        $maxShow = count($products);
     }
     else{
         $maxShow = $_SESSION['currentlyLoaded'];
     }
-    
+
     //Display each product in a 3*n grid. N is the number of products allowed to be displayed by 'currentlyLoaded'.
     for($i = 0; $i <($maxShow); $i++) {
         // echo $_SESSION['currentSearch'];
@@ -187,7 +182,7 @@
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
 
-}
+
     include 'footer.html';
 
 ?>
