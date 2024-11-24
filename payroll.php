@@ -23,8 +23,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if (!isset($_SESSION['pay'])){
         $_SESSION['pay'] = "";
     }
-    if(isset($_POST['pay'])){
-        $_SESSION['pay'] = $_POST['pay'];
+    if(isset($_POST['Pay'])){
+        $_SESSION['pay'] = $_POST['Pay'];
     }
 
     if (!isset($_SESSION['PayeeSearch'])){
@@ -36,6 +36,29 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
     
     
+}
+
+if(isset($_SESSION['pay']) && $_SESSION['pay'] != ""){
+    $id = $_SESSION['pay'];
+    $query = $mysql->prepare("SELECT FirstName,Surname,HoursWorked FROM Employee WHERE EmployeeID = '$id'");
+    $query->execute(); 
+    $res = $query->fetchAll();
+    $employeeToPay = $res[0];
+
+    $query = $mysql->prepare("SELECT * FROM BankDetails WHERE Employee_EmployeeID = '$id'");
+    $query->execute();
+    $res = $query->fetchAll();
+    $bankDetails = $res[0];
+
+    echo "<br></br>";
+    echo "<h2>".$employeeToPay['FirstName']." ".$employeeToPay['Surname']."</h2>";
+    echo "<h3>Hours Worked: ".$employeeToPay['HoursWorked']."</h3>";
+    echo "<h3>Accont Number: ".$bankDetails['AccountNo']."</h3>";
+    echo "<h3>Sort Code: ".$bankDetails['SortCode']."</h3>";
+    echo "<br></br>";
+
+    //After paying, update the hours worked and set to 0
+    //Not doing this as need to have a way of setting them in the first place
 }
 
 $employees = array();
@@ -65,10 +88,7 @@ foreach($res as $employee){
 
 }
 
-if(isset($_SESSION['pay']) && $_SESSION['pay'] != ""){
-    $type = $_SESSION['pay'];
-    
-}
+
 
 
 // make table
@@ -91,7 +111,7 @@ foreach($employees as $employee){
     echo "<td>".$employee->position."</td>";
     echo "<td>".$employee->hoursWorked."</td>";
     echo "<td>".$employee->hoursWorked*$employee->payForPosition."</td>";
-    echo "<td><button id =".$employee->id." class = 'payButton Button'>Pay</button></td>";
+    echo "<td><form method = 'post'><button id =".$employee->id." class = 'payButton Button'>Pay</button></form></td>";
     echo "</tr>";
 }
 echo "</tbody>";

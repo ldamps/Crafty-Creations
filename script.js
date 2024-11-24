@@ -78,12 +78,6 @@ if (payButton != null){
     })
 }
 
-function payStaff(element){
-    id = element.currentTarget.id;
-    console.log(id);
-}
-
-
 function productOnClick(element)
 {
     ID = Number(element.currentTarget.id)+Number(1);
@@ -176,8 +170,6 @@ function refineElements(element){
     let data = element.srcElement.innerText;
     search("Search=" + encodeURIComponent(data), "index.php");
 }
-
-
     
 function searchProducts(element){
     // console.log("string");
@@ -212,4 +204,8 @@ function searchPayee(element){
     }
     console.log(data);
     search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
+}
+
+function payStaff(element){
+    search("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
