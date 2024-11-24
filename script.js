@@ -6,13 +6,21 @@ var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 var PS = document.getElementsByClassName('ProductSearch');
 let searchProductType = Array.from(PS);
+var pb = document.getElementsByClassName('payeeSearchButton');
+let payeeButton = Array.from(pb);
+var payB = document.getElementsByClassName('payButton');
+let payButton = Array.from(payB);
 
+var payeeInput = document.getElementById('payeeInput');
 var searchBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
-if (product != null)
-{
+
+
+
+
+if (product != null){
     product.forEach(element => {
         // creating unique image for each product
         // IDs are set from 0, and product IDs from 1, which is why there is a +1
@@ -25,8 +33,7 @@ if (product != null)
     });
 }
 
-if (button != null)
-{
+if (button != null){
     button.forEach(element => {
         element.addEventListener('click', buttonOnClick);
         element.addEventListener('mouseleave', buttonMouseOut);
@@ -34,14 +41,12 @@ if (button != null)
     })
 }
 
-if (quantityUp != null)
-{
+if (quantityUp != null){
     quantityUp.addEventListener('click', quantityAdjust);
     quantityDown.addEventListener('click', quantityAdjust);
 }
 
-if (searchBar != null)
-{
+if (searchBar != null){
     searchBar.addEventListener('keypress', searchProducts);
 }
 
@@ -56,6 +61,28 @@ if(selector != null){
         element.addEventListener('click', refineElements);
     })
 }
+
+if (payeeButton != null){
+        payeeButton.forEach(element => {
+            element.addEventListener('click', searchPayee);
+        });
+}
+
+if (payeeInput != null){
+    payeeInput.addEventListener('keypress', searchPayee);
+}
+
+if (payButton != null){
+    payButton.forEach(element => {
+        element.addEventListener('click', payStaff);
+    })
+}
+
+function payStaff(element){
+    id = element.currentTarget.id;
+    console.log(id);
+}
+
 
 function productOnClick(element)
 {
@@ -127,9 +154,9 @@ function quantityAdjust(element)
     }
 }
 
-function search(data){
+function search(data, page){
     const xhhtp = new XMLHttpRequest();
-    xhhtp.open('POST', 'index.php', true);
+    xhhtp.open('POST', page, true);
     xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhhtp.onreadystatechange = function () {
         if (xhhtp.readyState === XMLHttpRequest.DONE) {
@@ -147,7 +174,7 @@ function search(data){
 
 function refineElements(element){
     let data = element.srcElement.innerText;
-    search("Search=" + encodeURIComponent(data));
+    search("Search=" + encodeURIComponent(data), "index.php");
 }
 
 
@@ -161,7 +188,7 @@ function searchProducts(element){
             console.log(element.key);
             if (element.key == 'Enter'){
                 // console.log(element.currentTarget.value);
-                search("Search=" + encodeURIComponent(element.currentTarget.value));
+                search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
             }
         }
     }
@@ -170,8 +197,19 @@ function searchProducts(element){
         console.log(element.currentTarget.value);
         search("ProductSearch=" + encodeURIComponent(element.currentTarget.value));
     }
+}
 
-
-
-
+function searchPayee(element){
+    if(element.currentTarget.id == 'payeeInput'){
+        element.currentTarget.onkeypress = (element) => {
+            if (element.key == 'Enter'){
+                var data = element.currentTarget.value;
+            }
+        }
+    }
+    else{
+        var data = document.getElementById("payeeInput").value;
+    }
+    console.log(data);
+    search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
 }
