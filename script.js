@@ -12,6 +12,8 @@ var pb = document.getElementsByClassName('payeeSearchButton');
 let payeeButton = Array.from(pb);
 var payB = document.getElementsByClassName('payButton');
 let payButton = Array.from(payB);
+var detailsB = document.getElementsByClassName('detailsButton');
+let detailsButton = Array.from(detailsB);
 
 var payeeInput = document.getElementById('payeeInput');
 var searchBar = document.getElementById('Search');
@@ -77,7 +79,13 @@ if (payeeInput != null){
 if (payButton != null){
     payButton.forEach(element => {
         element.addEventListener('click', payStaff);
-    })
+    });
+}
+
+if (detailsButton != null){
+    detailsButton.forEach(element => {
+        element.addEventListener('click', payeeDetails);
+    });
 }
 
 
@@ -214,11 +222,14 @@ function searchPayee(element){
     else{
         var data = document.getElementById("payeeInput").value;
     }
-    console.log(data);
     search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
 }
 
 //This function is used to pay a staff member on the payroll page.
 function payStaff(element){
     search("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+}
+
+function payeeDetails(element){
+    search("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }

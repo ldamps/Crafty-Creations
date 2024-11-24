@@ -26,6 +26,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $_SESSION['pay'] = $_POST['Pay'];
     }
 
+    if (!isset($_SESSION['details'])){
+        $_SESSION['details'] = "";
+    }
+
+    if(isset($_POST['Details'])){
+        $_SESSION['details'] = $_POST['Details'];
+    }
+
     if (!isset($_SESSION['PayeeSearch'])){
         $_SESSION['PayeeSearch'] = "";
     }
@@ -36,9 +44,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     
     
 }
-//If a pay button is pressed, get the employee details and display them
-if(isset($_SESSION['pay']) && $_SESSION['pay'] != ""){
-    $id = $_SESSION['pay'];
+//If a 'details' button is pressed, get the employee details and display them
+if (isset($_SESSION['pay']) && $_SESSION['pay'] != ""){
+    unset($_SESSION['details'], $_SESSION['pay']);
+}
+elseif(isset($_SESSION['details']) && $_SESSION['details'] != ""){
+    $id = $_SESSION['details'];
     $query = $mysql->prepare("SELECT FirstName,Surname,HoursWorked FROM Employee WHERE EmployeeID = '$id'");
     $query->execute(); 
     $res = $query->fetchAll();
@@ -54,11 +65,13 @@ if(isset($_SESSION['pay']) && $_SESSION['pay'] != ""){
     echo "<h3>Hours Worked: ".$employeeToPay['HoursWorked']."</h3>";
     echo "<h3>Accont Number: ".$bankDetails['AccountNo']."</h3>";
     echo "<h3>Sort Code: ".$bankDetails['SortCode']."</h3>";
+    echo "<form method = 'post'><button id = ".$id." class = 'payButton Button'>Pay</button></form>";
     echo "<br></br>";
 
     //After paying, update the hours worked and set to 0
     //Not doing this as need to have a way of setting them in the first place
 }
+
 
 $employees = array();
 //If a search is made, get the employees that match the search in any combination of first name, surname or role
@@ -111,7 +124,7 @@ foreach($employees as $employee){
     echo "<td>".$employee->position."</td>";
     echo "<td>".$employee->hoursWorked."</td>";
     echo "<td>".$employee->hoursWorked*$employee->payForPosition."</td>";
-    echo "<td><form method = 'post'><button id =".$employee->id." class = 'payButton Button'>Pay</button></form></td>";
+    echo "<td><form method = 'post'><button id =".$employee->id." class = 'detailsButton Button'>Get Details</button></form></td>";
     echo "</tr>";
 }
 echo "</tbody>";
