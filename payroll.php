@@ -70,6 +70,7 @@ elseif(isset($_SESSION['details']) && $_SESSION['details'] != ""){
 
     //After paying, update the hours worked and set to 0
     //Not doing this as need to have a way of setting them in the first place
+    // $query = $mysql->prepare("UPDATE Employee SET HoursWorked = 0 WHERE EmployeeID = '$id'");
 }
 
 
