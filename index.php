@@ -58,14 +58,14 @@
         if (isset($_POST['Search'])){
             $_SESSION['Search'] = $_POST['Search'];
         }
-        else if (!isset($_SESSION['Search'])){
+        elseif (!isset($_SESSION['Search'])){
             $_SESSION['Search'] = "";
         }
         
         if (isset($_POST['ProductSearch'])){
             $_SESSION['Narrow'] = $_POST['ProductSearch'];
         }
-        else if (!isset($_SESSION['Narrow'])){
+        elseif (!isset($_SESSION['Narrow'])){
             $_SESSION['Narrow'] = "";
         }
         
@@ -86,6 +86,7 @@
 
     $products = array();
 
+    //Get product from database that match the search criteria.
     if (isset($_SESSION['Search']) && $_SESSION['Search'] != "") {
         $type = $_SESSION['Search'];
         $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%'");
@@ -102,7 +103,8 @@
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
     }
-    else if (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
+    //Get all products from the database of a single type.
+    elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
         $narrow = $_SESSION['Narrow'];
         $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$narrow%'");
         $query->execute();
@@ -118,6 +120,7 @@
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
     }
+    //Otherwise, get all products from the database.
     else{
         $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product");
         $query->execute();
@@ -125,7 +128,7 @@
     }
 
    
-    
+    //Create a product object for each product and add it to the array.
     foreach($results as $item)
     {
         $product = new Product();
@@ -135,12 +138,6 @@
         $product->brand = $item["Brand"];
         $product->id = $item["ProductID"];
         array_push($products, $product);  
-
-    }
-    // echo " ";
-    // echo count($products);
-    // echo " ";
-    // echo $_SESSION['Search'];
 
     echo "<div id='productContainer'>";
     echo "<div>";
@@ -153,6 +150,7 @@
         $maxShow = $_SESSION['currentlyLoaded'];
     }
     
+    //Display each product in a 3*n grid. N is the number of products allowed to be displayed by 'currentlyLoaded'.
     for($i = 0; $i <($maxShow); $i++) {
         // echo $_SESSION['currentSearch'];
         $PID = $products[$i]->id - 1;
@@ -164,6 +162,7 @@
         echo "<p class = productInfo>Brand: ".$products[$i]->brand."</p>";
         echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
         echo "</div>";
+        
         if (($i+1) % 3 == 0) {
             echo "</div>";
             echo "<div>";
@@ -188,11 +187,7 @@
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
 
-
-
-    
-    
-    
+}
     include 'footer.html';
 
 ?>
