@@ -15,6 +15,7 @@ let payButton = Array.from(payB);
 var detailsB = document.getElementsByClassName('detailsButton');
 let detailsButton = Array.from(detailsB);
 
+var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
 var searchBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
@@ -86,6 +87,10 @@ if (detailsButton != null){
     detailsButton.forEach(element => {
         element.addEventListener('click', payeeDetails);
     });
+}
+
+if (resetSearch != null){
+    resetSearch.addEventListener('click', resetSearchFields);
 }
 
 
@@ -232,4 +237,8 @@ function payStaff(element){
 
 function payeeDetails(element){
     search("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+}
+
+function resetSearchFields(element){
+    search("reset=1", "index.php");
 }

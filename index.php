@@ -3,7 +3,7 @@
 <?php
     require 'db.php';
     include 'index.html';
-
+    echo "<form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form>";
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
@@ -26,6 +26,7 @@
         if (!isset($_SESSION['Narrow'])) {
             $_SESSION['Narrow'] = "";
         }
+        
 
         // if the button is pressed, load another 6
         if (isset($_POST['loadMore'])) {
@@ -64,6 +65,12 @@
             $_SESSION['Narrow'] = "";
         }
         
+        if (isset($_POST['reset'])){
+            echo "reset";
+            unset($_SESSION['Search']);
+            unset($_SESSION['Narrow']);
+            unset($_POST['reset']);
+        }
         
     }
 
@@ -134,6 +141,7 @@
         $product->id = $item["ProductID"];
         array_push($products, $product);  
     }
+
     echo "<div id='productContainer'>";
     echo "<div>";
     echo '<input type="hidden" id="mydata">';
@@ -181,7 +189,6 @@
     if($_SESSION['currentlyLoaded'] > 6){ // only show the show less button if more than 6 items are loaded 
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
-
 
     include 'footer.html';
 
