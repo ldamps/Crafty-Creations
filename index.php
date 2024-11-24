@@ -3,7 +3,7 @@
 <?php
     require 'db.php';
     include 'index.html';
-    echo "<form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form>";
+    echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
@@ -91,7 +91,7 @@
     //Get product from database that match the search criteria.
     if (isset($_SESSION['Search']) && $_SESSION['Search'] != "") {
         $type = $_SESSION['Search'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%'");
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%' OR Type LIKE '%$type%'");
         $query->execute();
         $result = $query->fetchAll();
         $results = array();
@@ -108,7 +108,7 @@
     //Get all products from the database of a single type.
     elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
         $narrow = $_SESSION['Narrow'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$narrow%'");
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE Type LIKE '%$narrow%'");
         $query->execute();
         $result = $query->fetchAll();
         $results = array();

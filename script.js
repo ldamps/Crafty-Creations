@@ -194,7 +194,7 @@ function search(data, page){
 //This function restricts the products to be shown on index to be only one of the types of product.
 function refineElements(element){
     let data = element.srcElement.innerText;
-    search("Search=" + encodeURIComponent(data), "index.php");
+    search("ProductSearch=" + encodeURIComponent(data), "index.php");
 }
 
 
@@ -202,16 +202,10 @@ function refineElements(element){
 function searchProducts(element){
     if(element.currentTarget.id == 'Search'){
         element.currentTarget.onkeypress = (element) => {
-            // console.log(element.key);
             if (element.key == 'Enter'){
                 search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
             }
         }
-    }
-
-    if(element.currentTarget.id == 'ProductSearch'){
-        // console.log(element.currentTarget.value);
-        search("ProductSearch=" + encodeURIComponent(element.currentTarget.value));
     }
 }
 
