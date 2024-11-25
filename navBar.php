@@ -33,7 +33,7 @@
                 //change this later
                 //role specific buttons
                 if ($role === "customer") { 
-                    "<a class='button' href='orderHistory.php'>My Orders</a>";
+                    echo "<a class='button' href='orderHistory.php'>My Orders</a>";
                     '<a class="button" href="basket.html" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
                 } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
                     echo "<a class='button' href='#'>Employees</a>";
