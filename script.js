@@ -243,6 +243,7 @@ function basketLoad()
     else {
         
     }
+}
 
 //This function is used to send the post request to the server.
 function search(data, page){
