@@ -23,29 +23,7 @@
                 unset($_SESSION["LoggedIn"]);
             }
 
-           /* if (isset($_COOKIE["CustomerID"])) {
-                
-                echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
-
-                // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
-                echo "<form id='form' name='logoutForm' method='post'><input type='hidden' name='logout' value='true'></form>
-                <a id='logout' class='button' onclick='submit();' href='javascript:;' >log out</a>";
-            }
-            else if (isset($_COOKIE["ShopEmployeeID"]))
-            {
-                "<a class='button' href='stock.php'>Stock Levels</a>";
-                "<a class='button' href='orderHistory.php'>Order History</a>";
-            }
-            else if (isset($_COOKIE["ManagerID"]))
-            {
-                "<a class='button' href='supplier.php'>Supplier</a>";
-                "<a class='button' href='stock.php'>Stock Levels</a>";
-                "<a class='button' href='orderHistory.php'>Order History</a>";
-            }
-            else if (isset($_COOKIE["OfficeEmployeeID"]))
-            {
-                "<a class='button' href='payroll.php'>Payroll</a>";
-            }*/    
+           
             if (isset($_SESSION["LoggedIn"])) {
                 echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
 
@@ -139,7 +117,10 @@ function submit()
         error: function(jqXHR, textStatus, errorMessage) {
             console.log(errorMessage); 
         },
-        success: function(data) {window.location.reload();} 
+        success: function(data) {
+            window.location.reload();
+            
+        } 
     });
 }
 </script>
