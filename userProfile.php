@@ -4,9 +4,15 @@ include 'db.php';
 include 'navBar.php';
 
 
-
-$role = $_SESSION["LoggedIn"];
-$userID = $_COOKIE["ID"];
+if (isset($_SESSION['LoggedIn']))
+{
+    $role = $_SESSION["LoggedIn"];
+    $userID = $_COOKIE["ID"];
+}
+else
+{
+    header("Refresh:0; url=index.php");
+}
 
 if ($role === "customer") {
     
@@ -121,7 +127,8 @@ tr:nth-child(even) {
         <!-- personal information -->
         <div class="section">
         <h2>Personal Information</h2>
-            <?php if ($role === "customer"): ?> 
+            <?php if (isset($_SESSION["LoggedIn"])):
+             if ($role === "customer"): ?> 
                 <p><strong>Name:</strong> <?php echo $personalInfo['Title'] . ' ' . $personalInfo['FirstName'] . ' ' . $personalInfo['LastName']; ?></p>
                 <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
                 <p><strong>Phone:</strong> <?php echo $personalInfo['PhoneNumber']; ?></p>
@@ -130,7 +137,9 @@ tr:nth-child(even) {
                 <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
                 <p><strong>Role:</strong> <?php echo $personalInfo['Role']; ?></p>
                 <p><strong>Hours Worked:</strong> <?php echo $personalInfo['hoursWorked']; ?></p>
-            <?php endif; ?>
+            <?php endif; 
+            endif; ?>
+
         </div>
 
         <!-- address -->
@@ -177,7 +186,9 @@ tr:nth-child(even) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($customerInfo as $order): ?>
+                    <?php foreach ($customerInfo as $order): 
+                        echo "count" ?>
+                        
                         <tr>
                             <td><?php echo $order['OrderID']; ?></td>
                             <td><?php echo '$' . number_format($order['Price'], 2); ?></td>

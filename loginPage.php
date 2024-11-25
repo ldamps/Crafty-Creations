@@ -105,8 +105,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
     if ($isLoggedIn) {
         $_SESSION["LoggedIn"] = $role; // storing role in session
         setcookie("ID", $db_id, time() + (7200), "=/"); // 2-hour cookie
-        //header("Location: index.php"); // main page, nav changing dynamically
-        //exit();
+        header("Location: index.php"); // main page, nav changing dynamically
+        exit();
     } else {
         echo "Invalid email or password. Please try again.";
     }
