@@ -7,7 +7,7 @@ let button = Array.from(b);
 var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 var PS = document.getElementsByClassName('ProductSearch');
-let searchProductType = Array.from(PS);
+let POSTSENDProductType = Array.from(PS);
 var pb = document.getElementsByClassName('payeeSearchButton');
 let payeeButton = Array.from(pb);
 var payB = document.getElementsByClassName('payButton');
@@ -15,13 +15,19 @@ let payButton = Array.from(payB);
 var detailsB = document.getElementsByClassName('detailsButton');
 let detailsButton = Array.from(detailsB);
 
+var supplierB = document.getElementsByClassName('supplierButton');
+let supplierButton = Array.from(supplierB);
+
+var addSB = document.getElementsByClassName('addSupplierButton');
+let addSupplierButton = Array.from(addSB);
+
 var addToCart = document.getElementById('addToCart');
 var basket = document.getElementById('basketImage');
 var basketContents;
 
 var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
-var searchBar = document.getElementById('Search');
+var POSTSENDBar = document.getElementById('Search');
 
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
@@ -56,13 +62,13 @@ if (quantityUp != null){
     quantityDown.addEventListener('click', quantityAdjust);
 }
 
-if (searchBar != null){
-    searchBar.addEventListener('keypress', searchProducts);
+if (POSTSENDBar != null){
+    POSTSENDBar.addEventListener('keypress', POSTSENDProducts);
 }
 
-if (searchProductType != null){
-    searchProductType.forEach(element => {
-        addEventListener('click', searchProducts);
+if (POSTSENDProductType != null){
+    POSTSENDProductType.forEach(element => {
+        addEventListener('click', POSTSENDProducts);
     })
 }
 
@@ -74,12 +80,12 @@ if(selector != null){
 
 if (payeeButton != null){
         payeeButton.forEach(element => {
-            element.addEventListener('click', searchPayee);
+            element.addEventListener('click', POSTSENDPayee);
         });
 }
 
 if (payeeInput != null){
-    payeeInput.addEventListener('keypress', searchPayee);
+    payeeInput.addEventListener('keypress', POSTSENDPayee);
 }
 
 if (payButton != null){
@@ -111,13 +117,24 @@ if (localStorage.getItem('basketContents') != null)
 
 if (basket != null){
     basket.addEventListener('click', basketClick);
-
 }
 
 if (addToCart != null)
     {
         addToCart.addEventListener('click', addToCartClick);
     }
+
+if (supplierButton != null){
+    supplierButton.forEach(element => {
+        element.addEventListener('click', supplierDetails);
+    });
+}
+
+if (addSupplierButton != null){
+    addSupplierButton.forEach(element => {
+        element.addEventListener('click', addSupplier);
+    });
+}
 
 //Functions of the event listeners
 
@@ -248,7 +265,7 @@ function basketLoad()
 }
 
 //This function is used to send the post request to the server.
-function search(data, page){
+function POSTSEND(data, page){
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', page, true);
     xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -269,23 +286,23 @@ function search(data, page){
 //This function restricts the products to be shown on index to be only one of the types of product.
 function refineElements(element){
     let data = element.srcElement.innerText;
-    search("ProductSearch=" + encodeURIComponent(data), "index.php");
+    POSTSEND("ProductSearch=" + encodeURIComponent(data), "index.php");
 }
 
 
-//This function is used to search for products on the index page.
-function searchProducts(element){
+//This function is used to POSTSEND for products on the index page.
+function POSTSENDProducts(element){
     if(element.currentTarget.id == 'Search'){
         element.currentTarget.onkeypress = (element) => {
             if (element.key == 'Enter'){
-                search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
+                POSTSEND("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
             }
         }
     }
 }
 
-//This function is used to search for a payee on the payroll page.
-function searchPayee(element){
+//This function is used to POSTSEND for a payee on the payroll page.
+function POSTSENDPayee(element){
     if(element.currentTarget.id == 'payeeInput'){
         element.currentTarget.onkeypress = (element) => {
             if (element.key == 'Enter'){
@@ -296,18 +313,32 @@ function searchPayee(element){
     else{
         var data = document.getElementById("payeeInput").value;
     }
-    search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
+    POSTSEND("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
 }
 
 //This function is used to pay a staff member on the payroll page.
 function payStaff(element){
-    search("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+    POSTSEND("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
 
 function payeeDetails(element){
-    search("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+    POSTSEND("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
 
 function resetSearchFields(element){
-    search("reset=1", "index.php");
+    POSTSEND("reset=1", "index.php");
+}
+
+function supplierDetails(element){
+    POSTSEND("supplierDetails="+encodeURIComponent(element.currentTarget.id), "suppliers.php");
+}
+
+function addSupplier(element){
+    var newSupplier = [];
+    newSupplier.push(document.getElementById('addNewSupplierName').value);
+    newSupplier.push(document.getElementById('addNewSupplierType').value);
+    newSupplier.push(document.getElementById('addNewSupplierEmail').value);
+    newSupplier.push(document.getElementById('addNewSupplierAddress').value);
+    console.log(newSupplier);
+    POSTSEND("addSupplier="+encodeURIComponent(newSupplier), "addNewSupplier.php");
 }
