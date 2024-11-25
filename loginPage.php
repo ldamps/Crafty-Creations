@@ -45,7 +45,35 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
             $isLoggedIn = true;
             $role = "customer";
-        } 
+            $viewSQL = "DROP VIEW IF EXISTS CustomerView;
+                Create OR REPLACE View CustomerView
+                AS 
+                SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
+                o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, 
+                p.CardNumber, p.CVV, p.ExpiryDate, 
+                a.City, a.HouseNumber, a.Postcode, a.StreetName,
+                r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
+                From Customer c  
+                LEFT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID
+                LEFT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
+                LEFT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
+                LEFT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
+                WHERE CustomerID = :userID
+                UNION
+                SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
+                o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, 
+                p.CardNumber, p.CVV, p.ExpiryDate, 
+                a.City, a.HouseNumber, a.Postcode, a.StreetName,
+                r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
+                From Customer c 
+                RIGHT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID 
+                RIGHT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
+                RIGHT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
+                RIGHT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
+                WHERE CustomerID = :userID";  
+            $stmtCustomerView = $mysql->prepare($viewSQL);
+            $stmtCustomerView->execute(["userID" => $db_id]);
+        }   
     } 
 
     // employee table
@@ -77,8 +105,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
     if ($isLoggedIn) {
         $_SESSION["LoggedIn"] = $role; // storing role in session
         setcookie("ID", $db_id, time() + (7200), "=/"); // 2-hour cookie
-        header("Location: index.php"); // main page, nav changing dynamically
-        exit();
+        //header("Location: index.php"); // main page, nav changing dynamically
+        //exit();
     } else {
         echo "Invalid email or password. Please try again.";
     }
