@@ -20,21 +20,6 @@ if ($role === "customer") {
 
     $customerInfo = $stmtPersonal->fetchAll(PDO::FETCH_ASSOC);
 
-    /*$queryAddress = "SELECT * FROM CustomerAddress WHERE Customer_CustomerID = :userID";
-    $stmtAddress = $mysql->prepare($queryAddress);
-    $stmtAddress->execute([':userID' => $userID]);
-    $addressInfos = $stmtAddress->fetchAll(PDO::FETCH_ASSOC);
-
-    $queryPayment = "SELECT * FROM PaymentMethods WHERE Customer_CustomerID = :userID";
-    $stmtPayment = $mysql->prepare($queryPayment);
-    $stmtPayment->execute([':userID' => $userID]);
-    $paymentInfos = $stmtPayment->fetchAll(PDO::FETCH_ASSOC);
-
-    $queryOrders = "SELECT * FROM OnlineOrder WHERE Customer_CustomerID = :userID";
-    $stmtOrders = $mysql->prepare($queryOrders);
-    $stmtOrders->execute([':userID' => $userID]);
-    $orders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC);*/
-
 }else {
     echo "else";
     $queryPersonal = "SELECT * FROM Employee WHERE EmployeeID = :userID";
