@@ -1,43 +1,12 @@
-<?php
-session_start();
-
-// check if there is a success message in the session
-if (isset($_SESSION['message_success'])):
-?>
-
-<!-- success modal -->
-<div id="successModal" class="modal" style="display: block;">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Success</h2>
-        <p><?= htmlspecialchars($_SESSION['message_success']) ?></p>
-    </div>
-</div>
-
-<?php 
-    // stops it showing on page reload
-    unset($_SESSION['message_success']);
-endif;
-?>
-
-<script>
-    function closeModal() {
-        document.getElementById('successModal').style.display = 'none';
-    }
-
-    // if there is a success message, display it when loading the page
-    <?php if (isset($_SESSION['message_success'])): ?>
-        document.getElementById('successModal').style.display = 'block';
-    <?php endif; ?>
-</script>
+<?php include('navBar.php'); ?>
 
 
 <?php
 require 'db.php';  
 
-$message = "";  // variable to store the feedback message
+//$message = "";  // variable to store the feedback message
 
-echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'NOT SET') . "<br>";
+//echo "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'NOT SET') . "<br>";
 
 // if form was submitted
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -49,19 +18,24 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
     //echo "Email entered: $email<br>";
     //echo "Password entered: $password<br>";
     
+    $isLoggedIn = false;
+    $role = "";
+    $db_id = "";
+
     // prep SQL statement preventing SQL injection
-    $stmt = $mysql->prepare("SELECT Password FROM Customer WHERE EmailAddress = :email");
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
+    $stmtCustomer = $mysql->prepare("SELECT Password, CustomerID FROM Customer WHERE EmailAddress = :email");
+    $stmtCustomer->bindParam(':email', $email);
+    $stmtCustomer->execute();
     
     //DEBUG
     //echo "Rows found: " . $stmt->rowCount() . "<br>";
 
     //if email exists in database
-    if ($stmt->rowCount() == 1) {
+    if ($stmtCustomer->rowCount() == 1) {
         // fetch hashed password from database
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmtCustomer->fetch(PDO::FETCH_ASSOC);
         $db_password = $row['Password'];
+        $db_id = $row['CustomerID'];
 
         // DEBUG
         //echo "Fetched password from DB: $db_password<br>";
@@ -69,25 +43,69 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         
         // verifying entered password with hashed pass
         if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
-            $message = "Login successful. Welcome!";
-            // redirect to protected page or user dashboard here
-        } else {
-            $message = "Invalid password. Please try again.";
-        }
-    } else {
-        $message = "No account found with that email.";
 
-        // DEBUG
-        $errorInfo = $stmt->errorInfo();
-        echo "SQLSTATE Error Code: " . $errorInfo[0] . "<br>";
-        echo "Driver-specific Error Code: " . $errorInfo[1] . "<br>";
-        echo "Driver-specific Error Message: " . $errorInfo[2] . "<br>";
+            $isLoggedIn = true;
+            $role = "customer";
+
+            //$message = "Login successful. Welcome!";
+            //$_SESSION["LoggedIn"] = "customer";
+
+            // create a cookie of the users name and ID
+            //$cookie_name = "ID";
+            //$cookie_value = $db_id;
+            // set log in valid for 2 hours
+            //setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
+            //echo $_COOKIE["ID"];
+            // reload and go back to home page
+            //header("Refresh:0; url=index.php");
+
+            
+            // redirect to protected page or user dashboard here
+        } 
+    } 
+
+    // employee table
+    if (!$isLoggedIn) { 
+        $stmtEmployee = $mysql->prepare("SELECT Password, Role, EmployeeID FROM Employee WHERE EmailAddress = :email"); 
+        $stmtEmployee->bindParam(':email', $email);
+        $stmtEmployee->execute();
+
+        if ($stmtEmployee->rowCount() === 1) {
+            $row = $stmtEmployee->fetch(PDO::FETCH_ASSOC);
+            $db_password = $row['Password'];
+            $role = $row['Role'];
+            $db_id = $row['EmployeeID'];
+        
+            // debug 
+            echo "Employee found: Role = $role, ID = $db_id<br>";
+        
+            if (password_verify($password, $db_password)) {
+                $isLoggedIn = true;
+                echo "Password verified for employee.<br>"; 
+            } 
+        } 
         
     }
+
+    
+    if ($isLoggedIn) {
+        $_SESSION["LoggedIn"] = $role; // storing role in session
+        setcookie("ID", $db_id, time() + (7200), "=/"); // 2-hour cookie
+        header("Location: index.php"); // main page, nav changing dynamically
+        exit();
+    } else {
+        echo "Invalid email or password. Please try again.";
+    }
+
+    //php -S localhost:8000
+    //http://localhost:8000/loginPage.php
+
+    
 }
 
 include 'loginPage.html';
 include 'footer.html';
 ?>
+
 
 

@@ -1,33 +1,44 @@
 <?php
 
 include 'db.php';
+include 'navBar.php';
 
-//$customerID = $_SESSION['CustomerID']; // for when the user is logged in and their CustomerID is stored in session
-$customerID = 1;   // hardcoded the CustomerID for now
 
-// personal information
-$queryPersonal = "SELECT * FROM Customer WHERE CustomerID = :customerID";
-$stmtPersonal = $mysql->prepare($queryPersonal);
-$stmtPersonal->execute([':customerID' => $customerID]);
-$personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
 
-//  address
-$queryAddress = "SELECT * FROM CustomerAddress WHERE Customer_CustomerID = :customerID";
-$stmtAddress = $mysql->prepare($queryAddress);
-$stmtAddress->execute([':customerID' => $customerID]);
-$addressInfo = $stmtAddress->fetch(PDO::FETCH_ASSOC);
+$role = $_SESSION["LoggedIn"];
+$userID = $_COOKIE["ID"];
 
-// payment methods
-$queryPayment = "SELECT * FROM PaymentMethods WHERE Customer_CustomerID = :customerID";
-$stmtPayment = $mysql->prepare($queryPayment);
-$stmtPayment->execute([':customerID' => $customerID]);
-$paymentInfo = $stmtPayment->fetch(PDO::FETCH_ASSOC);
+if ($role === "customer") {
+    // === Queries for Customer ===
+    $queryPersonal = "SELECT * FROM Customer WHERE CustomerID = :userID";
+    $stmtPersonal = $mysql->prepare($queryPersonal);
+    $stmtPersonal->execute([':userID' => $userID]);
+    $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
 
-// order history
-$queryOrders = "SELECT * FROM OnlineOrder WHERE Customer_CustomerID = :customerID";
-$stmtOrders = $mysql->prepare($queryOrders);
-$stmtOrders->execute([':customerID' => $customerID]);
-$orders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC);
+    $queryAddress = "SELECT * FROM CustomerAddress WHERE Customer_CustomerID = :userID";
+    $stmtAddress = $mysql->prepare($queryAddress);
+    $stmtAddress->execute([':userID' => $userID]);
+    $addressInfos = $stmtAddress->fetchAll(PDO::FETCH_ASSOC);
+
+    $queryPayment = "SELECT * FROM PaymentMethods WHERE Customer_CustomerID = :userID";
+    $stmtPayment = $mysql->prepare($queryPayment);
+    $stmtPayment->execute([':userID' => $userID]);
+    $paymentInfos = $stmtPayment->fetchAll(PDO::FETCH_ASSOC);
+
+    $queryOrders = "SELECT * FROM OnlineOrder WHERE Customer_CustomerID = :userID";
+    $stmtOrders = $mysql->prepare($queryOrders);
+    $stmtOrders->execute([':userID' => $userID]);
+    $orders = $stmtOrders->fetchAll(PDO::FETCH_ASSOC);
+
+}else {
+    $queryPersonal = "SELECT * FROM Employee WHERE EmployeeID = :userID";
+    $stmtPersonal = $mysql->prepare($queryPersonal);
+    $stmtPersonal->execute([':userID' => $userID]);
+    $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -113,71 +124,56 @@ tr:nth-child(even) {
     <title>My Account</title>
 </head>
 <body>
-<nav class="topnav">
-        <a class="company" href="index.php">Crafty Creations</a>
-        <ul>
-            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
-        </ul>
-    </nav>
-    <nav class="selection">
-        <input type="text" placeholder="Search..">
-
-        <div class="yarn button">
-            <button class="dropbtn">Yarn
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="yarn-selection">
-                <a href="#">Show All</a>
-                <a href="#">Acrylic Yarn</a>
-            </div>
-        </div>
-
-        <div class="fabric button">
-            <button class="dropbtn">Fabric
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="fabric-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-
-        <div class="paint button">
-            <button class="dropbtn">Paint
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="paint-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-    </nav>
     <div class="container">
         <h1>Account Details</h1>
         
         <!-- personal information -->
         <div class="section">
-            <h2>Personal Information</h2>
-            <p><strong>Name:</strong> <?php echo $personalInfo['Title'] . ' ' . $personalInfo['FirstName'] . ' ' . $personalInfo['LastName']; ?></p>
-            <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
-            <p><strong>Phone:</strong> <?php echo $personalInfo['PhoneNumber']; ?></p>
+        <h2>Personal Information</h2>
+            <?php if ($role === "customer"): ?> 
+                <p><strong>Name:</strong> <?php echo $personalInfo['Title'] . ' ' . $personalInfo['FirstName'] . ' ' . $personalInfo['LastName']; ?></p>
+                <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
+                <p><strong>Phone:</strong> <?php echo $personalInfo['PhoneNumber']; ?></p>
+            <?php else: ?> 
+                <p><strong>Name:</strong> <?php echo $personalInfo['FirstName'] . ' ' . $personalInfo['Surname']; ?></p>
+                <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
+                <p><strong>Role:</strong> <?php echo $personalInfo['Role']; ?></p>
+                <p><strong>Hours Worked:</strong> <?php echo $personalInfo['hoursWorked']; ?></p>
+            <?php endif; ?>
         </div>
 
         <!-- address -->
+        <?php if ($role === "customer"): ?>
         <div class="section">
             <h2>Address</h2>
-            <p><strong>Street:</strong> <?php echo $addressInfo['HouseNumber'] . ' ' . $addressInfo['StreetName']; ?></p>
-            <p><strong>City:</strong> <?php echo $addressInfo['City']; ?></p>
-            <p><strong>Postcode:</strong> <?php echo $addressInfo['Postcode']; ?></p>
+            <?php if (count($addressInfos) == 0): ?>
+                <p>No addresses saved.</p>
+            <?php endif; ?>
+            <?php foreach ($addressInfos as $address): ?>
+                <p><strong>Street:</strong> <?php echo $address['HouseNumber'] . ' ' . $address['StreetName']; ?></p>
+                <p><strong>City:</strong> <?php echo $address['City']; ?></p>
+                <p><strong>Postcode:</strong> <?php echo $address['Postcode']; ?></p>
+            <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
         <!-- payment method - only diplays last 4 digits of card-->
+        <?php if ($role === "customer"): ?>
         <div class="section">
-            <h2>Payment Method</h2>
-            <p><strong>Card Number:</strong> **** **** **** <?php echo substr($paymentInfo['CardNumber'], -4); ?></p>
-            <p><strong>Expiry Date:</strong> <?php echo $paymentInfo['ExpiryDate']; ?></p>
-            <p><strong>CVV:</strong> ***</p> 
+            <h2>Payment Methods</h2>
+            <?php if (count($paymentInfos) == 0): ?>
+                <p>No payment methods saved.</p>
+            <?php endif; ?>
+            <?php foreach ($paymentInfos as $payment): ?>
+                <p><strong>Card Number:</strong> **** **** **** <?php echo substr($payment['CardNumber'], -4); ?></p>
+                <p><strong>Expiry Date:</strong> <?php echo $payment['ExpiryDate']; ?></p>
+                <p><strong>CVV:</strong> ***</p>
+            <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
         <!-- order history -->
+        <?php if ($role === "customer"): ?>
         <div class="section">
             <h2>Order History</h2>
             <table class="order-history">
@@ -201,6 +197,7 @@ tr:nth-child(even) {
                 </tbody>
             </table>
         </div>
+        <?php endif; ?>
     </div>
 </body>
 </html>
