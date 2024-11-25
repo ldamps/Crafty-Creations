@@ -1,3 +1,6 @@
+<?php include('navBar.php'); ?>
+
+
 <?php
 
 session_start();
@@ -78,10 +81,10 @@ if (isset($_POST['submit'])) {
     $stmt->execute();
 
      // store the success message 
-    $_SESSION['message'] = "Account created successfully";
+    $_SESSION['message_success'] = "Account created successfully";
 
     // prevent resubmission
-     header("Location: loginPage.html"); //redirect to the login page
+     header("Location: loginPage.php"); //redirect to the login page
     exit(); 
     }
 }
@@ -90,23 +93,31 @@ include 'createAccount.html';
 
 ?>
 
+<!-- modal for error messages-->
 <?php if (isset($_SESSION['errors'])): ?>
-    <div style="color: red;">
-        <ul>
-            <?php foreach ($_SESSION['errors'] as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
+    <div id="errorModal" class="modal" style="display: block;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Error</h2>
+            <ul>
+                <?php foreach ($_SESSION['errors'] as $error): ?>
+                    <li><?= htmlspecialchars($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
     </div>
-    <?php unset($_SESSION['errors']); 
-    ?>
+    <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
 
-<?php
-if (isset($_SESSION['message'])) {
-    echo "<p style='color: green;'>" . htmlspecialchars($_SESSION['message']) . "</p>";
-    unset($_SESSION['message']); //clear after displaying
-}
+<script>
+    function closeModal() {
+        document.getElementById('errorModal').style.display = 'none';
+    }
 
-include 'footer.html';
-?>
+    // If errors are set, show error modal on page load
+    <?php if (isset($_SESSION['errors'])): ?>
+        document.getElementById('errorModal').style.display = 'block';
+    <?php endif; ?>
+</script>
+
+<?php include 'footer.html'; ?>

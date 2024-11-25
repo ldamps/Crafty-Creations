@@ -1,3 +1,6 @@
+
+<?php include('navBar.php'); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,12 +81,6 @@
     </style>
 </head>
 <body>
-    <nav class="topnav">
-        <a class="company" href="index.php">Crafty Creations</a>
-        <ul>
-            <a id='logInText' class="button" href="loginPage.php">log in | sign up</a>
-        </ul>
-    </nav>
     <br>
     <h1>About Crafty Creations</h1>
     <br>
@@ -105,6 +102,8 @@
             <li><a href="#">Fabric</a></li>
             <li><a href="#">Yarn</a></li>
             <li><a href="termsConditions.html">Terms and Conditions</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+
         </div>
         <div class="column Contact">
             <h2>Contact Us</h2>
