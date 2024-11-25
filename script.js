@@ -1,15 +1,54 @@
+
+//try and get all elemnts from the page. Some elements exist on different pages.
 var p = document.getElementsByClassName('product');
-let product = Array.from(p);
+let product = Array.from(p); 
 var b = document.getElementsByClassName('button');
 let button = Array.from(b);
+var s = document.getElementsByClassName('Selector');
+let selector = Array.from(s);
+var PS = document.getElementsByClassName('ProductSearch');
+let searchProductType = Array.from(PS);
+var pb = document.getElementsByClassName('payeeSearchButton');
+let payeeButton = Array.from(pb);
+var payB = document.getElementsByClassName('payButton');
+let payButton = Array.from(payB);
+var detailsB = document.getElementsByClassName('detailsButton');
+let detailsButton = Array.from(detailsB);
+
+var addToCart = document.getElementById('addToCart');
+if (addToCart != null)
+{
+    addToCart.addEventListener('click', addToCartClick);
+}
+
+var basket = document.getElementById('basketImage');
+var basketContents;
+if (localStorage.getItem('basketContents') != null)
+{
+    console.log('found');
+    basketContents = JSON.parse(localStorage.getItem('basketContents'));
+}
+else
+{
+    console.log('not found');
+    basketContents = [];
+}
+
+basket.addEventListener('click', basketClick);
 
 
+var resetSearch = document.getElementById('resetButton');
+var payeeInput = document.getElementById('payeeInput');
+var searchBar = document.getElementById('Search');
 
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
-if (product != null)
-{
+
+
+//Therefore, we need to check if the element exists before adding an event listener to it. Which is what the following if statements do.
+
+if (product != null){
     product.forEach(element => {
         // creating unique image for each product
         // IDs are set from 0, and product IDs from 1, which is why there is a +1
@@ -22,8 +61,7 @@ if (product != null)
     });
 }
 
-if (button != null)
-{
+if (button != null){
     button.forEach(element => {
         element.addEventListener('click', buttonOnClick);
         element.addEventListener('mouseleave', buttonMouseOut);
@@ -31,12 +69,57 @@ if (button != null)
     })
 }
 
-if (quantityUp != null)
-{
+if (quantityUp != null){
     quantityUp.addEventListener('click', quantityAdjust);
     quantityDown.addEventListener('click', quantityAdjust);
 }
 
+if (searchBar != null){
+    searchBar.addEventListener('keypress', searchProducts);
+}
+
+if (searchProductType != null){
+    searchProductType.forEach(element => {
+        addEventListener('click', searchProducts);
+    })
+}
+
+if(selector != null){
+    selector.forEach(element => {
+        element.addEventListener('click', refineElements);
+    })
+}
+
+if (payeeButton != null){
+        payeeButton.forEach(element => {
+            element.addEventListener('click', searchPayee);
+        });
+}
+
+if (payeeInput != null){
+    payeeInput.addEventListener('keypress', searchPayee);
+}
+
+if (payButton != null){
+    payButton.forEach(element => {
+        element.addEventListener('click', payStaff);
+    });
+}
+
+if (detailsButton != null){
+    detailsButton.forEach(element => {
+        element.addEventListener('click', payeeDetails);
+    });
+}
+
+if (resetSearch != null){
+    resetSearch.addEventListener('click', resetSearchFields);
+}
+
+
+//Functions of the event listeners
+
+//When clicking on a product, the product is highlighted and the user is redirected to the product page.
 function productOnClick(element)
 {
     ID = Number(element.currentTarget.id)+Number(1);
@@ -49,6 +132,7 @@ function productOnClick(element)
     };
 }
 
+//When clicking on a button, the button is animated to show that it has been clicked.
 function buttonOnClick(element)
 {
     let button = element.currentTarget;
@@ -58,13 +142,17 @@ function buttonOnClick(element)
         await new Promise(r => setTimeout(r, 40));
         button.classList.remove('buttonClickDown');
         button.classList.add('buttonClickUp');
-        button.style.backgroundImage = "url('rainbowTexture1.png')";
+        if (!button.classList.contains('blank'))
+        {
+            button.style.backgroundImage = "url('rainbowTexture1.png')";
+        }
         button.onanimationend = () => {
             button.classList.remove('buttonClickUp');
         }
     }
 }
 
+//When the mouse leaves the button, the button is animated to show that the mouse has left.
 function buttonMouseOut(element)
 {
     let button = element.currentTarget;
@@ -76,13 +164,18 @@ function buttonMouseOut(element)
     }
 }
 
+//When the mouse enters the button, the button is animated to show that the mouse has entered.
 function buttonMouseEnter(element)
 {
     let button = element.currentTarget;
-    button.style.backgroundImage = "url('rainbowTexture1.png')";
+    if (!button.classList.contains('blank'))
+        {
+            button.style.backgroundImage = "url('rainbowTexture1.png')";
+        }
     clearButtonListeners(button);
 }
 
+//This function removes all the classes from the button that are used for the animations.
 function clearButtonListeners(button)
 {
     button.classList.remove('buttonReturn');
@@ -91,10 +184,12 @@ function clearButtonListeners(button)
     button.classList.remove('buttonMouseOut');
 }
 
+//This function adjusts the quantity of the product to be purchased.
 function quantityAdjust(element)
 {
     let quantityButton = element.currentTarget;
     let quantityText = document.getElementById('quantityText');
+    console.log(quantityText);
     let quantity = Number(quantityText.innerHTML);
     if (quantityButton.id == 'quantityUp')
     {
@@ -104,4 +199,113 @@ function quantityAdjust(element)
     {
         quantityText.innerHTML = quantity - 1;
     }
+}
+
+
+function basketClick(element)
+{
+    let url = "basket.html?" + basketContents[0];
+
+    for (let i = 1; i < basketContents.length; i++)
+    {
+        url = url + ":" + basketContents[i];
+    }
+    location.replace(url);
+    window.onload(basketLoad());
+}
+
+function updateBasketContents(productId)
+{
+    basketContents.push(productId);
+    localStorage.setItem('basketContents', JSON.stringify(basketContents));
+}
+
+function addToCartClick()
+{
+    let url = window.location.href;
+    let splitUrl = url.split('?');
+    let productId = splitUrl[1];
+
+    updateBasketContents(productId);
+
+    console.log(basketContents);
+}
+
+function basketLoad()
+{
+    let basketContentsBox = document.getElementById('basketContentsBox');
+    if (basketContents == [])
+    {
+        let h1 = document.createElement('h1');
+        h1.innerHTML = 'looks like your basket is empty...'
+        basketContentsBox.appendChild(h1);
+    }
+    else {
+        
+    }
+}
+
+//This function is used to send the post request to the server.
+function search(data, page){
+    const xhhtp = new XMLHttpRequest();
+    xhhtp.open('POST', page, true);
+    xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // xhhtp.onreadystatechange = function () {
+    //     if (xhhtp.readyState === XMLHttpRequest.DONE) {
+    //         console.log(xhhtp.status);
+    //         if (xhhtp.status === 200) {
+    //             console.log(xhhtp.responseText);
+    //         }
+    //         else {
+    //             console.log(xhhtp.status);
+    //         }
+    //     }
+    // }
+    xhhtp.send(data);
+}
+
+//This function restricts the products to be shown on index to be only one of the types of product.
+function refineElements(element){
+    let data = element.srcElement.innerText;
+    search("ProductSearch=" + encodeURIComponent(data), "index.php");
+}
+
+
+//This function is used to search for products on the index page.
+function searchProducts(element){
+    if(element.currentTarget.id == 'Search'){
+        element.currentTarget.onkeypress = (element) => {
+            if (element.key == 'Enter'){
+                search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
+            }
+        }
+    }
+}
+
+//This function is used to search for a payee on the payroll page.
+function searchPayee(element){
+    if(element.currentTarget.id == 'payeeInput'){
+        element.currentTarget.onkeypress = (element) => {
+            if (element.key == 'Enter'){
+                var data = element.currentTarget.value;
+            }
+        }
+    }
+    else{
+        var data = document.getElementById("payeeInput").value;
+    }
+    search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
+}
+
+//This function is used to pay a staff member on the payroll page.
+function payStaff(element){
+    search("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+}
+
+function payeeDetails(element){
+    search("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+}
+
+function resetSearchFields(element){
+    search("reset=1", "index.php");
 }
