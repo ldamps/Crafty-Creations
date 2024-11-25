@@ -15,9 +15,32 @@ let payButton = Array.from(payB);
 var detailsB = document.getElementsByClassName('detailsButton');
 let detailsButton = Array.from(detailsB);
 
+var addToCart = document.getElementById('addToCart');
+if (addToCart != null)
+{
+    addToCart.addEventListener('click', addToCartClick);
+}
+
+var basket = document.getElementById('basketImage');
+var basketContents;
+if (localStorage.getItem('basketContents') != null)
+{
+    console.log('found');
+    basketContents = JSON.parse(localStorage.getItem('basketContents'));
+}
+else
+{
+    console.log('not found');
+    basketContents = [];
+}
+
+basket.addEventListener('click', basketClick);
+
+
 var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
 var searchBar = document.getElementById('Search');
+
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
@@ -119,7 +142,10 @@ function buttonOnClick(element)
         await new Promise(r => setTimeout(r, 40));
         button.classList.remove('buttonClickDown');
         button.classList.add('buttonClickUp');
-        button.style.backgroundImage = "url('rainbowTexture1.png')";
+        if (!button.classList.contains('blank'))
+        {
+            button.style.backgroundImage = "url('rainbowTexture1.png')";
+        }
         button.onanimationend = () => {
             button.classList.remove('buttonClickUp');
         }
@@ -142,7 +168,10 @@ function buttonMouseOut(element)
 function buttonMouseEnter(element)
 {
     let button = element.currentTarget;
-    button.style.backgroundImage = "url('rainbowTexture1.png')";
+    if (!button.classList.contains('blank'))
+        {
+            button.style.backgroundImage = "url('rainbowTexture1.png')";
+        }
     clearButtonListeners(button);
 }
 
@@ -171,6 +200,49 @@ function quantityAdjust(element)
         quantityText.innerHTML = quantity - 1;
     }
 }
+
+
+function basketClick(element)
+{
+    let url = "basket.html?" + basketContents[0];
+
+    for (let i = 1; i < basketContents.length; i++)
+    {
+        url = url + ":" + basketContents[i];
+    }
+    location.replace(url);
+    window.onload(basketLoad());
+}
+
+function updateBasketContents(productId)
+{
+    basketContents.push(productId);
+    localStorage.setItem('basketContents', JSON.stringify(basketContents));
+}
+
+function addToCartClick()
+{
+    let url = window.location.href;
+    let splitUrl = url.split('?');
+    let productId = splitUrl[1];
+
+    updateBasketContents(productId);
+
+    console.log(basketContents);
+}
+
+function basketLoad()
+{
+    let basketContentsBox = document.getElementById('basketContentsBox');
+    if (basketContents == [])
+    {
+        let h1 = document.createElement('h1');
+        h1.innerHTML = 'looks like your basket is empty...'
+        basketContentsBox.appendChild(h1);
+    }
+    else {
+        
+    }
 
 //This function is used to send the post request to the server.
 function search(data, page){
