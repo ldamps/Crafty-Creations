@@ -16,26 +16,8 @@ var detailsB = document.getElementsByClassName('detailsButton');
 let detailsButton = Array.from(detailsB);
 
 var addToCart = document.getElementById('addToCart');
-if (addToCart != null)
-{
-    addToCart.addEventListener('click', addToCartClick);
-}
-
 var basket = document.getElementById('basketImage');
 var basketContents;
-if (localStorage.getItem('basketContents') != null)
-{
-    console.log('found');
-    basketContents = JSON.parse(localStorage.getItem('basketContents'));
-}
-else
-{
-    console.log('not found');
-    basketContents = [];
-}
-
-basket.addEventListener('click', basketClick);
-
 
 var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
@@ -116,6 +98,26 @@ if (resetSearch != null){
     resetSearch.addEventListener('click', resetSearchFields);
 }
 
+if (localStorage.getItem('basketContents') != null)
+    {
+        console.log('found');
+        basketContents = JSON.parse(localStorage.getItem('basketContents'));
+    }
+    else
+    {
+        console.log('not found');
+        basketContents = [];
+    }
+
+if (basket != null){
+    basket.addEventListener('click', basketClick);
+
+}
+
+if (addToCart != null)
+    {
+        addToCart.addEventListener('click', addToCartClick);
+    }
 
 //Functions of the event listeners
 
@@ -243,6 +245,7 @@ function basketLoad()
     else {
         
     }
+}
 
 //This function is used to send the post request to the server.
 function search(data, page){
