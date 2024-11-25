@@ -22,9 +22,11 @@ if ($role === "customer") {
     $stmtPersonal = $mysql->prepare($queryPersonal);
     $stmtPersonal->execute();
     // fetch one row to get personal inf0
-    $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+    //$personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
 
     $customerInfo = $stmtPersonal->fetchAll(PDO::FETCH_ASSOC);
+    //echo "size: " . sizeof($personalInfo) ."";
+    echo "size: " . sizeof($customerInfo) ."";
 
 }else {
     echo "else";
@@ -129,14 +131,14 @@ tr:nth-child(even) {
         <h2>Personal Information</h2>
             <?php if (isset($_SESSION["LoggedIn"])):
              if ($role === "customer"): ?> 
-                <p><strong>Name:</strong> <?php echo $personalInfo['Title'] . ' ' . $personalInfo['FirstName'] . ' ' . $personalInfo['LastName']; ?></p>
-                <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
-                <p><strong>Phone:</strong> <?php echo $personalInfo['PhoneNumber']; ?></p>
+                <p><strong>Name:</strong> <?php echo $customerInfo[0]['Title'] . ' ' . $customerInfo[0]['FirstName'] . ' ' . $customerInfo[0]['LastName']; ?></p>
+                <p><strong>Email:</strong> <?php echo $customerInfo[0]['EmailAddress']; ?></p>
+                <p><strong>Phone:</strong> <?php echo $customerInfo[0]['PhoneNumber']; ?></p>
             <?php else: ?> 
-                <p><strong>Name:</strong> <?php echo $personalInfo['FirstName'] . ' ' . $personalInfo['Surname']; ?></p>
-                <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
-                <p><strong>Role:</strong> <?php echo $personalInfo['Role']; ?></p>
-                <p><strong>Hours Worked:</strong> <?php echo $personalInfo['hoursWorked']; ?></p>
+                <p><strong>Name:</strong> <?php echo $customerInfo[0]['FirstName'] . ' ' . $customerInfo[0]['Surname']; ?></p>
+                <p><strong>Email:</strong> <?php echo $customerInfo[0]['EmailAddress']; ?></p>
+                <p><strong>Role:</strong> <?php echo $customerInfo[0]['Role']; ?></p>
+                <p><strong>Hours Worked:</strong> <?php echo $customerInfo[0]['hoursWorked']; ?></p>
             <?php endif; 
             endif; ?>
 
@@ -146,7 +148,7 @@ tr:nth-child(even) {
         <?php if ($role === "customer"): ?>
         <div class="section">
             <h2>Address</h2>
-            <?php if (count($customerInfo) == 0): ?>
+            <?php if (sizeof($customerInfo) == 0): ?>
                 <p>No addresses saved.</p>
             <?php endif; ?>
             <?php foreach ($customerInfo as $address): ?>
