@@ -162,33 +162,6 @@ tr:nth-child(even) {
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
-
-        <!-- order history -->
-        <?php if ($role === "customer"): ?>
-        <div class="section">
-            <h2>Order History</h2>
-            <table class="order-history">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Tracking Number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($customerInfo as $order): ?>
-                        <tr>
-                            <td><?php echo $order['OrderID']; ?></td>
-                            <td><?php echo '$' . number_format($order['Price'], 2); ?></td>
-                            <td><?php echo $order['OrderStatus']; ?></td>
-                            <td><?php echo $order['TrackingNo']; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <?php endif; ?>
     </div>
 </body>
 </html>
