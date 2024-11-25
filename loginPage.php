@@ -48,6 +48,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             $role = "customer";
 
             //$message = "Login successful. Welcome!";
+            
+            // if customer
+            $cookie_name = "CustomerID";
+            $cookie_value = $db_id;
+            // set log in valid for 2 hours
+            setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
             //$_SESSION["LoggedIn"] = "customer";
 
             // create a cookie of the users name and ID
@@ -55,11 +61,38 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             //$cookie_value = $db_id;
             // set log in valid for 2 hours
             //setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
+
             //echo $_COOKIE["ID"];
             // reload and go back to home page
             //header("Refresh:0; url=index.php");
 
-            
+            // setting up different logins for different kinds of staff once we have that working
+            // if shop employee
+            /* $cookie_name = "ShopEmployeeID";
+            $cookie_value = $db_id;
+            // set log in valid for 2 hours
+            setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
+            //echo $_COOKIE["ID"];
+            // reload and go back to home page
+            header("Refresh:0; url=index.php");*/
+
+            // if store manager
+            /* $cookie_name = "ManagerID";
+            $cookie_value = $db_id;
+            // set log in valid for 2 hours
+            setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
+            //echo $_COOKIE["ID"];
+            // reload and go back to home page
+            header("Refresh:0; url=index.php");*/
+
+            // if office emloyee
+            /* $cookie_name = "OfficeEmployeeID";
+            $cookie_value = $db_id;
+            // set log in valid for 2 hours
+            setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
+            //echo $_COOKIE["ID"];
+            // reload and go back to home page
+            header("Refresh:0; url=index.php");*/
             // redirect to protected page or user dashboard here
         } 
     } 
