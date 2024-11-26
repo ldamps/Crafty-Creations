@@ -7,16 +7,30 @@ $role = $_SESSION["LoggedIn"];
 $userID = $_COOKIE["ID"];
 
     // === Queries for Shop Employee
-    $queryAllOrders = "SELECT * FROM ShopEmployeeView";
-    $stmtShopOrders = $mysql->prepare($queryAllOrders);
+    // select all online orders
+    $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ShopEmployeeView";
+    $stmtOnlineOrders = $mysql->prepare($queryOnlineOrders);
+    $stmtOnlineOrders->execute();
+    $onlineOrders = $stmtOnlineOrders->fetchAll(PDO::FETCH_ASSOC);
+
+    // get all online returns
+    $queryOnlineReturns = "SELECT DISTINCT OnlineReturnID, Reason, AmountToReturn, Customer_CustomerID FROM ShopEmployeeView";
+    $stmtOnlineReturns = $mysql->prepare($queryOnlineReturns);
+    $stmtOnlineReturns->execute();
+    $OnlineReturns = $stmtOnlineReturns->fetchAll(PDO::FETCH_ASSOC);
+
+    // get all shop returns
+    $queryShopReturns = "SELECT DISTINCT ShopReturnID, shopReason, ShopAmountToReturn, ShopReturnCustomer FROM ShopEmployeeView";
+    $stmtShopReturns = $mysql->prepare($queryShopReturns);
+    $stmtShopReturns->execute();
+    $ShopReturns = $stmtShopReturns->fetchAll(PDO::FETCH_ASSOC);
+
+    // shop orders
+    $queryShopOrders = "SELECT DISTINCT PurchaseID, shopPrice, PurchaseDate, shopCustomer, SID FROM ShopEmployeeView";
+    $stmtShopOrders = $mysql->prepare($queryShopOrders);
     $stmtShopOrders->execute();
-
-    // fetch all rows for the customer's order history
-    $shopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
-
-    // get all products from the online orders
-
-
+    $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
+ 
     //handle returns here
     // check if the form was submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID'])) {
@@ -123,11 +137,12 @@ tr:nth-child(even) {
         <!-- order history -->
         <?php if ($role === "Shop Assistant"): ?>
         <div class="section">
-            <h2>Online Orders</h2>
+            <br><h2>Online Orders</h2>
             <table class="order-history">
                 <thead>
                     <tr>
                         <th>Order ID</th>
+                        <th>Customer Information</th>
                         <th>Price</th>
                         <th>Status</th>
                         <th>Tracking Number</th>
@@ -137,9 +152,35 @@ tr:nth-child(even) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($shopOrders as $order): ?>
+                    <?php foreach ($onlineOrders as $order): ?>
                         <tr>
                             <td><?php echo $order['OrderID']; ?></td>
+                            <td>
+                                <?php 
+                                    $queryCustomer = "SELECT DISTINCT CustomerName, CustomerLastName,CID FROM ShopEmployeeView WHERE CID = :ID";
+                                    $stmtCustomer = $mysql->prepare($queryCustomer);
+                                    $stmtCustomer->execute(["ID" => $order['customerID']]);
+
+                                    // fetch customer information
+                                    $customer = $stmtCustomer->fetch(PDO::FETCH_ASSOC);
+                                ?>
+                            <table class="order-history">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Surname</th>
+                                            <th>ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td><?php echo $customer["CustomerName"] ?></td>
+                                    <td><?php echo $customer["CustomerLastName"] ?></td>
+                                    <td><?php echo $order['customerID'] ?></td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </td>
                             <td><?php echo '£' . number_format($order['Price'], 2); ?></td>
                             <td><?php echo $order['OrderStatus']; ?></td>
                             <td><?php echo $order['TrackingNo']; ?></td>
@@ -182,6 +223,176 @@ tr:nth-child(even) {
                                     N/A
                                 <?php endif; ?>
                             </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <br><h2>Online Returns</h2>
+            <table class="order-history">
+                <thead>
+                    <tr>
+                        <th>Return ID</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Customer Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($OnlineReturns as $order): ?>
+                        <tr>
+                            <td><?php echo $order['OnlineReturnID']; ?></td>
+                            <td><?php echo '£' . number_format($order['AmountToReturn'], 2); ?></td>
+                            <td><?php echo $order['Reason']; ?></td>
+                            <td><?php 
+                                    $queryCustomer = "SELECT DISTINCT CustomerName, CustomerLastName,CID FROM ShopEmployeeView WHERE CID = :ID";
+                                    $stmtCustomer = $mysql->prepare($queryCustomer);
+                                    $stmtCustomer->execute(["ID" => $order['Customer_CustomerID']]);
+
+                                    // fetch customer information
+                                    $customer = $stmtCustomer->fetch(PDO::FETCH_ASSOC);?>
+                                    <table class="order-history">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Surname</th>
+                                            <th>ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td><?php echo $customer["CustomerName"] ?></td>
+                                    <td><?php echo $customer["CustomerLastName"] ?></td>
+                                    <td><?php echo $order['Customer_CustomerID'] ?></td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <!--Shop Purchases-->
+            <br><h2>Shop Purchases</h2>
+            <table class="order-history">
+                <thead>
+                    <tr>
+                        <th>Purchase ID</th>
+                        <th>Customer Information</th>
+                        <th>Price</th>
+                        <th>Purchse Date</th>
+                        <th>Products</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($ShopOrders as $order): ?>
+                        <tr>
+                            <td><?php echo $order['PurchaseID']; ?></td>
+                            <td>
+                                <?php 
+                                    $queryCustomer = "SELECT DISTINCT CustomerName, CustomerLastName,CID FROM ShopEmployeeView WHERE CID = :ID";
+                                    $stmtCustomer = $mysql->prepare($queryCustomer);
+                                    $stmtCustomer->execute(["ID" => $order['shopCustomer']]);
+
+                                    // fetch customer information
+                                    $customer = $stmtCustomer->fetch(PDO::FETCH_ASSOC);
+                                ?>
+                            <table class="order-history">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Surname</th>
+                                            <th>ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td><?php echo $customer["CustomerName"] ?></td>
+                                    <td><?php echo $customer["CustomerLastName"] ?></td>
+                                    <td><?php echo $order['shopCustomer'] ?></td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </td>
+                            <td><?php echo '£' . number_format($order['shopPrice'], 2); ?></td>
+                            <td><?php echo $order['PurchaseDate']; ?></td>
+                            <td><?php 
+                                // get all products in the order
+                                $productQuery = $mysql->prepare('CALL GetProductsInShopPurchase(:ID)');
+                                $productQuery->bindParam(':ID', $order['PurchaseID'], PDO::PARAM_INT);
+                                $productQuery->execute();
+                                $products = $productQuery->fetchAll(PDO::FETCH_ASSOC);
+                                $productQuery->closeCursor();
+                                if ($productQuery->rowCount() > 0):?>
+                                
+                                <table class="order-history">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                <?php foreach ($products as $product):?>
+                                    <tr>
+                                    <td><?php echo $product["ProductName"] ?></td>
+                                    <td><?php echo $product["Price"] ?></td>
+                                    <td><?php echo $product["Quantity"] ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                                </table>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+
+            <!-- Shop Returns --->
+            <br><h2>Shop Returns</h2>
+            <table class="order-history">
+                <thead>
+                    <tr>
+                        <th>Return ID</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Customer Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($ShopReturns as $order): ?>
+                        <tr>
+                            <td><?php echo $order['ShopReturnID']; ?></td>
+                            <td><?php echo '£' . number_format($order['ShopAmountToReturn'], 2); ?></td>
+                            <td><?php echo $order['shopReason']; ?></td>
+                            <td><?php 
+                                    $queryCustomer = "SELECT DISTINCT CustomerName, CustomerLastName,CID FROM ShopEmployeeView WHERE CID = :ID";
+                                    $stmtCustomer = $mysql->prepare($queryCustomer);
+                                    $stmtCustomer->execute(["ID" => $order['ShopReturnCustomer']]);
+
+                                    // fetch customer information
+                                    $customer = $stmtCustomer->fetch(PDO::FETCH_ASSOC);?>
+                                    <table class="order-history">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Surname</th>
+                                            <th>ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                    <td><?php echo $customer["CustomerName"] ?></td>
+                                    <td><?php echo $customer["CustomerLastName"] ?></td>
+                                    <td><?php echo $order['ShopReturnCustomer'] ?></td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
