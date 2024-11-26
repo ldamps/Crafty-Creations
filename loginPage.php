@@ -96,6 +96,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             if (password_verify($password, $db_password)) {
                 $isLoggedIn = true;
                 echo "Password verified for employee.<br>"; 
+                $_SESSION["EmployeeID"] = $db_id; 
+
             } 
         } 
         
