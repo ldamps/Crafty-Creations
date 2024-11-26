@@ -7,7 +7,7 @@ p.CardNumber, p.CVV, p.ExpiryDate,
 ca.City, ca.HouseNumber, ca.Postcode, ca.StreetName,
 r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
 From Customer c 
-LEFT JOIN (SELECT DISTINCT Postcode, City, HouseNumber, StreetName, Customer_CustomerID FROM CustomerAddress) ca ON c.CustomerID = ca.Customer_CustomerID 
+LEFT JOIN CustomerAddress ca ON c.CustomerID = ca.Customer_CustomerID 
 LEFT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID
 LEFT JOIN CustomerAddress a ON c.CustomerID = ca.Customer_CustomerID
 LEFT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
