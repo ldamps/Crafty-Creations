@@ -339,6 +339,10 @@ function addSupplier(element){
     newSupplier.push(document.getElementById('addNewSupplierType').value);
     newSupplier.push(document.getElementById('addNewSupplierEmail').value);
     newSupplier.push(document.getElementById('addNewSupplierAddress').value);
+    if(newSupplier.includes('')){
+        alert('Please fill in all fields');
+        return;
+    }
     console.log(newSupplier);
     POSTSEND("addSupplier="+encodeURIComponent(newSupplier), "addNewSupplier.php");
 }
