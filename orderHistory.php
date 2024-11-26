@@ -3,6 +3,7 @@
 include 'db.php';
 include 'navBar.php';
 
+if (isset($_SESSION['LoggedIn'])):
 $role = $_SESSION["LoggedIn"];
 $userID = $_COOKIE["ID"];
 
@@ -188,3 +189,7 @@ tr:nth-child(even) {
     </div>
 </body>
 </html>
+<?php else:
+    header("Refresh:0; url=index.php");
+
+endif; ?>

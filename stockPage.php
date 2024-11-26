@@ -2,7 +2,7 @@
 include 'db.php';
 include 'navBar.php';
 
-
+if (isset($_SESSION['LoggedIn'])):
 if (isset($_SESSION['EmployeeID'])) {
     $employeeID = $_SESSION['EmployeeID'];
 
@@ -192,3 +192,7 @@ if (isset($_SESSION['EmployeeID'])) {
     </div>
 </body>
 </html>
+<?php else:
+    header("Refresh:0; url=index.php");
+
+endif; ?>
