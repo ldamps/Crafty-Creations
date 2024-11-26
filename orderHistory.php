@@ -6,6 +6,7 @@ include 'navBar.php';
 $role = $_SESSION["LoggedIn"];
 $userID = $_COOKIE["ID"];
 
+
     // === Queries for Customer ===
     // the ID happens in the view creation, so the view here will only have things relating to their ID
     $queryCustomerInfo = "SELECT * FROM CustomerView WHERE CustomerID = :userID";
@@ -15,25 +16,48 @@ $userID = $_COOKIE["ID"];
     // fetch all rows for the customer's order history
     $customerInfo = $stmtCustomer->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
-
     //handle returns here
     // check if the form was submitted
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID'])) {
-    $orderID = $_POST['orderID'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID']) && isset($_POST['reason'])) {
+        $orderID = $_POST['orderID'];
+        $reason = $_POST['reason'];
 
-    // prepare the sql query 
-    $queryUpdateStatus = "UPDATE OnlineOrder SET OrderStatus = 'Returned' WHERE OrderID = :orderID AND OrderStatus = 'Delivered'";
-    $stmtUpdate = $mysql->prepare($queryUpdateStatus);
-
-    $stmtUpdate->execute([':orderID' => $orderID]);
-    // check if any rows were updated
+        $queryUpdateStatus = "UPDATE OnlineOrder SET OrderStatus = 'Returned' WHERE OrderID = :orderID AND OrderStatus = 'Delivered'";
+        $stmtUpdate = $mysql->prepare($queryUpdateStatus);
+        $stmtUpdate->execute([':orderID' => $orderID]);
+    
+        // if successfully updated, add an entry to the OnlineReturn table
     if ($stmtUpdate->rowCount() > 0) {
-        echo "<script>location.reload();</script>"; // reload page immediately to update table
-    } 
-}
+        // calculate the amount to return
+        $queryOrderDetails = "
+            SELECT Price, Customer_CustomerID, Shop_ShopID 
+            FROM OnlineOrder 
+            WHERE OrderID = :orderID";
+        $stmtOrderDetails = $mysql->prepare($queryOrderDetails);
+        $stmtOrderDetails->execute([':orderID' => $orderID]);
+        $orderDetails = $stmtOrderDetails->fetch(PDO::FETCH_ASSOC);
+
+        $amountToReturn = $orderDetails['Price'];
+        $customerID = $orderDetails['Customer_CustomerID'];
+        $shopID = $orderDetails['Shop_ShopID'];
+
+        // insert a row into the OnlineReturn table
+        $queryInsertReturn = "
+            INSERT INTO OnlineReturn (Reason, AmountToReturn, OnlineOrder_OrderID, Customer_CustomerID, Shop_ShopID) 
+            VALUES (:reason, :amountToReturn, :orderID, :customerID, :shopID)";
+        $stmtInsertReturn = $mysql->prepare($queryInsertReturn);
+        $stmtInsertReturn->execute([
+            ':reason' => $reason,
+            ':amountToReturn' => $amountToReturn,
+            ':orderID' => $orderID,
+            ':customerID' => $customerID,
+            ':shopID' => $shopID,
+        ]);
+    
+             
+            echo "<script>location.reload();</script>"; // reload page to see changes
+        }
+    }
 
 ?>
 
@@ -147,6 +171,8 @@ tr:nth-child(even) {
                                 <?php if (strtolower($order['OrderStatus']) === 'delivered'): ?>
                                     <form action="orderHistory.php" method="POST">
                                         <input type="hidden" name="orderID" value="<?php echo $order['OrderID']; ?>">
+                                        <label for="reason-<?php echo $order['OrderID']; ?>">Reason:</label>
+                                        <input type="text" id="reason-<?php echo $order['OrderID']; ?>" name="reason" required>
                                         <button type="submit" class="return-button">Return</button>
                                     </form>
                                 <?php else: ?>
