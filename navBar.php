@@ -36,7 +36,7 @@
                     echo "<a class='button' href='orderHistory.php'>My Orders</a>";
                     echo '<a class="button" href="basket.html" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
                 } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
-                    echo "<a class='button' href='#'>Employees</a>";
+                    echo "<a class='button' href='Employees.php'>Employees</a>";
                     echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
                     echo "<a class='button' href='orderHistory.php'>Order History</a>";
                     echo "<a class='button' href='supplierPage.php'>Supplier</a>";
