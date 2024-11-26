@@ -21,8 +21,7 @@ if ($role === "customer") {
     $queryPersonal = "SELECT * From CustomerView";
     $stmtPersonal = $mysql->prepare($queryPersonal);
     $stmtPersonal->execute();
-
-    $customerInfo = $stmtPersonal->fetchAll(PDO::FETCH_ASSOC);
+    $customerInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
 
     $queryNumPostCodes = "SELECT Distinct HouseNumber, Postcode, StreetName, City From CustomerView";
     $stmtPost = $mysql->prepare($queryNumPostCodes);
@@ -39,41 +38,10 @@ if ($role === "customer") {
 
 }else {
     echo "else";
-    $queryPersonal = "SELECT * FROM Employee WHERE EmployeeID = :userID";
+    $queryPersonal = "SELECT * FROM ShopEmployeeView";
     $stmtPersonal = $mysql->prepare($queryPersonal);
-    $stmtPersonal->execute([':userID' => $userID]);
+    $stmtPersonal->execute();
     $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
-
-    $query = "
-    SELECT 
-        e.FirstName AS EmployeeFirstName, 
-        e.Surname AS EmployeeSurname, 
-        e.Role, 
-        e.hoursWorked, 
-        s.StreetName, 
-        s.City, 
-        s.Postcode, 
-        s.NumEmployees, 
-        s.TotalSales, 
-        m.FirstName AS ManagerFirstName, 
-        m.Surname AS ManagerSurname
-    FROM Employee e
-    JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
-    JOIN Shop s ON se.Shop_ShopID = s.ShopID
-    LEFT JOIN Employee m ON m.EmployeeID = (
-        SELECT Employee_EmployeeID
-        FROM ShopEmployee
-        WHERE Shop_ShopID = s.ShopID
-        AND m.Role = 'Manager'
-        LIMIT 1
-    )
-    WHERE e.EmployeeID = :userID;
-";
-$stmt = $mysql->prepare($query);
-$stmt->execute([':userID' => $userID]);
-$employeeDetails = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
 }
 
 
@@ -170,9 +138,9 @@ tr:nth-child(even) {
         <h2>Personal Information</h2>
             <?php if (isset($_SESSION["LoggedIn"])):
              if ($role === "customer"): ?> 
-                <p><strong>Name:</strong> <?php echo $customerInfo[0]['Title'] . ' ' . $customerInfo[0]['FirstName'] . ' ' . $customerInfo[0]['LastName']; ?></p>
-                <p><strong>Email:</strong> <?php echo $customerInfo[0]['EmailAddress']; ?></p>
-                <p><strong>Phone:</strong> <?php echo $customerInfo[0]['PhoneNumber']; ?></p>
+                <p><strong>Name:</strong> <?php echo $customerInfo['Title'] . ' ' . $customerInfo['FirstName'] . ' ' . $customerInfo['LastName']; ?></p>
+                <p><strong>Email:</strong> <?php echo $customerInfo['EmailAddress']; ?></p>
+                <p><strong>Phone:</strong> <?php echo $customerInfo['PhoneNumber']; ?></p>
             <?php else: ?> 
                 <p><strong>Name:</strong> <?php echo $personalInfo['FirstName'] . ' ' . $personalInfo['Surname']; ?></p>
                 <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
@@ -186,11 +154,11 @@ tr:nth-child(even) {
         <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager" || $role === "Assistant Manager"): ?>
         <div class="section">
         <h2>Workplace Information</h2>
-        <?php if ($employeeDetails): ?>
-        <p><strong>Store Address:</strong> <?php echo $employeeDetails['StreetName'] . ', ' . $employeeDetails['City'] . ', ' . $employeeDetails['Postcode']; ?></p>
-        <p><strong>Number of Employees:</strong> <?php echo $employeeDetails['NumEmployees']; ?></p>
-        <p><strong>Total Sales:</strong> $<?php echo number_format($employeeDetails['TotalSales'], 2); ?></p>
-        <p><strong>Store Manager:</strong> <?php echo $employeeDetails['ManagerFirstName'] . ' ' . $employeeDetails['ManagerSurname']; ?></p>
+        <?php if ($personalInfo): ?>
+        <p><strong>Store Address:</strong> <?php echo $personalInfo['StreetName'] . ', ' . $personalInfo['City'] . ', ' . $personalInfo['Postcode']; ?></p>
+        <p><strong>Number of Employees:</strong> <?php echo $personalInfo['NumEmployees']; ?></p>
+        <p><strong>Total Sales:</strong> $<?php echo number_format($personalInfo['TotalSales'], 2); ?></p>
+        <p><strong>Store Manager:</strong> <?php echo $personalInfo['ManagerFirstName'] . ' ' . $personalInfo['ManagerSurname']; ?></p>
          <?php else: ?>
         <p>No workplace information available.</p>
         <?php endif; ?>

@@ -34,7 +34,7 @@
                 //role specific buttons
                 if ($role === "customer") { 
                     echo "<a class='button' href='orderHistory.php'>My Orders</a>";
-                    echo '<a class="button" href="basket.html" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
+                    echo    '<a class="button" href="basket.html" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
                 } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
                     echo "<a class='button' href='Employees.php'>Employees</a>";
                     echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
@@ -49,8 +49,8 @@
                     echo "<a class='button' href='#'>Suppliers</a>";
                     echo "<a class='button' href='https://github.com/ldamps/Crafty-Creations'>IT</a>";
                 } else { 
-                    echo "<a class='button' href='stock.php'>Stock Levels</a>";
-                    echo "<a class='button' href='orderHistory.php'>Order History</a>";
+                    echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
+                    echo "<a class='button' href='ShopOrderHistory.php'>Shop Order History</a>";
                 }
                 // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
                 echo "<form id='form' name='logoutForm' method='post'><input type='hidden' name='logout' value='true'></form>
