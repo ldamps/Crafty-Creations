@@ -19,6 +19,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
     //echo "Password entered: $password<br>";
     
     $isLoggedIn = false;
+    echo "$isLoggedIn";
     $role = "";
     $db_id = "";
 
@@ -40,36 +41,49 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         // DEBUG
         //echo "Fetched password from DB: $db_password<br>";
 
-        
         // verifying entered password with hashed pass
         if (password_verify($password, $db_password)) {  // used password_verify() cause hashing is used
-
             $isLoggedIn = true;
             $role = "customer";
-
-            //$message = "Login successful. Welcome!";
-            //$_SESSION["LoggedIn"] = "customer";
-
-            // create a cookie of the users name and ID
-            //$cookie_name = "ID";
-            //$cookie_value = $db_id;
-            // set log in valid for 2 hours
-            //setcookie($cookie_name, $cookie_value, time() + (7200), "=/");
-            //echo $_COOKIE["ID"];
-            // reload and go back to home page
-            //header("Refresh:0; url=index.php");
-
-            
-            // redirect to protected page or user dashboard here
-        } 
+            $viewSQL = "DROP VIEW IF EXISTS CustomerView;
+                Create OR REPLACE View CustomerView
+                AS 
+                SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
+                o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, 
+                p.CardNumber, p.CVV, p.ExpiryDate, 
+                a.City, a.HouseNumber, a.Postcode, a.StreetName,
+                r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
+                From Customer c  
+                LEFT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID
+                LEFT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
+                LEFT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
+                LEFT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
+                WHERE CustomerID = :userID
+                UNION
+                SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
+                o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, 
+                p.CardNumber, p.CVV, p.ExpiryDate, 
+                a.City, a.HouseNumber, a.Postcode, a.StreetName,
+                r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
+                From Customer c 
+                RIGHT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID 
+                RIGHT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
+                RIGHT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
+                RIGHT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
+                WHERE CustomerID = :userID";  
+            $stmtCustomerView = $mysql->prepare($viewSQL);
+            $stmtCustomerView->execute(["userID" => $db_id]);
+        }   
     } 
 
     // employee table
     if (!$isLoggedIn) { 
+        echo "checking employee table";
         $stmtEmployee = $mysql->prepare("SELECT Password, Role, EmployeeID FROM Employee WHERE EmailAddress = :email"); 
         $stmtEmployee->bindParam(':email', $email);
         $stmtEmployee->execute();
-
+        $numRows = $stmtEmployee->rowCount();
+        echo $numRows;
         if ($stmtEmployee->rowCount() === 1) {
             $row = $stmtEmployee->fetch(PDO::FETCH_ASSOC);
             $db_password = $row['Password'];
@@ -82,6 +96,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             if (password_verify($password, $db_password)) {
                 $isLoggedIn = true;
                 echo "Password verified for employee.<br>"; 
+                $_SESSION["EmployeeID"] = $db_id; 
+
             } 
         } 
         
