@@ -105,11 +105,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                     $stmtManager = $mysql->prepare($queryManager);
                     $stmtManager->bindParam(':employeeID', $employeeID, PDO::PARAM_INT);
                     $stmtManager->execute();
-                    $ManagerInfo = $stmtShopID->fetch();
+                    $ManagerInfo = $stmtManager->fetch();
                     $ManFirst = $ManagerInfo[0];
                     $ManLast = $ManagerInfo[1];
                     echo $ManFirst . $ManLast;
-                    $stmtShopID->closeCursor();
+                    $stmtManager->closeCursor();
 
 
                     $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView;
