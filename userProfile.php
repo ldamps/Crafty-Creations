@@ -21,12 +21,21 @@ if ($role === "customer") {
     $queryPersonal = "SELECT * From CustomerView";
     $stmtPersonal = $mysql->prepare($queryPersonal);
     $stmtPersonal->execute();
-    // fetch one row to get personal inf0
-    //$personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
 
     $customerInfo = $stmtPersonal->fetchAll(PDO::FETCH_ASSOC);
+
+    $queryNumPostCodes = "SELECT Distinct HouseNumber, Postcode, StreetName, City From CustomerView";
+    $stmtPost = $mysql->prepare($queryNumPostCodes);
+    $stmtPost->execute();
+    $addresses = $stmtPost->fetchAll(PDO::FETCH_ASSOC);
+
+    $queryPayment = "SELECT Distinct CardNumber, CVV, ExpiryDate From CustomerView";
+    $stmtPay = $mysql->prepare($queryPayment);
+    $stmtPay->execute();
+    $payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
+
     //echo "size: " . sizeof($personalInfo) ."";
-    echo "size: " . sizeof($customerInfo) ."";
+    //echo "size: " . sizeof($customerInfo) ."";
 
 }else {
     echo "else";
@@ -192,14 +201,15 @@ tr:nth-child(even) {
         <?php if ($role === "customer"): ?>
         <div class="section">
             <h2>Address</h2>
-            <?php if (sizeof($customerInfo) == 0): ?>
+            <?php if (sizeof($addresses) == 0): ?>
                 <p>No addresses saved.</p>
-            <?php endif; ?>
-            <?php foreach ($customerInfo as $address): ?>
-                <p><strong>Street:</strong> <?php echo $address['HouseNumber'] . ' ' . $address['StreetName']; ?></p>
-                <p><strong>City:</strong> <?php echo $address['City']; ?></p>
-                <p><strong>Postcode:</strong> <?php echo $address['Postcode']; ?></p>
-            <?php endforeach; ?>
+            <?php endif; $i = 0;?>
+            <?php foreach ($addresses as $address): ?>
+                    <p><strong>Street:</strong> <?php echo $address['HouseNumber'] . ' ' . $address['StreetName']; ?></p>
+                    <p><strong>City:</strong> <?php echo $address['City']; ?></p>
+                    <p><strong>Postcode:</strong> <?php echo $address['Postcode']; ?></p>
+                    <br>
+                <?php endforeach; ?>
         </div>
         <?php endif; ?>
   
@@ -207,13 +217,15 @@ tr:nth-child(even) {
         <?php if ($role === "customer"): ?>
         <div class="section">
             <h2>Payment Methods</h2>
-            <?php if (count($customerInfo) == 0): ?>
+            <?php if (count($payments) == 0): ?>
                 <p>No payment methods saved.</p>
             <?php endif; ?>
-            <?php foreach ($customerInfo as $payment): ?>
+            <?php foreach ($payments as $payment): ?>
+                
                 <p><strong>Card Number:</strong> **** **** **** <?php echo substr($payment['CardNumber'], -4); ?></p>
                 <p><strong>Expiry Date:</strong> <?php echo $payment['ExpiryDate']; ?></p>
                 <p><strong>CVV:</strong> ***</p>
+                <br>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
