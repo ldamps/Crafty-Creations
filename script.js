@@ -146,7 +146,7 @@ function productOnClick(element)
     element.currentTarget.style.boxShadow = '-4px -4px #000000';
     element.currentTarget.onanimationend = (element) => {
         element.currentTarget.classList.remove('productClick');
-        location.replace("product.html?" + ID);
+        location.replace("product.php?ID=" + ID);
         element.currentTarget.style.boxShadow = '';
     };
 }
