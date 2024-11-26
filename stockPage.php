@@ -1,26 +1,88 @@
 <?php
 include 'db.php';
-include 'navBar.php'; 
+include 'navBar.php';
 
-// getting low stock products
-$queryLowStock = "SELECT 
-    Product.ProductName,
-    ProductAvailability.Availability
-FROM Product
-INNER JOIN ProductAvailability ON Product.ProductID = ProductAvailability.Product_ProductID
-WHERE ProductAvailability.Availability < 5"; //threshold for low stock
-$stmtLowStock = $mysql->prepare($queryLowStock);
-$stmtLowStock->execute();
-$lowStockData = $stmtLowStock->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_SESSION['EmployeeID'])) {
+    $employeeID = $_SESSION['EmployeeID'];
+
+    // fetching shop ID where employee works
+    $queryShopID = "SELECT Shop_ShopID
+                    FROM ShopEmployee
+                    WHERE Employee_EmployeeID = :employeeID";
+    $stmtShopID = $mysql->prepare($queryShopID);
+    $stmtShopID->bindParam(':employeeID', $employeeID, PDO::PARAM_INT);
+    $stmtShopID->execute();
+    $shopID = $stmtShopID->fetchColumn();
+
+
+    if ($shopID) {
+        //detailed stock info
+        $queryStock = "SELECT P.ProductID, P.ProductName, P.Type, P.Brand, P.Supplier, PA.Availability
+                       FROM Product P
+                       INNER JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
+                       WHERE PA.Shop_ShopID = :shopID";
+        $stmtStock = $mysql->prepare($queryStock);
+        $stmtStock->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+        $stmtStock->execute();
+        $stockData = $stmtStock->fetchAll(PDO::FETCH_ASSOC);
+
+
+        // handling stock order request
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderProductID'])) {
+            $orderProductID = $_POST['orderProductID'];
+            $orderQuantity = $_POST['orderQuantity'];
+
+            // inserting new supply order
+            $queryOrder = "INSERT INTO SupplyOrder (ProductType, Supplier_SupplierID, ShopID)
+                           VALUES ((SELECT Type FROM Product WHERE ProductID = :productID),
+                                   (SELECT SupplierID FROM Supplier WHERE Name = (SELECT Supplier FROM Product WHERE ProductID = :productID)),
+                                   :shopID)";
+            $stmtOrder = $mysql->prepare($queryOrder);
+            $stmtOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
+            $stmtOrder->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+            $stmtOrder->execute();
+
+
+            $supplyOrderID = $mysql->lastInsertId();
+
+            // linking product to supply order
+            $queryProductOrder = "INSERT INTO Product_has_SupplyOrder (Product_ProductID, SupplyOrder_SupplyOrderID)
+                                  VALUES (:productID, :supplyOrderID)";
+            $stmtProductOrder = $mysql->prepare($queryProductOrder);
+            $stmtProductOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
+            $stmtProductOrder->bindParam(':supplyOrderID', $supplyOrderID, PDO::PARAM_INT);
+            $stmtProductOrder->execute();
+
+            
+            //updating product availability
+            $queryUpdateAvailability = "UPDATE ProductAvailability
+                                        SET Availability = Availability + :orderQuantity
+                                        WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID";
+            $stmtUpdateAvailability = $mysql->prepare($queryUpdateAvailability);
+            $stmtUpdateAvailability->bindParam(':orderQuantity', $orderQuantity, PDO::PARAM_INT);
+            $stmtUpdateAvailability->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
+            $stmtUpdateAvailability->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+            $stmtUpdateAvailability->execute();
+
+
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+    } else {
+        echo "Shop information not found for the logged-in employee.";
+    }
+} else {
+    echo "Employee ID is not set in the session.";
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <title>Manager Dashboard</title>
 
     <style>
 
@@ -32,8 +94,8 @@ $lowStockData = $stmtLowStock->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .container {
-            width: 80%;
-            max-width: 1200px;
+            width: 85%;
+            max-width: 1400px;
             margin: 20px auto;
             padding: 20px;
             background-color: white;
@@ -75,45 +137,60 @@ $lowStockData = $stmtLowStock->fetchAll(PDO::FETCH_ASSOC);
 
 
     </style>
-    
-</head>
 
+</head>
 <body>
 
+
     <div class="container">
-    <h1>Stock Levels <span>Dashboard</span></h1>
+        <h1>Stock Dashboard</h1>
 
-    <br></br>
+        <!-- Stock Information Section -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Type</th>
+                    <th>Brand</th>
+                    <th>Supplier</th>
+                    <th>Availability</th>
+                    <th>Order More</th>
+                </tr>
+            </thead>
+            <tbody>
 
-
-
-
-
-        <!-- low stock section -->
-        <div class="section">
-            <h2>Low Stock Items</h2>
-            <table>
-                <thead>
-                    <tr>
-                    
-                        <th>Product Name</th>
-                        <th>Quantity In Stock</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($lowStockData as $stock): ?>
+                <?php if (!empty($stockData)): ?>
+                    <?php foreach ($stockData as $stock): ?>
                         <tr>
-                            <td><?php echo $stock['ProductName']; ?></td>
-                            <td><?php echo $stock['Availability']; ?></td>
+                            <td><?php echo htmlspecialchars($stock['ProductID']); ?></td>
+                            <td><?php echo htmlspecialchars($stock['ProductName']); ?></td>
+                            <td><?php echo htmlspecialchars($stock['Type']); ?></td>
+                            <td><?php echo htmlspecialchars($stock['Brand']); ?></td>
+                            <td><?php echo htmlspecialchars($stock['Supplier']); ?></td>
+                            <td><?php echo htmlspecialchars($stock['Availability']); ?></td>
+                            <td>
+
+                                <form class="order-form" method="post" action="">
+                                    <input type="hidden" name="orderProductID" value="<?php echo htmlspecialchars($stock['ProductID']); ?>">
+                                    <input type="number" name="orderQuantity" min="1" value="1" required>
+                                    <button type="submit">Order</button>
+                                </form>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
-                </tbody>
-            </table>
 
 
-        </div>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7">No stock information available.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+
+
+
     </div>
-
-
 </body>
 </html>
