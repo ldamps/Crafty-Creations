@@ -37,10 +37,10 @@
                     echo '<a class="button" href="basket.html" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
                 } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
                     echo "<a class='button' href='#'>Employees</a>";
-                    echo "<a class='button' href='stock.php'>Stock Levels</a>";
+                    echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
                     echo "<a class='button' href='orderHistory.php'>Order History</a>";
-                    echo "<a class='button' href='#'>Supplier</a>";
-                    echo "<a class='button' href='#'>Sales</a>";
+                    echo "<a class='button' href='supplierPage.php'>Supplier</a>";
+                    echo "<a class='button' href='salesPage.php'>Sales</a>";
                 } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
                     echo "<a class='button' href='systemStatus.php'>System Status</a>";
                     echo "<a class='button' href='#'>Employee Details</a>";
