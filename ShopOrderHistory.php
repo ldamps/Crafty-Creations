@@ -214,6 +214,9 @@ tr:nth-child(even) {
                                 <?php endif; ?>
                             </td>
                             <td>
+                            <?php echo $order["OrderDate"] ?>
+                            </td>
+                            <td>
                                 <?php if (strtolower($order['OrderStatus']) === 'delivered'): ?>
                                     <form action="orderHistory.php" method="POST">
                                         <input type="hidden" name="orderID" value="<?php echo $order['OrderID']; ?>">
