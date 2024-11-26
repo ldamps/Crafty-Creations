@@ -16,6 +16,19 @@ $stmtSuppliers = $mysql->prepare($querySuppliers);
 $stmtSuppliers->execute();
 $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
 
+// getting supplier details
+$querySupplierDetails = "SELECT 
+    Supplier.SupplierID,
+    Supplier.Name,
+    Supplier.ProductTypeSupplied,
+    Supplier.Address,
+    Supplier.Email
+FROM Supplier";
+$stmtSupplierDetails = $mysql->prepare($querySupplierDetails);
+$stmtSupplierDetails->execute();
+$supplierDetails = $stmtSupplierDetails->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +40,6 @@ $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
     <title>Supplier Dashboard</title>
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -49,7 +61,6 @@ $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
             width: 100%;
             margin-top: 20px;
             border-collapse: collapse;
-            padding: 0 15px; 
         }
 
         th, td {
@@ -72,27 +83,30 @@ $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
             background-color: #fff;
         }
 
+        .scrollable-table {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
         .section {
             margin-bottom: 30px;
         }
-
-
-
     </style>
-    
 </head>
-
 <body>
 
-    <div class="container">
+<div class="container">
     <h1>Supplier <span>Dashboard</span></h1>
 
-    <br></br>
+    <br><br>
 
-
-        <!-- supplier information section -->
-        <div class="section">
-            <h2>Supplier Information</h2>
+    <!-- Supplier Orders Section -->
+    <div class="section">
+        <h2>Supplier Orders</h2>
+        <br></br>
+        <div class="scrollable-table">
             <table>
                 <thead>
                     <tr>
@@ -114,12 +128,39 @@ $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
                 </tbody>
             </table>
         </div>
-
-
-
-        </div>
     </div>
 
+    <!-- Supplier Details Section -->
+    <div class="section">
+        <h2>Supplier Details</h2>
+        <br></br>
+
+        <div class="scrollable-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Supplier ID</th>
+                        <th>Supplier Name</th>
+                        <th>Product Type Supplied</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($supplierDetails as $supplier): ?>
+                        <tr>
+                            <td><?php echo $supplier['SupplierID']; ?></td>
+                            <td><?php echo $supplier['Name']; ?></td>
+                            <td><?php echo $supplier['ProductTypeSupplied']; ?></td>
+                            <td><?php echo $supplier['Address']; ?></td>
+                            <td><?php echo $supplier['Email']; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
