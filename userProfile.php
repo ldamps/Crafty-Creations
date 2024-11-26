@@ -39,41 +39,10 @@ if ($role === "customer") {
 
 }else {
     echo "else";
-    $queryPersonal = "SELECT * FROM Employee WHERE EmployeeID = :userID";
+    $queryPersonal = "SELECT * FROM ShopEmployeeView";
     $stmtPersonal = $mysql->prepare($queryPersonal);
-    $stmtPersonal->execute([':userID' => $userID]);
-    $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
-
-    $query = "
-    SELECT 
-        e.FirstName AS EmployeeFirstName, 
-        e.Surname AS EmployeeSurname, 
-        e.Role, 
-        e.hoursWorked, 
-        s.StreetName, 
-        s.City, 
-        s.Postcode, 
-        s.NumEmployees, 
-        s.TotalSales, 
-        m.FirstName AS ManagerFirstName, 
-        m.Surname AS ManagerSurname
-    FROM Employee e
-    JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
-    JOIN Shop s ON se.Shop_ShopID = s.ShopID
-    LEFT JOIN Employee m ON m.EmployeeID = (
-        SELECT Employee_EmployeeID
-        FROM ShopEmployee
-        WHERE Shop_ShopID = s.ShopID
-        AND m.Role = 'Manager'
-        LIMIT 1
-    )
-    WHERE e.EmployeeID = :userID;
-";
-$stmt = $mysql->prepare($query);
-$stmt->execute([':userID' => $userID]);
-$employeeDetails = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
+    $stmtPersonal->execute();
+    $personalInfo = $stmtPersonal->fetchAll(PDO::FETCH_ASSOC);
 }
 
 
@@ -174,10 +143,10 @@ tr:nth-child(even) {
                 <p><strong>Email:</strong> <?php echo $customerInfo[0]['EmailAddress']; ?></p>
                 <p><strong>Phone:</strong> <?php echo $customerInfo[0]['PhoneNumber']; ?></p>
             <?php else: ?> 
-                <p><strong>Name:</strong> <?php echo $personalInfo['FirstName'] . ' ' . $personalInfo['Surname']; ?></p>
-                <p><strong>Email:</strong> <?php echo $personalInfo['EmailAddress']; ?></p>
+                <p><strong>Name:</strong> <?php echo $personalInfo[0]['FirstName'] . ' ' . $personalInfo[0]['Surname']; ?></p>
+                <p><strong>Email:</strong> <?php echo $personalInfo[0]['EmailAddress']; ?></p>
                 <p><strong>Role:</strong> <?php echo ucfirst($role); ?></p>
-                <p><strong>Hours Worked:</strong> <?php echo $personalInfo['hoursWorked']; ?></p>
+                <p><strong>Hours Worked:</strong> <?php echo $personalInfo[0]['hoursWorked']; ?></p>
             <?php endif; 
             endif; ?>
 
@@ -186,11 +155,11 @@ tr:nth-child(even) {
         <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager" || $role === "Assistant Manager"): ?>
         <div class="section">
         <h2>Workplace Information</h2>
-        <?php if ($employeeDetails): ?>
-        <p><strong>Store Address:</strong> <?php echo $employeeDetails['StreetName'] . ', ' . $employeeDetails['City'] . ', ' . $employeeDetails['Postcode']; ?></p>
-        <p><strong>Number of Employees:</strong> <?php echo $employeeDetails['NumEmployees']; ?></p>
-        <p><strong>Total Sales:</strong> $<?php echo number_format($employeeDetails['TotalSales'], 2); ?></p>
-        <p><strong>Store Manager:</strong> <?php echo $employeeDetails['ManagerFirstName'] . ' ' . $employeeDetails['ManagerSurname']; ?></p>
+        <?php if ($personalInfo): ?>
+        <p><strong>Store Address:</strong> <?php echo $personalInfo[0]['StreetName'] . ', ' . $personalInfo[0]['City'] . ', ' . $personalInfo[0]['Postcode']; ?></p>
+        <p><strong>Number of Employees:</strong> <?php echo $personalInfo[0]['NumEmployees']; ?></p>
+        <p><strong>Total Sales:</strong> $<?php echo number_format($personalInfo[0]['TotalSales'], 2); ?></p>
+        <p><strong>Store Manager:</strong> <?php echo $personalInfo[0]['ManagerFirstName'] . ' ' . $personalInfo[0]['ManagerSurname']; ?></p>
          <?php else: ?>
         <p>No workplace information available.</p>
         <?php endif; ?>
