@@ -7,25 +7,23 @@ if (isset($_SESSION['EmployeeID'])) {
     $employeeID = $_SESSION['EmployeeID'];
 
     // fetching shop ID where employee works
-    $queryShopID = "SELECT Shop_ShopID
-                    FROM ShopEmployee
-                    WHERE Employee_EmployeeID = :employeeID";
+    // use stored procedure to get shop worked at
+    $queryShopID = "CALL GetShopWorkedAt(:employeeID)";
     $stmtShopID = $mysql->prepare($queryShopID);
     $stmtShopID->bindParam(':employeeID', $employeeID, PDO::PARAM_INT);
     $stmtShopID->execute();
     $shopID = $stmtShopID->fetchColumn();
-
-
+    $stmtShopID->closeCursor();
+    
+    
+    // if shop ID exiss
     if ($shopID) {
         //detailed stock info
-        $queryStock = "SELECT P.ProductID, P.ProductName, P.Type, P.Brand, P.Supplier, PA.Availability
-                       FROM Product P
-                       INNER JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
-                       WHERE PA.Shop_ShopID = :shopID";
+        $queryStock = "SELECT * FROM ShopStockView";
         $stmtStock = $mysql->prepare($queryStock);
-        $stmtStock->bindParam(':shopID', $shopID, PDO::PARAM_INT);
         $stmtStock->execute();
         $stockData = $stmtStock->fetchAll(PDO::FETCH_ASSOC);
+        $stmtStock->closeCursor();
 
 
         // handling stock order request
