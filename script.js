@@ -538,6 +538,7 @@ function setTotal()
     {
         total = '00.00';
     }
+    totalText.innerHTML = '£' + total;
 }
 
 //This function is used to send the post request to the server.
