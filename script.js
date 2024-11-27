@@ -208,16 +208,19 @@ function quantityAdjust(element)
 {
     let quantityButton = element.currentTarget;
     let quantityText = document.getElementById('quantityText');
+    let quantityInput = document.getElementById('quantityInput'); // hidden input field for quantity
     console.log(quantityText);
     let quantity = Number(quantityText.innerHTML);
-    if (quantityButton.id == 'quantityUp')
-    {
-        quantityText.innerHTML = quantity + 1;
+    
+    
+    if (quantityButton.id == 'quantityUp') {
+        quantity++; 
+    } else if (quantity > 1) {
+        quantity--; 
     }
-    else if (quantity > 1)
-    {
-        quantityText.innerHTML = quantity - 1;
-    }
+
+    quantityText.innerHTML = quantity; // update the text on the page
+    quantityInput.value = quantity;   // update the hidden input 
 }
 
 
