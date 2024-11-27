@@ -334,7 +334,7 @@ a {
     font-weight: 500;
 }
 
-#basketContentsBox, #checkoutBox {
+#basketContentsBox {
     width: 600px;
     min-height: 300px;
     border-style: solid;
@@ -364,8 +364,7 @@ a {
     border-radius: 10px;
     overflow: hidden;
     vertical-align: middle;
-    border-spacing: 0;
-    padding: 0;
+    border-spacing: 0px;
 }
 
 #basketTotalBox {
@@ -384,7 +383,6 @@ a {
 .basketItemInnerTable {
     display: table;
     vertical-align: middle;
-    border-spacing: 0;
 }
 
 .basketItemImageBox {
@@ -400,7 +398,14 @@ a {
     display: table-cell;
     vertical-align: middle;
     padding: 10px;
-    width: 280px;
+    width: 325px;
+}
+
+.basketQuantitySelector {
+    display: table;
+    vertical-align: middle;
+    margin-left: 15px;
+    margin-top: 12px;
 }
 
 .basketQuantity {
@@ -442,65 +447,26 @@ a {
     vertical-align: middle;
 }
 
-
 .basketItemPriceBox {
     border-style: solid;
     border-color: var(--secondary-color);
     border-radius: 10px;
     border-width: 1px;
-    height: 77px;
+    height: 75px;
     width: 130px;
     vertical-align: middle;
     padding-left: 15px;
     padding-top: 18px;
 }
 
-#buyNowBox, #checkoutButton {
+#buyNowBox {
     margin: auto;
     margin-top: 10px;
-    width: 185px;
+    width: 175px;
     height: 75px;
     text-align: center;
-    padding-top: 16px;
+    padding-top: 20px;
     border-radius: 10px;
-}
-
-#paymentOptionsBox, #addressOptionsBox {
-    display: table;
-    overflow: hidden;
-    width: 100%;
-}
-
-.paymentOption, .addressOption {
-    display: table-row;
-    height: 40px;
-}
-
-.paymentOptionAcc, .addressOptionName, .paymentOptionButton, .addressOptionButton {
-    display: table-cell;
-    vertical-align: middle;
-    border-bottom: solid;
-    border-color: var(--secondary-color);
-}
-
-.paymentOptionAcc, .addressOptionName {
-    width: 560px;
-}
-
-#checkoutButton {
-    width: 200px;
-    margin-bottom: 20px;
-}
-
-#orderCompleteBox {
-    text-align: center;
-    width: 400px;
-    margin: auto;
-    border-style: solid;
-    border-width: 3px;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 50px;
 }
 
 .buttonClickDown {
@@ -538,18 +504,7 @@ a {
     80%,
     100% {transform: translate3d(0, 0, 0);}
 }
-
-.slideUp {
-    animation-name: slideUp;
-    animation-duration: 1.2s;
-    animation-timing-function:cubic-bezier(0.455, 0.03, 0.515, 0.955);
-}
-
-@keyframes slideUp {
-    0% {transform: translateY(200%);}
-    75% {transform: translateY(-7%);}
-    100% {transform: translateY(0%);}
-}
+    
 
 /* modal style used from 
    https://www.w3schools.com/howto/howto_css_modals.asp
