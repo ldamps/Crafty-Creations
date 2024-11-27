@@ -348,16 +348,19 @@ a {
 
 .basketItemBox {
     display: table;
-    width: 580px;
+    width: 590px;
     height: 50px;
     vertical-align: middle;
+    border-collapse: separate;
     border-spacing: 5px;
+    margin-left: -4px;
+    margin-right: -10px;
 }
 
 .basketItem, #basketTotalBox {
     display: table-cell;
     height: 75px;
-    width: 450px;
+    width: 390px;
     border-style: solid;
     border-color: var(--secondary-color);
     border-width: 1px;
@@ -369,9 +372,9 @@ a {
 
 #basketTotalBox {
     height: 75px;
-    width: 570px;
-    transform: translateX(5px);
+    width: 590px;
     vertical-align: middle;
+    margin-right: 10px;
 }
 
 #basketTotal {

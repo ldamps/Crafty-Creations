@@ -263,7 +263,279 @@ function basketLoad()
         basketContentsBox.appendChild(h1);
     }
     else {
-        
+        //add contents of basket here, php is required though I think.
+        const quantities = new Map()
+        basketContents.forEach(element => {
+            if (quantities.has(element)) {
+                let quantity = quantities.get(element);
+                quantities.set(element, quantity += 1);
+            }
+            else
+            {
+                quantities.set(element, 1);
+            }
+        });
+        quantities.forEach (function(value, key) {
+            addBasketItemHtml(key, value)
+        })
+        addTotalHtml();
+        setTotal();
+        addBasketAnimations();
+        addBuyNowHtml();
+    }
+}
+
+async function addBasketAnimations() {
+    let basketItem = document.getElementsByClassName('basketItemBox');
+    let total = document.getElementById('basketTotalBox');
+
+    let basketItemArr = Array.from(basketItem);
+    let count = -1;
+
+    basketItemArr.forEach(async function(element) {
+        count++;
+        await new Promise(r => setTimeout(r, (100 * count)));
+        element.classList.add('slideUp');
+        element.onanimationend = () => {
+            element.classList.remove('slideUp');
+        }
+    });
+    await new Promise(r => setTimeout(r, (100 * count)));
+    total.classList.add('slideUp');
+    total.onanimationend = () => {
+        total.classList.remove('slideUp');
+    }
+}
+
+function addBasketItemHtml(id, quantity)
+{
+    let basketContentsBox = document.getElementById('basketContentsBox');
+
+    let basketItemBox = document.createElement('div');
+    basketItemBox.classList.add('basketItemBox');
+    basketItemBox.setAttribute('id', id);
+    basketContentsBox.appendChild(basketItemBox);
+
+    let basketItem = document.createElement('div');
+    basketItem.classList.add('basketItem');
+    basketItem.classList.add('button');
+    basketItemBox.appendChild(basketItem);
+
+    let basketItemInnerTable = document.createElement('div');
+    basketItemInnerTable.classList.add('basketItemInnerTable');
+    basketItem.appendChild(basketItemInnerTable);
+
+    let basketItemImageBox = document.createElement('div');
+    basketItemImageBox.classList.add('basketItemImageBox');
+    basketItemInnerTable.appendChild(basketItemImageBox);
+
+    let basketItemNameBox = document.createElement('div');
+    basketItemNameBox.classList.add('basketItemNameBox');
+    let basketItemName = document.createElement('h2');
+    basketItemName.innerHTML = "Product Name";
+    basketItemNameBox.appendChild(basketItemName);
+    basketItemInnerTable.appendChild(basketItemNameBox);
+
+    let basketQuantity = document.createElement('div');
+    basketQuantity.classList.add('basketQuantity');
+    let basketQuantityText = document.createElement('h1');
+    basketQuantityText.innerHTML = quantity;
+    basketQuantity.appendChild(basketQuantityText);
+    basketItemInnerTable.appendChild(basketQuantity);
+
+    let basketItemRemoveBox = document.createElement('div');
+    basketItemRemoveBox.classList.add("basketItemRemoveBox");
+    basketItemRemoveBox.classList.add("button");
+    basketItemRemoveBox.setAttribute("id", id);
+    basketItemRemoveBox.addEventListener('click', basketRemove);
+    let basketItemRemove = document.createElement('div');
+    basketItemRemove.classList.add('basketItemRemove');
+    let basketItemRemoveText = document.createElement('h1');
+    basketItemRemoveText.innerHTML = "X";
+    basketItemRemove.appendChild(basketItemRemoveText);
+    basketItemRemoveBox.appendChild(basketItemRemove);
+    basketItemBox.appendChild(basketItemRemoveBox);
+
+    let basketItemPriceBox = document.createElement('div');
+    basketItemPriceBox.classList.add("basketItemPriceBox");
+    let basketItemPrice = document.createElement('div');
+    basketItemPrice.classList.add('basketItemPrice');
+    let basketItemPriceText = document.createElement('h1');
+    basketItemPriceText.innerHTML = "£12.49";
+    basketItemPrice.appendChild(basketItemPriceText);
+    basketItemPriceBox.appendChild(basketItemPrice);
+    basketItemBox.appendChild(basketItemPriceBox);
+}
+
+function addTotalHtml()
+{
+    let basketContentsBox = document.getElementById('basketContentsBox');
+
+    let basketTotalBox = document.createElement('div');
+    basketTotalBox.setAttribute('id', 'basketTotalBox');
+    basketContentsBox.appendChild(basketTotalBox);
+
+    let basketTotal = document.createElement('div');
+    basketTotal.setAttribute('id', 'basketTotal');
+    basketTotalBox.appendChild(basketTotal);
+
+    let basketTotalText = document.createElement('div');
+    basketTotalText.setAttribute('id', 'basketTotalText');
+    let basketTotalTextH1 = document.createElement('h1');
+    basketTotalTextH1.innerHTML = "Total";
+    basketTotalText.appendChild(basketTotalTextH1);
+    basketTotal.appendChild(basketTotalText);
+
+    let basketTotalPrice = document.createElement('div');
+    basketTotalPrice.setAttribute('id', 'basketTotalPrice');
+    let basketTotalPriceH1 = document.createElement('h1');
+    basketTotalPriceH1.innerHTML = "£00.00";
+    basketTotalPrice.appendChild(basketTotalPriceH1);
+    basketTotal.appendChild(basketTotalPrice);
+
+}
+
+function addBuyNowHtml()
+{
+    let body = document.getElementsByTagName('body')[0];
+
+    let buyNowBox = document.createElement('div');
+    buyNowBox.setAttribute('id', 'buyNowBox');
+    buyNowBox.classList.add('button');
+    let buyNowText = document.createElement('h1');
+    buyNowText.innerHTML = "Buy Now";
+    buyNowBox.appendChild(buyNowText);
+    body.appendChild(buyNowBox);
+    buyNowBox.addEventListener('click', displayCheckout);
+}
+
+async function displayCheckout(element)
+{
+    buyNow = element.currentTarget;
+    await new Promise(r => setTimeout(r, 600));
+    buyNow.remove();
+
+    let body = document.getElementsByTagName('body')[0];
+
+    let checkoutBox = document.createElement('div');
+    checkoutBox.setAttribute('id', 'checkoutBox');
+    body.appendChild(checkoutBox);
+
+    let addressHeading = document.createElement('h2');
+    addressHeading.innerHTML = 'Address';
+    checkoutBox.appendChild(addressHeading);
+
+    let addressOptionsBox = document.createElement('div');
+    addressOptionsBox.setAttribute('id', 'addressOptionsBox');
+    checkoutBox.appendChild(addressOptionsBox);
+
+    let addressOption = document.createElement('div');
+    addressOption.classList.add('addressOption');
+    addressOptionsBox.appendChild(addressOption);
+
+    let addressOptionName = document.createElement('h4');
+    addressOptionName.classList.add('addressOptionName');
+    addressOptionName.innerHTML = 'Address Option Name';
+    addressOption.appendChild(addressOptionName);
+
+    let addressOptionButton = document.createElement('div');
+    addressOptionButton.classList.add('addressOptionButton');
+    addressOption.appendChild(addressOptionButton);
+
+    let addressOptionRadio = document.createElement('input');
+    addressOptionRadio.setAttribute('type', 'radio');
+    addressOptionButton.appendChild(addressOptionRadio);
+
+    let paymentHeading = document.createElement('h2');
+    paymentHeading.innerHTML = 'Payment';
+    checkoutBox.appendChild(paymentHeading);
+
+    let paymentOptionsBox = document.createElement('div');
+    paymentOptionsBox.setAttribute('id', 'paymentOptionsBox');
+    checkoutBox.appendChild(paymentOptionsBox);
+
+    let paymentOption = document.createElement('div');
+    paymentOption.classList.add('paymentOption');
+    paymentOptionsBox.appendChild(paymentOption);
+
+    let paymentOptionAcc = document.createElement('h4');
+    paymentOptionAcc.classList.add('paymentOptionAcc');
+    paymentOptionAcc.innerHTML = '**** **** **** 1234';
+    paymentOption.appendChild(paymentOptionAcc);
+
+    let paymentOptionButton = document.createElement('div');
+    paymentOptionButton.classList.add('paymentOptionButton');
+    paymentOption.appendChild(paymentOptionButton);
+
+    let paymentOptionRadio = document.createElement('input');
+    paymentOptionRadio.setAttribute('type', 'radio');
+    paymentOptionButton.appendChild(paymentOptionRadio);
+
+    let checkoutButton = document.createElement('div');
+    checkoutButton.setAttribute('id', 'checkoutButton');
+    checkoutButton.classList.add('button');
+    checkoutButton.addEventListener('mouseenter', buttonMouseEnter);
+    checkoutButton.addEventListener('mouseleave', buttonMouseOut);
+    checkoutButton.addEventListener('click', buttonOnClick);
+    checkoutButton.addEventListener('click', checkoutClick);
+    body.appendChild(checkoutButton);
+
+    let checkoutButtonText = document.createElement('h1');
+    checkoutButtonText.innerHTML = 'Checkout';
+    checkoutButton.appendChild(checkoutButtonText);
+
+    checkoutBox.classList.add('slideUp');
+    checkoutButton.classList.add('slideUp');
+    checkoutBox.onanimationend = () => {
+        checkoutBox.classList.remove('slideUp');
+        checkoutButton.classList.remove('slideUp');
+    }
+}
+
+async function checkoutClick(element)
+{
+    await new Promise(r => setTimeout(r, 490));
+    window.location.href = "orderComplete.html";
+}
+
+async function basketRemove(element)
+{
+    targetId = element.currentTarget.id;
+    await new Promise(r => setTimeout(r, 490));
+    let basketItem = document.getElementsByClassName('basketItemBox');
+    let itemArr = Array.from(basketItem);
+    itemArr.forEach(element => {
+        if (element.id == targetId)
+        {
+            console.log(element);
+            element.remove();
+            removeBasketContents(targetId);
+        }
+    });
+    if (basketContents.length == 0)
+    {
+        basketLoad();
+    }
+    setTotal();
+}
+
+function setTotal()
+{
+    let totalDiv = document.getElementById('basketTotalPrice');
+    let totalText = totalDiv.children[0];
+    var total = 0;
+    let priceBoxArr = Array.from(document.getElementsByClassName('basketItemPrice'));
+    if (priceBoxArr.length != 0)
+    {
+        priceBoxArr.forEach(element => {
+            let rawPrice = element.children[0].innerHTML;
+            let price = rawPrice.replace('£', "");
+            total = total + parseFloat(price);
+        });
+    }
+    else
+    {
+        total = '00.00';
     }
 }
 
