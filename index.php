@@ -1,9 +1,10 @@
 <?php include 'navBar.php'; ?>
 
+
 <?php
     require 'db.php';
     include 'index.html';
-
+    //unset($_SESSION['currentlyLoaded']);
     echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
@@ -19,6 +20,7 @@
     
         if ($role === "Shop Assistant" || $role === "Supervisor")
         {
+            echo "test";
             // get the employee's manager using stored procedure
             $queryManager = "CALL GetManager(:employeeID)";
             $stmtManager = $mysql->prepare($queryManager);
@@ -38,8 +40,34 @@
             $ShopWorkedInfo = $stmtShopWorked->fetchColumn();
             $stmtShopWorked->closeCursor();
 
-            $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView2;
-            Create View ShopEmployeeView2
+            $queryStockView = "DROP VIEW IF EXISTS ShopEmployeeStockView;
+                Create OR REPLACE View ShopEmployeeStockView
+                AS 
+                SELECT P.ProductID, P.ProductName, P.Type, P.Price,	 P.Brand, P.Supplier, P.ProductDescription, PA.Availability,
+                op.Quantity, op.OnlineOrder_OrderID, op.Product_ProductID,
+                sp.Quantity AS spQuantity, sp.Purchase_PurachseID, sp.Product_ProductID as spProduct
+                    FROM Product P
+                    LEFT JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
+                    LEFT JOIN OnlineOrder_has_Product op ON P.ProductID = op.Product_ProductID
+                    LEFT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
+                    WHERE PA.Shop_ShopID = 1
+                UNION
+                SELECT P.ProductID, P.ProductName, P.Type, P.Price,	 P.Brand, P.Supplier, P.ProductDescription, PA.Availability,
+                op.Quantity, op.OnlineOrder_OrderID, op.Product_ProductID,
+                sp.Quantity AS spQuantity, sp.Purchase_PurachseID, sp.Product_ProductID as spProduct
+                    FROM Product P
+                    RIGHT JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
+                    RIGHT JOIN OnlineOrder_has_Product op ON P.ProductID = op.Product_ProductID
+                    RIGHT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
+                            WHERE PA.Shop_ShopID = :SID";
+            $stmtStockView = $mysql->prepare($queryStockView);
+            $stmtStockView->bindParam(':SID', $shopID, PDO::PARAM_INT);
+            $stmtStockView->execute();
+            $StockView = $stmtStockView->fetchColumn();
+            $stmtStockView->closeCursor();
+
+            $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView;
+            Create OR REPLACE View ShopEmployeeView
             AS 
             SELECT e.EmployeeID, e.Surname, e.FirstName, e.EmailAddress, e.Role, e.Password, e.hoursWorked, e.HourlyPay, 
             bd.AccountName, bd.AccountNo, bd.SortCode,
@@ -50,23 +78,28 @@
             sp.PurchaseID, sp.Price AS shopPrice, sp.PurchaseDate, sp.Customer_CustomerID AS shopCustomer, sp.Shop_shopID AS SID,
             sr.ShopReturnID, sr.AmountToReturn as ShopAmountToReturn, sr.Reason AS shopReason, sr.Customer_CustomerID AS ShopReturnCustomer
             From Employee e
-            LEFT JOIN BankDetails bd ON e.EmployeeID = bd.Employee_EmployeeID
-            LEFT JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
-            LEFT JOIN Shop s ON se.Shop_shopID = s.ShopID
-            LEFT JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
-            LEFT JOIN Employee m ON  m.FirstName = :ManFirst AND m.Surname = :ManLast
-            LEFT JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
-            LEFT JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
-            LEFT JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
-            LEFT JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID OR r.Shop_ShopID = null)
-            WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
+            INNER JOIN BankDetails bd ON e.EmployeeID = bd.Employee_EmployeeID
+            INNER JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
+            INNER JOIN Shop s ON se.Shop_shopID = s.ShopID
+            INNER JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
+            INNER JOIN Employee m ON m.EmployeeID = (
+                    SELECT Employee_EmployeeID
+                    FROM ShopEmployee
+                    WHERE Shop_ShopID = s.ShopID
+                    AND m.Role = 'Manager'
+                    LIMIT 1)
+            INNER JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
+            INNER JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
+            INNER JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
+            INNER JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
+                        WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
             $stmtEmployeeView = $mysql->prepare($viewEmployeeSQL);
             $stmtEmployeeView->execute(["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]);
             $stmtEmployeeView->closeCursor();
             //["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]
         }
     }
-
+    
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // initialize variable on first run
         // session variables - https://www.w3schools.com/php/php_sessions.asp
@@ -169,7 +202,7 @@
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM ShopEmployeeStockView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -178,7 +211,7 @@
     }
     //Otherwise, get all products from the database.
     else{
-        $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product");
+        $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM ShopEmployeeStockView");
         $query->execute();
         $results = $query->fetchAll();
     }

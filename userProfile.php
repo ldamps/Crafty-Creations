@@ -32,7 +32,7 @@ if (isset($_SESSION['LoggedIn'])):
     
     }else {
         echo "else";
-        $queryPersonal = "SELECT * FROM ShopEmployeeView2";
+        $queryPersonal = "SELECT * FROM ShopEmployeeView";
         $stmtPersonal = $mysql->prepare($queryPersonal);
         $stmtPersonal->execute();
         $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
