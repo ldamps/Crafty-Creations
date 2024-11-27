@@ -16,7 +16,7 @@ body {
     color: var(--secondary-color)
 }
 
-h1, h2, h3, h4, h5, p, a, ul, label, button {
+h1, h2, h3, h4, h5, p, a, ul, label, button, th, td {
     font-family: Arial;
     color: var(--secondary-color);
 }
@@ -27,6 +27,39 @@ h1 {
 
 a {
     font-size: 15pt;
+}
+
+table{
+    border-radius: 10px;
+    overflow:hidden;
+    border-spacing: 12px;
+}
+
+th {
+    font-weight: 600;
+    font-size: 16pt;
+    text-align:center; 
+}
+
+td {
+    font-weight: 450;
+    font-size: 12pt;
+    text-align:center; 
+    cursor:default;
+}
+
+td:hover {
+    transform: translateY(-5px);
+    transition: transform 0.2s;
+}
+
+tr {
+    border-bottom: solid;
+    border-width: 2px;
+    border-color: var(--secondary-color);
+    border-radius: 10px;
+    overflow: hidden;
+    height: 40px;
 }
 
 .topnav {
@@ -63,6 +96,7 @@ a {
 }
 
 .button {
+    all: unset;
     transition: transform 0.3s;
     color: var(--secondary-color);
     background-color: none;
@@ -70,6 +104,7 @@ a {
     height: 50px;
     font-size: 15pt;
     padding: 5px;
+    font-family: Arial;
 }
 
 #logInText {
@@ -104,7 +139,7 @@ a {
     background-color: var(--primary-color);
 }
 
-.selection input[type=text] {
+.selection input[type=text], #payeeInput {
     float: left;
     padding: 10px;
     border-radius: 10px;
@@ -114,7 +149,16 @@ a {
     font-size: 17px;
 }
 
-.selection input:focus {
+#payeeInput {
+    margin-right: 5px;
+    width: 500px;
+}
+
+#staffHeading {
+    padding: 20px;
+}
+
+.selection input:focus, #payeeInput:focus {
     outline:none;
 }
 
@@ -334,7 +378,7 @@ a {
     font-weight: 500;
 }
 
-#basketContentsBox, #checkoutBox {
+#basketContentsBox {
     width: 600px;
     min-height: 300px;
     border-style: solid;
@@ -348,31 +392,33 @@ a {
 
 .basketItemBox {
     display: table;
-    width: 580px;
+    width: 590px;
     height: 50px;
     vertical-align: middle;
+    border-collapse: separate;
     border-spacing: 5px;
+    margin-left: -4px;
+    margin-right: -10px;
 }
 
 .basketItem, #basketTotalBox {
     display: table-cell;
     height: 75px;
-    width: 450px;
+    width: 390px;
     border-style: solid;
     border-color: var(--secondary-color);
     border-width: 1px;
     border-radius: 10px;
     overflow: hidden;
     vertical-align: middle;
-    border-spacing: 0;
-    padding: 0;
+    border-spacing: 0px;
 }
 
 #basketTotalBox {
     height: 75px;
-    width: 570px;
-    transform: translateX(5px);
+    width: 590px;
     vertical-align: middle;
+    margin-right: 10px;
 }
 
 #basketTotal {
@@ -384,7 +430,6 @@ a {
 .basketItemInnerTable {
     display: table;
     vertical-align: middle;
-    border-spacing: 0;
 }
 
 .basketItemImageBox {
@@ -400,7 +445,14 @@ a {
     display: table-cell;
     vertical-align: middle;
     padding: 10px;
-    width: 280px;
+    width: 325px;
+}
+
+.basketQuantitySelector {
+    display: table;
+    vertical-align: middle;
+    margin-left: 15px;
+    margin-top: 12px;
 }
 
 .basketQuantity {
@@ -447,59 +499,21 @@ a {
     border-color: var(--secondary-color);
     border-radius: 10px;
     border-width: 1px;
-    height: 77px;
+    height: 75px;
     width: 130px;
     vertical-align: middle;
     padding-left: 15px;
     padding-top: 18px;
 }
 
-#buyNowBox, #checkoutButton {
+#buyNowBox {
     margin: auto;
     margin-top: 10px;
-    width: 185px;
+    width: 175px;
     height: 75px;
     text-align: center;
-    padding-top: 16px;
+    padding-top: 20px;
     border-radius: 10px;
-}
-
-#paymentOptionsBox, #addressOptionsBox {
-    display: table;
-    overflow: hidden;
-    width: 100%;
-}
-
-.paymentOption, .addressOption {
-    display: table-row;
-    height: 40px;
-}
-
-.paymentOptionAcc, .addressOptionName, .paymentOptionButton, .addressOptionButton {
-    display: table-cell;
-    vertical-align: middle;
-    border-bottom: solid;
-    border-color: var(--secondary-color);
-}
-
-.paymentOptionAcc, .addressOptionName {
-    width: 560px;
-}
-
-#checkoutButton {
-    width: 200px;
-    margin-bottom: 20px;
-}
-
-#orderCompleteBox {
-    text-align: center;
-    width: 400px;
-    margin: auto;
-    border-style: solid;
-    border-width: 3px;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 50px;
 }
 
 .buttonClickDown {
@@ -537,18 +551,7 @@ a {
     80%,
     100% {transform: translate3d(0, 0, 0);}
 }
-
-.slideUp {
-    animation-name: slideUp;
-    animation-duration: 1.2s;
-    animation-timing-function:cubic-bezier(0.455, 0.03, 0.515, 0.955);
-}
-
-@keyframes slideUp {
-    0% {transform: translateY(200%);}
-    75% {transform: translateY(-7%);}
-    100% {transform: translateY(0%);}
-}
+    
 
 /* modal style used from 
    https://www.w3schools.com/howto/howto_css_modals.asp
