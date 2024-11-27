@@ -26,9 +26,7 @@ if (isset($_SESSION['LoggedIn'])):
         $stmtPay = $mysql->prepare($queryPayment);
         $stmtPay->execute();
         $payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
-    
-        //echo "size: " . sizeof($personalInfo) ."";
-        //echo "size: " . sizeof($customerInfo) ."";
+
     
     }else {
         echo "else";
