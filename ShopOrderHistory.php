@@ -6,30 +6,30 @@ include 'navBar.php';
 if (isset($_SESSION['LoggedIn'])):
 $role = $_SESSION["LoggedIn"];
 $userID = $_COOKIE["ID"];
-echo "Role: " . $role;
+//echo "Role: " . $role;
 
 
     // === Queries for Shop Employee
     // select all online orders
-    $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ShopEmployeeView2";
+    $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ShopEmployeeView";
     $stmtOnlineOrders = $mysql->prepare($queryOnlineOrders);
     $stmtOnlineOrders->execute();
     $onlineOrders = $stmtOnlineOrders->fetchAll(PDO::FETCH_ASSOC);
 
     // get all online returns
-    $queryOnlineReturns = "SELECT DISTINCT OnlineReturnID, Reason, AmountToReturn, Customer_CustomerID FROM ShopEmployeeView2";
+    $queryOnlineReturns = "SELECT DISTINCT OnlineReturnID, Reason, AmountToReturn, Customer_CustomerID FROM ShopEmployeeView";
     $stmtOnlineReturns = $mysql->prepare($queryOnlineReturns);
     $stmtOnlineReturns->execute();
     $OnlineReturns = $stmtOnlineReturns->fetchAll(PDO::FETCH_ASSOC);
 
     // get all shop returns
-    $queryShopReturns = "SELECT DISTINCT ShopReturnID, shopReason, ShopAmountToReturn, ShopReturnCustomer FROM ShopEmployeeView2";
+    $queryShopReturns = "SELECT DISTINCT ShopReturnID, shopReason, ShopAmountToReturn, ShopReturnCustomer FROM ShopEmployeeView";
     $stmtShopReturns = $mysql->prepare($queryShopReturns);
     $stmtShopReturns->execute();
     $ShopReturns = $stmtShopReturns->fetchAll(PDO::FETCH_ASSOC);
 
     // shop orders
-    $queryShopOrders = "SELECT DISTINCT PurchaseID, shopPrice, PurchaseDate, shopCustomer, SID FROM ShopEmployeeView2";
+    $queryShopOrders = "SELECT DISTINCT PurchaseID, shopPrice, PurchaseDate, shopCustomer, SID FROM ShopEmployeeView";
     $stmtShopOrders = $mysql->prepare($queryShopOrders);
     $stmtShopOrders->execute();
     $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
@@ -161,7 +161,7 @@ tr:nth-child(even) {
                             <td><?php echo $order['OrderID']; ?></td>
                             <td>
                                 <?php 
-                                    $queryCustomer = "SELECT DISTINCT FirstName, LastName, CustomerID FROM Customer WHERE CustomerID = :ID";
+                                    $queryCustomer = "SELECT DISTINCT FirstName,LastName, CustomerID FROM EmployeeCustomerView WHERE CustomerID = :ID";
                                     $stmtCustomer = $mysql->prepare($queryCustomer);
                                     $stmtCustomer->execute(["ID" => $order['customerID']]);
 
@@ -252,7 +252,7 @@ tr:nth-child(even) {
                             <td><?php echo '£' . number_format($order['AmountToReturn'], 2); ?></td>
                             <td><?php echo $order['Reason']; ?></td>
                             <td><?php 
-                                    $queryCustomer = "SELECT DISTINCT FirstName, LastName,CustomerID FROM Customer WHERE CustomerID = :ID";
+                                    $queryCustomer = "SELECT DISTINCT FirstName,LastName, CustomerID FROM EmployeeCustomerView WHERE CustomerID = :ID";
                                     $stmtCustomer = $mysql->prepare($queryCustomer);
                                     $stmtCustomer->execute(["ID" => $order['Customer_CustomerID']]);
 
@@ -270,7 +270,7 @@ tr:nth-child(even) {
                                     <tr>
                                     <td><?php echo $customer["FirstName"] ?></td>
                                     <td><?php echo $customer["LastName"] ?></td>
-                                    <td><?php echo $order['Customer_CustomerID'] ?></td>
+                                    <td><?php echo $customer["CustomerID"] ?></td>
                                     </tr>
                                 </tbody>
                                 </table>
@@ -298,7 +298,7 @@ tr:nth-child(even) {
                             <td><?php echo $order['PurchaseID']; ?></td>
                             <td>
                                 <?php 
-                                    $queryCustomer = "SELECT DISTINCT FirstName, LastName,CustomerID FROM Customer WHERE CustomerID = :ID";
+                                    $queryCustomer = "SELECT DISTINCT FirstName,LastName, CustomerID FROM EmployeeCustomerView WHERE CustomerID = :ID";
                                     $stmtCustomer = $mysql->prepare($queryCustomer);
                                     $stmtCustomer->execute(["ID" => $order['shopCustomer']]);
 
@@ -346,7 +346,7 @@ tr:nth-child(even) {
                                     <tr>
                                     <td><?php echo $product["ProductName"] ?></td>
                                     <td><?php echo $product["Price"] ?></td>
-                                    <td><?php echo $product["Quantity"] ?></td>
+                                    <td><?php echo $product["spQuantity"] ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>
@@ -377,7 +377,7 @@ tr:nth-child(even) {
                             <td><?php echo '£' . number_format($order['ShopAmountToReturn'], 2); ?></td>
                             <td><?php echo $order['shopReason']; ?></td>
                             <td><?php 
-                                    $queryCustomer = "SELECT DISTINCT FirstName, LastName,CustomerID FROM Customer WHERE CustomerID = :ID";
+                                    $queryCustomer = "SELECT DISTINCT FirstName,LastName, CustomerID FROM EmployeeCustomerView WHERE CustomerID = :ID";
                                     $stmtCustomer = $mysql->prepare($queryCustomer);
                                     $stmtCustomer->execute(["ID" => $order['ShopReturnCustomer']]);
 
