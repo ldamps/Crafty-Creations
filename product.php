@@ -68,13 +68,13 @@ if ($product) {
         <div id="heroProductPurchasing">
             <div id="purchasingBox">
                 <div id="quantitySelector">
-                    <div id="quantityDown" class="button">
+                    <div id="quantityDown" class="button" onclick="quantityAdjust(event)">
                         <h1>-</h1>
                     </div>
                     <div id="quantity">
                         <h1 id="quantityText">1</h1>
                     </div>
-                    <div id="quantityUp" class="button">
+                    <div id="quantityUp" class="button" onclick="quantityAdjust(event)">
                         <h1>+</h1>
                     </div>
                 </div>
