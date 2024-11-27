@@ -7,9 +7,9 @@ include 'navBar.php';
 if (isset($_SESSION['LoggedIn'])):
     $role = $_SESSION["LoggedIn"];
     $userID = $_COOKIE["ID"];
-    echo $role;
+    //echo $role;
     if ($role === "customer") {
-        echo "customer";
+        //echo "customer";
         // === Queries for Customer ===
         // the ID happens in the view creation, so the view here will only have things relating to their ID
         $queryPersonal = "SELECT * From CustomerView";
@@ -31,10 +31,12 @@ if (isset($_SESSION['LoggedIn'])):
     }else {
         if ($role === "Manager" || $role === "Assistant Manager")
         {
-            $queryPersonal = "SELECT DISTINCT Surname, FirstName, EmailAddress, Role FROM ManagerView";
+            echo "help2";
+            $queryPersonal = "SELECT * FROM ManagerView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+            echo $personalInfo["FirstName"];
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
@@ -140,7 +142,7 @@ if (isset($_SESSION['LoggedIn'])):
             <h2>Personal Information</h2>
                 <?php if (isset($_SESSION["LoggedIn"])):
                  if ($role === "customer"): 
-                    echo "customer "?> 
+                    ##echo "customer "?> 
                     <p><strong>Name:</strong> <?php echo $customerInfo['Title'] . ' ' . $customerInfo['FirstName'] . ' ' . $customerInfo['LastName']; ?></p>
                     <p><strong>Email:</strong> <?php echo $customerInfo['EmailAddress']; ?></p>
                     <p><strong>Phone:</strong> <?php echo $customerInfo['PhoneNumber']; ?></p>

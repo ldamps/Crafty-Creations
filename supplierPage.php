@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Supplier Dashboard</title>
+</head>
 <?php
 include 'db.php';
 include 'navBar.php'; 
@@ -5,25 +13,24 @@ include 'navBar.php';
 
 
 // gettting supplier information
-$querySuppliers = "SELECT 
-    SupplyOrder.SupplyOrderID,
-    SupplyOrder.ProductType,
-    Supplier.Name AS SupplierName,
-    SupplyOrder.ShopID
-FROM SupplyOrder
-INNER JOIN Supplier ON SupplyOrder.Supplier_SupplierID = Supplier.SupplierID";
+$querySuppliers = "SELECT DISTINCT
+    SupplyOrderID,
+    ProductType,
+    Name AS SupplierName,
+    ShopID
+FROM ManagerSupplierView WHERE SupplyOrderID IS NOT NULL ORDER BY SupplyOrderID ";
 $stmtSuppliers = $mysql->prepare($querySuppliers);
 $stmtSuppliers->execute();
 $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
 
 // getting supplier details
-$querySupplierDetails = "SELECT 
-    Supplier.SupplierID,
-    Supplier.Name,
-    Supplier.ProductTypeSupplied,
-    Supplier.Address,
-    Supplier.Email
-FROM Supplier";
+$querySupplierDetails = "SELECT DISTINCT 
+    SupplierID,
+    Name,
+    ProductTypeSupplied,
+    Address,
+    Email
+FROM ManagerSupplierView";
 $stmtSupplierDetails = $mysql->prepare($querySupplierDetails);
 $stmtSupplierDetails->execute();
 $supplierDetails = $stmtSupplierDetails->fetchAll(PDO::FETCH_ASSOC);
@@ -160,7 +167,9 @@ $supplierDetails = $stmtSupplierDetails->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
     </div>
+    <?php include'suppliers.html';?>
 </div>
 
 </body>
+<?php include 'footer.html' ?>
 </html>

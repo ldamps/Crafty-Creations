@@ -4,22 +4,22 @@ include 'navBar.php';
 
 $employeeID = $_SESSION['EmployeeID'];
 
-//shop ID where manager works
-$queryShopID = "SELECT Shop_ShopID
-                FROM ShopEmployee
-                WHERE Employee_EmployeeID = :employeeID";
+//shop ID where manager works using stored procedure
+$queryShopID = "CALL GetShopWorkedAt(:employeeID)";
 $stmtShopID = $mysql->prepare($queryShopID);
 $stmtShopID->bindParam(':employeeID', $employeeID, PDO::PARAM_INT);
 $stmtShopID->execute();
 $shopID = $stmtShopID->fetchColumn();
+$stmtShopID->closeCursor();
 
-//employees working at same shop
-$queryEmployees = "SELECT E.EmployeeID, E.FirstName, E.Surname, E.Role, E.EmailAddress, E.HoursWorked, E.HourlyPay
+/*SELECT E.EmployeeID, E.FirstName, E.Surname, E.Role, E.EmailAddress, E.HoursWorked, E.HourlyPay
                    FROM Employee E
                    INNER JOIN ShopEmployee SE ON E.EmployeeID = SE.Employee_EmployeeID
-                   WHERE SE.Shop_ShopID = :shopID";
+                   WHERE SE.Shop_ShopID = :shopID";*/
+//employees working at same shop
+$queryEmployees = "SELECT DISTINCT empID, empFirst, empSur, empRole, empEmail, empHours, empPay FROM ManagerView ORDER BY empID";
 $stmtEmployees = $mysql->prepare($queryEmployees);
-$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+//$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
 $stmtEmployees->execute();
 $employeesData = $stmtEmployees->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -104,13 +104,13 @@ $employeesData = $stmtEmployees->fetchAll(PDO::FETCH_ASSOC);
                 <tbody>
                     <?php foreach ($employeesData as $employee): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($employee['EmployeeID']); ?></td>
-                            <td><?php echo htmlspecialchars($employee['FirstName']); ?></td>
-                            <td><?php echo htmlspecialchars($employee['Surname']); ?></td>
-                            <td><?php echo htmlspecialchars($employee['Role']); ?></td>
-                            <td><?php echo htmlspecialchars($employee['EmailAddress']); ?></td>
-                            <td><?php echo htmlspecialchars($employee['HoursWorked']); ?></td>
-                            <td><?php echo htmlspecialchars(number_format($employee['HourlyPay'], 2)); ?></td>
+                            <td><?php echo htmlspecialchars($employee['empID']); ?></td>
+                            <td><?php echo htmlspecialchars($employee['empFirst']); ?></td>
+                            <td><?php echo htmlspecialchars($employee['empSur']); ?></td>
+                            <td><?php echo htmlspecialchars($employee['empRole']); ?></td>
+                            <td><?php echo htmlspecialchars($employee['empEmail']); ?></td>
+                            <td><?php echo htmlspecialchars($employee['empHours']); ?></td>
+                            <td><?php echo htmlspecialchars(number_format($employee['empPay'], 2)); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

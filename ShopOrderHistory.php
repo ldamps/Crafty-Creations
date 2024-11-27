@@ -8,7 +8,8 @@ $role = $_SESSION["LoggedIn"];
 $userID = $_COOKIE["ID"];
 //echo "Role: " . $role;
 
-
+if ($role === "Supervisor" || $role === "Shop Assistant")
+{
     // === Queries for Shop Employee
     // select all online orders
     $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ShopEmployeeView";
@@ -33,7 +34,38 @@ $userID = $_COOKIE["ID"];
     $stmtShopOrders = $mysql->prepare($queryShopOrders);
     $stmtShopOrders->execute();
     $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
- 
+}
+else if ($role === "Manager" || $role === "Assistant Manager")
+{
+    // === Queries for Manager
+    // select all online orders
+    $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ManagerView";
+    $stmtOnlineOrders = $mysql->prepare($queryOnlineOrders);
+    $stmtOnlineOrders->execute();
+    $onlineOrders = $stmtOnlineOrders->fetchAll(PDO::FETCH_ASSOC);
+    //echo !empty($OnlineOrders);
+    //echo $onlineOrders;
+    // get all online returns
+    $queryOnlineReturns = "SELECT DISTINCT OnlineReturnID, Reason, AmountToReturn, Customer_CustomerID FROM ManagerView";
+    $stmtOnlineReturns = $mysql->prepare($queryOnlineReturns);
+    $stmtOnlineReturns->execute();
+    $OnlineReturns = $stmtOnlineReturns->fetchAll(PDO::FETCH_ASSOC);
+    //echo !empty($OnlineReturns);
+    //echo count($OnlineReturns);
+    //echo $OnlineReturns[0]['OnlineReturnID'];
+    //echo sizeof($OnlineReturns) ."";
+    // get all shop returns
+    $queryShopReturns = "SELECT DISTINCT ShopReturnID, shopReason, ShopAmountToReturn, ShopReturnCustomer FROM ManagerView";
+    $stmtShopReturns = $mysql->prepare($queryShopReturns);
+    $stmtShopReturns->execute();
+    $ShopReturns = $stmtShopReturns->fetchAll(PDO::FETCH_ASSOC);
+
+    // shop orders
+    $queryShopOrders = "SELECT DISTINCT PurchaseID, shopPrice, PurchaseDate, shopCustomer, SID FROM ManagerView";
+    $stmtShopOrders = $mysql->prepare($queryShopOrders);
+    $stmtShopOrders->execute();
+    $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
+}
     //handle returns here
     // check if the form was submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID'])) {
@@ -138,8 +170,7 @@ tr:nth-child(even) {
     <div class="container">
         <h1>Shop Order History</h1>
         <!-- order history -->
-
-        <?php if ($role === "Shop Assistant" || $role === "Supervisor"): ?>
+        <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager"  || $role === "Assistant Manager"): ?>
         <div class="section">
             <br><h2>Online Orders</h2>
             <table class="order-history">
@@ -156,7 +187,9 @@ tr:nth-child(even) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($onlineOrders as $order): ?>
+                    <?php 
+                    if (!$onlineOrders):
+                    foreach ($onlineOrders as $order): ?>
                         <tr>
                             <td><?php echo $order['OrderID']; ?></td>
                             <td>
@@ -231,7 +264,12 @@ tr:nth-child(even) {
                                 <?php endif; ?>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach; 
+                    else: ?>
+                        <tr>
+                        <td colspan="8">No orders to display</td></tr>
+                        </tr>
+                   <?php endif;?>
                 </tbody>
             </table>
 
@@ -246,7 +284,11 @@ tr:nth-child(even) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($OnlineReturns as $order): ?>
+
+                    <?php 
+                    //echo !empty($OnlineReturns
+                    if (!($OnlineReturns)):
+                    foreach ($OnlineReturns as $order): ?>
                         <tr>
                             <td><?php echo $order['OnlineReturnID']; ?></td>
                             <td><?php echo '£' . number_format($order['AmountToReturn'], 2); ?></td>
@@ -276,7 +318,12 @@ tr:nth-child(even) {
                                 </table>
                                 </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach; 
+                     else: ?>
+                        <tr>
+                        <td colspan="8">No orders to display</td></tr>
+                        </tr>
+                   <?php endif;?>
                 </tbody>
             </table>
 
@@ -293,7 +340,9 @@ tr:nth-child(even) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($ShopOrders as $order): ?>
+                    <?php 
+                    if (!($ShopOrders)):
+                    foreach ($ShopOrders as $order): ?>
                         <tr>
                             <td><?php echo $order['PurchaseID']; ?></td>
                             <td>
@@ -354,7 +403,12 @@ tr:nth-child(even) {
                                 <?php endif; ?>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach; 
+                    else: ?>
+                        <tr>
+                        <td colspan="8">No orders to display</td></tr>
+                        </tr>
+                   <?php endif;?>
                 </tbody>
             </table>
 
@@ -371,7 +425,9 @@ tr:nth-child(even) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($ShopReturns as $order): ?>
+                    <?php
+                    if (!$ShopReturns):
+                     foreach ($ShopReturns as $order): ?>
                         <tr>
                             <td><?php echo $order['ShopReturnID']; ?></td>
                             <td><?php echo '£' . number_format($order['ShopAmountToReturn'], 2); ?></td>
@@ -401,7 +457,12 @@ tr:nth-child(even) {
                                 </table>
                                 </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach; 
+                    else: ?>
+                        <tr>
+                        <td colspan="8">No orders to display</td></tr>
+                        </tr>
+                   <?php endif;?>
                 </tbody>
             </table>
         </div>

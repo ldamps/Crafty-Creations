@@ -38,7 +38,7 @@
                 } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
                     echo "<a class='button' href='Employees.php'>Employees</a>";
                     echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
-                    echo "<a class='button' href='orderHistory.php'>Order History</a>";
+                    echo "<a class='button' href='ShopOrderHistory.php'>Shop Order History</a>";
                     echo "<a class='button' href='supplierPage.php'>Supplier</a>";
                     echo "<a class='button' href='salesPage.php'>Sales</a>";
                 } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
