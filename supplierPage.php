@@ -13,18 +13,18 @@ include 'navBar.php';
 
 
 // gettting supplier information
-$querySuppliers = "SELECT 
+$querySuppliers = "SELECT DISTINCT
     SupplyOrderID,
     ProductType,
     Name AS SupplierName,
     ShopID
-FROM ManagerSupplierView";
+FROM ManagerSupplierView WHERE SupplyOrderID IS NOT NULL ORDER BY SupplyOrderID ";
 $stmtSuppliers = $mysql->prepare($querySuppliers);
 $stmtSuppliers->execute();
 $supplierData = $stmtSuppliers->fetchAll(PDO::FETCH_ASSOC);
 
 // getting supplier details
-$querySupplierDetails = "SELECT 
+$querySupplierDetails = "SELECT DISTINCT 
     SupplierID,
     Name,
     ProductTypeSupplied,

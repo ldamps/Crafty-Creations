@@ -19,7 +19,7 @@
         $userID = $_COOKIE["ID"];
         if ($role === "customer")
         {
-            echo "customer";
+            //echo "customer";
              // create view dynamically so it is based on the customers ID and they only see their own information
              $viewSQL = "DROP VIEW IF EXISTS CustomerView;
              Create OR REPLACE View CustomerView
@@ -47,9 +47,9 @@
              RIGHT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
              RIGHT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
              WHERE CustomerID = :userID";  
-         $stmtCustomerView = $mysql->prepare($viewSQL);
-         $stmtCustomerView->execute(["userID" => $userID]);
-         $stmtCustomerView->closeCursor();
+            $stmtCustomerView = $mysql->prepare($viewSQL);
+            $stmtCustomerView->execute(["userID" => $userID]);
+            $stmtCustomerView->closeCursor();
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
@@ -72,6 +72,7 @@
             $ShopWorkedInfo = $stmtShopWorked->fetchColumn();
             $stmtShopWorked->closeCursor();
 
+            // create stock view dynamically based on Shop ID
             $queryStockView = "DROP VIEW IF EXISTS ShopEmployeeStockView;
                 Create OR REPLACE View ShopEmployeeStockView
                 AS 
@@ -98,6 +99,7 @@
             $StockView = $stmtStockView->fetchColumn();
             $stmtStockView->closeCursor();
 
+            // create main employee view
             $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView;
             Create OR REPLACE View ShopEmployeeView
             AS 
@@ -127,8 +129,101 @@
         }
         else if ($role === "Manager" || $role === "Assistant Manager")
         {
+            echo $userID;
+            
+
+            // get the shop the employee works at using stored procedure
+            $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
+            $stmtShopWorked = $mysql->prepare($queryShopWorked);
+            $stmtShopWorked->bindParam(':employeeID', $userID, PDO::PARAM_INT);
+            $stmtShopWorked->execute();
+            $ShopWorkedInfo = $stmtShopWorked->fetchColumn();
+            $stmtShopWorked->closeCursor();
+
+            // get the employee's manager using stored procedure
+            $queryManager = "CALL GetManager(:shopID)";
+            $stmtManager = $mysql->prepare($queryManager);
+            $stmtManager->bindParam(':shopID', $ShopWorkedInfo, PDO::PARAM_INT);
+            $stmtManager->execute();
+            $ManagerInfo = $stmtManager->fetch();
+            $ManFirst = $ManagerInfo[0];
+            $ManLast = $ManagerInfo[1];
+            echo $ManFirst . $ManLast;
+            $stmtManager->closeCursor();
+            //echo "shop worked at: " . $ShopWorkedInfo;
+            //echo "userID: " . $userID;
             // create manager view
-            echo "creating manager view";
+            //echo "creating manager view";
+            $viewManagerSQL = "DROP VIEW IF EXISTS ManagerView;
+            Create OR REPLACE View ManagerView
+            AS 
+            SELECT e.EmployeeID, e.Surname, e.FirstName, e.EmailAddress, e.Role, e.Password, e.hoursWorked, e.HourlyPay, 
+            bd.AccountName, bd.AccountNo, bd.SortCode,
+            E.EmployeeID AS empID, E.FirstName AS empFirst, E.Surname AS empSur, E.Role as empRole, E.EmailAddress AS empEmail, E.HoursWorked AS empHours, E.HourlyPay AS empPay,
+            o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.OrderDate, o.Customer_CustomerID AS customerID,
+            s.StreetName, s.Postcode, s.City, s.NumEmployees, s.TotalSales,
+            m.FirstName as ManagerFirstName, m.Surname AS ManagerSurname,
+            r.OnlineReturnID, r.Reason, r.AmountToReturn, r.Customer_CustomerID,	
+            sp.PurchaseID, sp.Price AS shopPrice, sp.PurchaseDate, sp.Customer_CustomerID AS shopCustomer, sp.Shop_shopID AS SID,
+            sr.ShopReturnID, sr.AmountToReturn as ShopAmountToReturn, sr.Reason AS shopReason, sr.Customer_CustomerID AS ShopReturnCustomer
+            From Employee e
+            INNER JOIN BankDetails bd ON e.EmployeeID = bd.Employee_EmployeeID
+            INNER JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
+            INNER JOIN Shop s ON se.Shop_shopID = s.ShopID
+            INNER JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
+            INNER JOIN Employee m ON m.FirstName = :ManFirst AND m.Surname = :ManLast
+            INNER JOIN Employee E ON E.employeeID IN (SELECT Employee_EmployeeID FROM ShopEmployee WHERE Shop_ShopID = :shopID)
+            LEFT JOIN OnlineOrder o ON o.Shop_ShopID =  s.ShopID
+            LEFT JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN ShopReturn sr ON sr.Shop_shopID = s.ShopID
+            LEFT JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
+            WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
+            $stmtManagerView = $mysql->prepare($viewManagerSQL);
+            $stmtManagerView->execute(["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]);
+            $stmtManagerView->closeCursor();
+
+            //echo "manager view created";
+
+            // create view for manager to view supplier info
+            $viewManagerSupplier = "DROP VIEW IF EXISTS ManagerSupplierView;
+            CREATE VIEW ManagerSupplierView
+            As
+            # this bit gets all of the supplier orders, but not all suppliers
+            SELECT sup.SupplierID, sup.Name, sup.ProductTypeSupplied, sup.Address, sup.Email,
+            so.SupplyOrderID, so.ProductType, so.ShopID
+            FROM Supplier sup
+            LEFT JOIN SupplyOrder so ON so.Supplier_SupplierID = sup.SupplierID AND so.ShopID = :shopID";
+            $stmtManagerSupplierView = $mysql->prepare($viewManagerSupplier);
+            $stmtManagerSupplierView->execute(["shopID" =>$ShopWorkedInfo ]);
+            $stmtManagerSupplierView->closeCursor();
+
+            // create stock view dynamically based on Shop ID
+            $queryStockView = "DROP VIEW IF EXISTS ShopEmployeeStockView;
+                Create OR REPLACE View ShopEmployeeStockView
+                AS 
+                SELECT P.ProductID, P.ProductName, P.Type, P.Price,	 P.Brand, P.Supplier, P.ProductDescription, PA.Availability,
+                op.Quantity, op.OnlineOrder_OrderID, op.Product_ProductID,
+                sp.Quantity AS spQuantity, sp.Purchase_PurachseID, sp.Product_ProductID as spProduct
+                    FROM Product P
+                    LEFT JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
+                    LEFT JOIN OnlineOrder_has_Product op ON P.ProductID = op.Product_ProductID
+                    LEFT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
+                    WHERE PA.Shop_ShopID = :SID 
+                UNION
+                SELECT P.ProductID, P.ProductName, P.Type, P.Price,	 P.Brand, P.Supplier, P.ProductDescription, PA.Availability,
+                op.Quantity, op.OnlineOrder_OrderID, op.Product_ProductID,
+                sp.Quantity AS spQuantity, sp.Purchase_PurachseID, sp.Product_ProductID as spProduct
+                    FROM Product P
+                    RIGHT JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
+                    RIGHT JOIN OnlineOrder_has_Product op ON P.ProductID = op.Product_ProductID
+                    RIGHT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
+                            WHERE PA.Shop_ShopID = :SID";
+            $stmtStockView = $mysql->prepare($queryStockView);
+            $stmtStockView->bindParam(':SID', $ShopWorkedInfo, PDO::PARAM_INT);
+            $stmtStockView->execute();
+            $StockView = $stmtStockView->fetchAll();
+            echo sizeOf($StockView);
+            $stmtStockView->closeCursor();
         }
     }
     
