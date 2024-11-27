@@ -10,7 +10,7 @@ $userID = $_COOKIE["ID"];
 
     // === Queries for Customer ===
     // the ID happens in the view creation, so the view here will only have things relating to their ID
-    $queryCustomerInfo = "SELECT * FROM CustomerView WHERE CustomerID = :userID";
+    $queryCustomerInfo = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo FROM CustomerView WHERE CustomerID = :userID";
     $stmtCustomer = $mysql->prepare($queryCustomerInfo);
     $stmtCustomer->execute([':userID' => $userID]);
 
@@ -29,10 +29,11 @@ $userID = $_COOKIE["ID"];
     
         // if successfully updated, add an entry to the OnlineReturn table
     if ($stmtUpdate->rowCount() > 0) {
+        echo "test";
         // calculate the amount to return
         $queryOrderDetails = "
             SELECT Price, Customer_CustomerID, Shop_ShopID 
-            FROM OnlineOrder 
+            FROM CustomerView
             WHERE OrderID = :orderID";
         $stmtOrderDetails = $mysql->prepare($queryOrderDetails);
         $stmtOrderDetails->execute([':orderID' => $orderID]);
