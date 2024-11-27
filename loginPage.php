@@ -49,7 +49,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                 Create OR REPLACE View CustomerView
                 AS 
                 SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
-                o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, 
+                o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.Customer_CustomerID,
                 p.CardNumber, p.CVV, p.ExpiryDate, 
                 a.City, a.HouseNumber, a.Postcode, a.StreetName,
                 r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
