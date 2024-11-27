@@ -51,6 +51,7 @@ var searchBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
+addBasketContents(1,1,1,1,1,2);
 basketLoad()
 
 var b = document.getElementsByClassName('button');
