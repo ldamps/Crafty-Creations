@@ -2,6 +2,8 @@
 //try and get all elemnts from the page. Some elements exist on different pages.
 var p = document.getElementsByClassName('product');
 let product = Array.from(p); 
+var b = document.getElementsByClassName('button');
+let button = Array.from(b);
 var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 var PS = document.getElementsByClassName('ProductSearch');
@@ -23,28 +25,6 @@ var addToCart = document.getElementById('addToCart');
 var basket = document.getElementById('basketImage');
 var basketContents;
 
-if (localStorage.getItem('basketContents') != null)
-{
-    console.log('found');
-    basketContents = JSON.parse(localStorage.getItem('basketContents'));
-}
-else
-{
-    console.log('not found');
-    basketContents = [];
-}
-
-var basketRemoveButton = document.getElementsByClassName('basketItemRemoveBox');
-if (basketRemoveButton != null)
-{
-    let removeArr = Array.from(basketRemoveButton);
-    removeArr.forEach(element => {
-        element.addEventListener('click', basketRemove);
-    });
-}
-
-basket.addEventListener('click', basketClick);
-
 var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
 var POSTSENDBar = document.getElementById('Search');
@@ -52,10 +32,7 @@ var POSTSENDBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
-basketLoad()
 
-var b = document.getElementsByClassName('button');
-let button = Array.from(b);
 
 //Therefore, we need to check if the element exists before adding an event listener to it. Which is what the following if statements do.
 
@@ -259,24 +236,9 @@ function basketClick(element)
     window.onload(basketLoad());
 }
 
-function addBasketContents(productId)
+function updateBasketContents(productId)
 {
     basketContents.push(productId);
-    localStorage.setItem('basketContents', JSON.stringify(basketContents));
-}
-
-function removeBasketContents(productId)
-{
-    var length = basketContents.length;
-    for (let i = 0; i < length; i++)
-    {
-        let item = basketContents.shift();
-        if (item != targetId)
-        {
-            basketContents.push(item);
-        }
-    }
-    console.log(basketContents);
     localStorage.setItem('basketContents', JSON.stringify(basketContents));
 }
 
@@ -286,7 +248,7 @@ function addToCartClick()
     let splitUrl = url.split('?');
     let productId = splitUrl[1];
 
-    addBasketContents(productId);
+    updateBasketContents(productId);
 
     console.log(basketContents);
 }
@@ -294,273 +256,15 @@ function addToCartClick()
 function basketLoad()
 {
     let basketContentsBox = document.getElementById('basketContentsBox');
-    let totalBox = document.getElementById('basketTotalBox');
-    if (basketContents.length == 0)
+    if (basketContents == [])
     {
-        if (totalBox != null)
-        {
-            totalBox.remove();
-        }
-        let h2 = document.createElement('h2');
-        h2.innerHTML = 'looks like your basket is empty...'
-        basketContentsBox.appendChild(h2);
+        let h1 = document.createElement('h1');
+        h1.innerHTML = 'looks like your basket is empty...'
+        basketContentsBox.appendChild(h1);
     }
     else {
-        //add contents of basket here, php is required though I think.
-        const quantities = new Map()
-        basketContents.forEach(element => {
-            if (quantities.has(element)) {
-                let quantity = quantities.get(element);
-                quantities.set(element, quantity += 1);
-            }
-            else
-            {
-                quantities.set(element, 1);
-            }
-        });
-        quantities.forEach (function(value, key) {
-            addBasketItemHtml(key, value)
-        })
-        addTotalHtml();
-        setTotal();
-        addBuyNowHtml();
+        
     }
-}
-
-function addBasketItemHtml(id, quantity)
-{
-    let basketContentsBox = document.getElementById('basketContentsBox');
-    
-    let basketItemBox = document.createElement('div');
-    basketItemBox.classList.add('basketItemBox');
-    basketItemBox.setAttribute('id', id);
-    basketContentsBox.appendChild(basketItemBox);
-
-    let basketItem = document.createElement('div');
-    basketItem.classList.add('basketItem');
-    basketItem.classList.add('button');
-    basketItemBox.appendChild(basketItem);
-
-    let basketItemInnerTable = document.createElement('div');
-    basketItemInnerTable.classList.add('basketItemInnerTable');
-    basketItem.appendChild(basketItemInnerTable);
-
-    let basketItemImageBox = document.createElement('div');
-    basketItemImageBox.classList.add('basketItemImageBox');
-    basketItemInnerTable.appendChild(basketItemImageBox);
-
-    let basketItemNameBox = document.createElement('div');
-    basketItemNameBox.classList.add('basketItemNameBox');
-    let basketItemName = document.createElement('h2');
-    basketItemName.innerHTML = "Product Name";
-    basketItemNameBox.appendChild(basketItemName);
-    basketItemInnerTable.appendChild(basketItemNameBox);
-
-    let basketQuantity = document.createElement('div');
-    basketQuantity.classList.add('basketQuantity');
-    let basketQuantityText = document.createElement('h1');
-    basketQuantityText.innerHTML = quantity;
-    basketQuantity.appendChild(basketQuantityText);
-    basketItemInnerTable.appendChild(basketQuantity);
-
-    let basketItemRemoveBox = document.createElement('div');
-    basketItemRemoveBox.classList.add("basketItemRemoveBox");
-    basketItemRemoveBox.classList.add("button");
-    basketItemRemoveBox.setAttribute("id", id);
-    basketItemRemoveBox.addEventListener('click', basketRemove);
-    let basketItemRemove = document.createElement('div');
-    basketItemRemove.classList.add('basketItemRemove');
-    let basketItemRemoveText = document.createElement('h1');
-    basketItemRemoveText.innerHTML = "X";
-    basketItemRemove.appendChild(basketItemRemoveText);
-    basketItemRemoveBox.appendChild(basketItemRemove);
-    basketItemBox.appendChild(basketItemRemoveBox);
-
-    let basketItemPriceBox = document.createElement('div');
-    basketItemPriceBox.classList.add("basketItemPriceBox");
-    let basketItemPrice = document.createElement('div');
-    basketItemPrice.classList.add('basketItemPrice');
-    let basketItemPriceText = document.createElement('h1');
-    basketItemPriceText.innerHTML = "£12.49";
-    basketItemPrice.appendChild(basketItemPriceText);
-    basketItemPriceBox.appendChild(basketItemPrice);
-    basketItemBox.appendChild(basketItemPriceBox);
-
-
-}
-
-function addTotalHtml()
-{
-    let basketContentsBox = document.getElementById('basketContentsBox');
-
-    let basketTotalBox = document.createElement('div');
-    basketTotalBox.setAttribute('id', 'basketTotalBox');
-    basketContentsBox.appendChild(basketTotalBox);
-
-    let basketTotal = document.createElement('div');
-    basketTotal.setAttribute('id', 'basketTotal');
-    basketTotalBox.appendChild(basketTotal);
-
-    let basketTotalText = document.createElement('div');
-    basketTotalText.setAttribute('id', 'basketTotalText');
-    let basketTotalTextH1 = document.createElement('h1');
-    basketTotalTextH1.innerHTML = "Total";
-    basketTotalText.appendChild(basketTotalTextH1);
-    basketTotal.appendChild(basketTotalText);
-
-    let basketTotalPrice = document.createElement('div');
-    basketTotalPrice.setAttribute('id', 'basketTotalPrice');
-    let basketTotalPriceH1 = document.createElement('h1');
-    basketTotalPriceH1.innerHTML = "£00.00";
-    basketTotalPrice.appendChild(basketTotalPriceH1);
-    basketTotal.appendChild(basketTotalPrice);
-
-}
-
-function addBuyNowHtml()
-{
-    let body = document.getElementsByTagName('body')[0];
-
-    let buyNowBox = document.createElement('div');
-    buyNowBox.setAttribute('id', 'buyNowBox');
-    buyNowBox.classList.add('button');
-    let buyNowText = document.createElement('h1');
-    buyNowText.innerHTML = "Buy Now";
-    buyNowBox.appendChild(buyNowText);
-    body.appendChild(buyNowBox);
-    buyNowBox.addEventListener('click', displayCheckout);
-}
-
-async function displayCheckout(element)
-{
-    buyNow = element.currentTarget;
-    await new Promise(r => setTimeout(r, 600));
-    buyNow.remove();
-
-    let body = document.getElementsByTagName('body')[0];
-
-    let checkoutBox = document.createElement('div');
-    checkoutBox.setAttribute('id', 'checkoutBox');
-    body.appendChild(checkoutBox);
-
-    let addressHeading = document.createElement('h2');
-    addressHeading.innerHTML = 'Address';
-    checkoutBox.appendChild(addressHeading);
-
-    let addressOptionsBox = document.createElement('div');
-    addressOptionsBox.setAttribute('id', 'addressOptionsBox');
-    checkoutBox.appendChild(addressOptionsBox);
-
-    let addressOption = document.createElement('div');
-    addressOption.classList.add('addressOption');
-    addressOptionsBox.appendChild(addressOption);
-
-    let addressOptionName = document.createElement('h4');
-    addressOptionName.classList.add('addressOptionName');
-    addressOptionName.innerHTML = 'Address Option Name';
-    addressOption.appendChild(addressOptionName);
-
-    let addressOptionButton = document.createElement('div');
-    addressOptionButton.classList.add('addressOptionButton');
-    addressOption.appendChild(addressOptionButton);
-
-    let addressOptionRadio = document.createElement('input');
-    addressOptionRadio.setAttribute('type', 'radio');
-    addressOptionButton.appendChild(addressOptionRadio);
-
-    let paymentHeading = document.createElement('h2');
-    paymentHeading.innerHTML = 'Payment';
-    checkoutBox.appendChild(paymentHeading);
-
-    let paymentOptionsBox = document.createElement('div');
-    paymentOptionsBox.setAttribute('id', 'paymentOptionsBox');
-    checkoutBox.appendChild(paymentOptionsBox);
-
-    let paymentOption = document.createElement('div');
-    paymentOption.classList.add('paymentOption');
-    paymentOptionsBox.appendChild(paymentOption);
-
-    let paymentOptionAcc = document.createElement('h4');
-    paymentOptionAcc.classList.add('paymentOptionAcc');
-    paymentOptionAcc.innerHTML = '**** **** **** 1234';
-    paymentOption.appendChild(paymentOptionAcc);
-
-    let paymentOptionButton = document.createElement('div');
-    paymentOptionButton.classList.add('paymentOptionButton');
-    paymentOption.appendChild(paymentOptionButton);
-
-    let paymentOptionRadio = document.createElement('input');
-    paymentOptionRadio.setAttribute('type', 'radio');
-    paymentOptionButton.appendChild(paymentOptionRadio);
-
-    let checkoutButton = document.createElement('div');
-    checkoutButton.setAttribute('id', 'checkoutButton');
-    checkoutButton.classList.add('button');
-    checkoutButton.addEventListener('mouseenter', buttonMouseEnter);
-    checkoutButton.addEventListener('mouseleave', buttonMouseOut);
-    checkoutButton.addEventListener('click', buttonOnClick);
-    checkoutButton.addEventListener('click', checkoutClick);
-    body.appendChild(checkoutButton);
-
-    let checkoutButtonText = document.createElement('h1');
-    checkoutButtonText.innerHTML = 'Checkout';
-    checkoutButton.appendChild(checkoutButtonText);
-
-    checkoutBox.classList.add('slideUp');
-    checkoutButton.classList.add('slideUp');
-    checkoutBox.onanimationend = () => {
-        checkoutBox.classList.remove('slideUp');
-        checkoutButton.classList.remove('slideUp');
-    }
-}
-
-async function checkoutClick(element)
-{
-    await new Promise(r => setTimeout(r, 490));
-    window.location.href = "orderComplete.html";
-}
-
-async function basketRemove(element)
-{
-    targetId = element.currentTarget.id;
-    await new Promise(r => setTimeout(r, 490));
-    let basketItem = document.getElementsByClassName('basketItemBox');
-    let itemArr = Array.from(basketItem);
-    itemArr.forEach(element => {
-        if (element.id == targetId)
-        {
-            console.log(element);
-            element.remove();
-            removeBasketContents(targetId);
-        }
-    });
-    if (basketContents.length == 0)
-    {
-        basketLoad();
-    }
-    setTotal();
-}
-
-function setTotal()
-{
-    let totalDiv = document.getElementById('basketTotalPrice');
-    let totalText = totalDiv.children[0];
-    var total = 0;
-    let priceBoxArr = Array.from(document.getElementsByClassName('basketItemPrice'));
-    if (priceBoxArr.length != 0)
-    {
-        priceBoxArr.forEach(element => {
-            let rawPrice = element.children[0].innerHTML;
-            let price = rawPrice.replace('£', "");
-            total = total + parseFloat(price);
-        });
-    }
-    else
-    {
-        total = '00.00';
-    }
-    totalText.innerHTML = "£" + total;
-
 }
 
 //This function is used to send the post request to the server.

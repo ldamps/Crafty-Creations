@@ -63,7 +63,8 @@ function getProductDetails($productID) {
             // calculate the total price for this item
             $itemTotalPrice = $productPrice * $quantity;
             $totalPrice += $itemTotalPrice; // ddd to the total cart price
-       
+
+            
             echo "<div class='basketItemBox'>
                     <div class='basketItem button' href='product.html?productId=$productID'>
                         <div class='basketItemInnerTable'>
@@ -101,7 +102,6 @@ function getProductDetails($productID) {
 
     <div id="buyNowBox" class="button">
         <h1>buy now</h1>
-
     </div>
 
 </body>
