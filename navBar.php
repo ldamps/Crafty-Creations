@@ -9,21 +9,23 @@
     <script src="https://kit.fontawesome.com/f06d9443ee.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="topnav">
+    <nav id ="help" class="topnav">
         <a class="company" href="index.php">Crafty Creations</a>
         <ul>
         <?php
             session_start();
             //unset($_SESSION["LoggedIn"]);
              // remove all extras
-            if (isset($_POST['logout']) || isset($_POST['my_form'])) {
-                unset($_SESSION["LoggedIn"]);
+            if (isset($_POST['logout'])) {
                 // delete user cookie
                 setcookie("ID", "", time() - 3600);
+                // unset logged in session
+                unset($_SESSION["LoggedIn"]);
             }
+
+           
             if (isset($_SESSION["LoggedIn"])) {
-                echo "<a class='button' type='submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
-                echo "<form method='post'><button class='logoutBtn' class='button' name='logout' href='index.php'>Log Out</button></form>";
+                echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
 
                 //getting role of user
                 $role = $_SESSION["LoggedIn"]; 
@@ -32,17 +34,30 @@
                 //role specific buttons
                 if ($role === "customer") { 
                     echo "<a class='button' href='orderHistory.php'>My Orders</a>";
-                    echo "<a class='button' href='cart.php'>Cart</a>";
-                } elseif ($role === "Manager" || $role === "CEO") { 
-                    echo "<a class='button' href='storeManager.php'>Manage Store</a>";
-                } elseif ($role === "IT Support" || $role === "Website Development") { 
+                    echo    '<a class="button" href="basket.php" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
+                } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
+                    echo "<a class='button' href='Employees.php'>Employees</a>";
+                    echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
+                    echo "<a class='button' href='orderHistory.php'>Order History</a>";
+                    echo "<a class='button' href='supplierPage.php'>Supplier</a>";
+                    echo "<a class='button' href='salesPage.php'>Sales</a>";
+                } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
                     echo "<a class='button' href='systemStatus.php'>System Status</a>";
-                    echo "<a class='button' href='updateWebsite.php'>Update Website</a>";
+                    echo "<a class='button' href='#'>Employee Details</a>";
+                    echo "<a class='button' href='payroll.php'>Payroll</a>";
+                    echo "<a class='button' href='#'>Sales</a>";
+                    echo "<a class='button' href='#'>Suppliers</a>";
+                    echo "<a class='button' href='https://github.com/ldamps/Crafty-Creations'>IT</a>";
                 } else { 
-                    echo "<a class='button' href='employeeDashboard.php'>Dashboard</a>";
+                    echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
+                    echo "<a class='button' href='ShopOrderHistory.php'>Shop Order History</a>";
                 }
+                // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
+                echo "<form id='form' name='logoutForm' method='post'><input type='hidden' name='logout' value='true'></form>
+                <a id='logout' class='button' onclick='submit();' href='javascript:;' >Log Out</a>";
             } else {
-                echo "<a class='button' href='loginPage.php'>log in | sign up</a>";
+                echo "<a class='button' href='loginPage.php'>log in | sign up <i class='fa-solid fa-lock'></i></a>";
+                echo    '<a class="button" href="basket.php" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
             }
         ?>
         </ul>
@@ -85,3 +100,28 @@
 </body>
 
 </html>
+<script>
+
+function submit()
+{
+    console.log("submit");
+    // took this from here - https://stackoverflow.com/questions/1960240/jquery-ajax-submit-form
+    // add logout to form data
+    var formData = new FormData();
+    formData.append('logout', 'true');
+    $.ajax({
+        type: "POST",
+        url: "index.php", // post to same page
+        data: formData,
+        processData: false,
+        contentType: false,
+        error: function(jqXHR, textStatus, errorMessage) {
+            console.log(errorMessage); 
+        },
+        success: function(data) {
+            window.location.reload();
+            
+        } 
+    });
+}
+</script>

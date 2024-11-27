@@ -2,10 +2,12 @@
 //try and get all elemnts from the page. Some elements exist on different pages.
 var p = document.getElementsByClassName('product');
 let product = Array.from(p); 
+var b = document.getElementsByClassName('button');
+let button = Array.from(b);
 var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 var PS = document.getElementsByClassName('ProductSearch');
-let searchProductType = Array.from(PS);
+let POSTSENDProductType = Array.from(PS);
 var pb = document.getElementsByClassName('payeeSearchButton');
 let payeeButton = Array.from(pb);
 var payB = document.getElementsByClassName('payButton');
@@ -13,48 +15,24 @@ let payButton = Array.from(payB);
 var detailsB = document.getElementsByClassName('detailsButton');
 let detailsButton = Array.from(detailsB);
 
-var addToCart = document.getElementById('addToCart');
-if (addToCart != null)
-{
-    addToCart.addEventListener('click', addToCartClick);
-}
+var supplierB = document.getElementsByClassName('supplierButton');
+let supplierButton = Array.from(supplierB);
 
+var addSB = document.getElementsByClassName('addSupplierButton');
+let addSupplierButton = Array.from(addSB);
+
+var addToCart = document.getElementById('addToCart');
 var basket = document.getElementById('basketImage');
 var basketContents;
-if (localStorage.getItem('basketContents') != null)
-{
-    console.log('found');
-    basketContents = JSON.parse(localStorage.getItem('basketContents'));
-}
-else
-{
-    console.log('not found');
-    basketContents = [];
-}
-
-var basketRemoveButton = document.getElementsByClassName('basketItemRemoveBox');
-if (basketRemoveButton != null)
-{
-    let removeArr = Array.from(basketRemoveButton);
-    removeArr.forEach(element => {
-        element.addEventListener('click', basketRemove);
-    });
-}
-
-basket.addEventListener('click', basketClick);
-
 
 var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
-var searchBar = document.getElementById('Search');
+var POSTSENDBar = document.getElementById('Search');
 
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
-basketLoad()
 
-var b = document.getElementsByClassName('button');
-let button = Array.from(b);
 
 //Therefore, we need to check if the element exists before adding an event listener to it. Which is what the following if statements do.
 
@@ -84,13 +62,13 @@ if (quantityUp != null){
     quantityDown.addEventListener('click', quantityAdjust);
 }
 
-if (searchBar != null){
-    searchBar.addEventListener('keypress', searchProducts);
+if (POSTSENDBar != null){
+    POSTSENDBar.addEventListener('keypress', POSTSENDProducts);
 }
 
-if (searchProductType != null){
-    searchProductType.forEach(element => {
-        addEventListener('click', searchProducts);
+if (POSTSENDProductType != null){
+    POSTSENDProductType.forEach(element => {
+        addEventListener('click', POSTSENDProducts);
     })
 }
 
@@ -102,12 +80,12 @@ if(selector != null){
 
 if (payeeButton != null){
         payeeButton.forEach(element => {
-            element.addEventListener('click', searchPayee);
+            element.addEventListener('click', POSTSENDPayee);
         });
 }
 
 if (payeeInput != null){
-    payeeInput.addEventListener('keypress', searchPayee);
+    payeeInput.addEventListener('keypress', POSTSENDPayee);
 }
 
 if (payButton != null){
@@ -126,6 +104,37 @@ if (resetSearch != null){
     resetSearch.addEventListener('click', resetSearchFields);
 }
 
+if (localStorage.getItem('basketContents') != null)
+    {
+        console.log('found');
+        basketContents = JSON.parse(localStorage.getItem('basketContents'));
+    }
+    else
+    {
+        console.log('not found');
+        basketContents = [];
+    }
+
+if (basket != null){
+    basket.addEventListener('click', basketClick);
+}
+
+if (addToCart != null)
+    {
+        addToCart.addEventListener('click', addToCartClick);
+    }
+
+if (supplierButton != null){
+    supplierButton.forEach(element => {
+        element.addEventListener('click', supplierDetails);
+    });
+}
+
+if (addSupplierButton != null){
+    addSupplierButton.forEach(element => {
+        element.addEventListener('click', addSupplier);
+    });
+}
 
 //Functions of the event listeners
 
@@ -137,7 +146,7 @@ function productOnClick(element)
     element.currentTarget.style.boxShadow = '-4px -4px #000000';
     element.currentTarget.onanimationend = (element) => {
         element.currentTarget.classList.remove('productClick');
-        location.replace("product.html?" + ID);
+        location.replace("product.php?ID=" + ID);
         element.currentTarget.style.boxShadow = '';
     };
 }
@@ -199,16 +208,19 @@ function quantityAdjust(element)
 {
     let quantityButton = element.currentTarget;
     let quantityText = document.getElementById('quantityText');
+    let quantityInput = document.getElementById('quantityInput'); // hidden input field for quantity
     console.log(quantityText);
     let quantity = Number(quantityText.innerHTML);
-    if (quantityButton.id == 'quantityUp')
-    {
-        quantityText.innerHTML = quantity + 1;
+    
+    
+    if (quantityButton.id == 'quantityUp') {
+        quantity++; 
+    } else if (quantity > 1) {
+        quantity--; 
     }
-    else if (quantity > 1)
-    {
-        quantityText.innerHTML = quantity - 1;
-    }
+
+    quantityText.innerHTML = quantity; // update the text on the page
+    quantityInput.value = quantity;   // update the hidden input 
 }
 
 
@@ -224,24 +236,9 @@ function basketClick(element)
     window.onload(basketLoad());
 }
 
-function addBasketContents(productId)
+function updateBasketContents(productId)
 {
     basketContents.push(productId);
-    localStorage.setItem('basketContents', JSON.stringify(basketContents));
-}
-
-function removeBasketContents(productId)
-{
-    var length = basketContents.length;
-    for (let i = 0; i < length; i++)
-    {
-        let item = basketContents.shift();
-        if (item != targetId)
-        {
-            basketContents.push(item);
-        }
-    }
-    console.log(basketContents);
     localStorage.setItem('basketContents', JSON.stringify(basketContents));
 }
 
@@ -251,7 +248,7 @@ function addToCartClick()
     let splitUrl = url.split('?');
     let productId = splitUrl[1];
 
-    addBasketContents(productId);
+    updateBasketContents(productId);
 
     console.log(basketContents);
 }
@@ -259,16 +256,11 @@ function addToCartClick()
 function basketLoad()
 {
     let basketContentsBox = document.getElementById('basketContentsBox');
-    let totalBox = document.getElementById('basketTotalBox');
-    if (basketContents.length == 0)
+    if (basketContents == [])
     {
-        if (totalBox != null)
-        {
-            totalBox.remove();
-        }
-        let h2 = document.createElement('h2');
-        h2.innerHTML = 'looks like your basket is empty...'
-        basketContentsBox.appendChild(h2);
+        let h1 = document.createElement('h1');
+        h1.innerHTML = 'looks like your basket is empty...'
+        basketContentsBox.appendChild(h1);
     }
     else {
         //add contents of basket here, php is required though I think.
@@ -545,12 +537,10 @@ function setTotal()
     {
         total = '00.00';
     }
-    totalText.innerHTML = "£" + total;
-
 }
 
 //This function is used to send the post request to the server.
-function search(data, page){
+function POSTSEND(data, page){
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', page, true);
     xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -571,23 +561,23 @@ function search(data, page){
 //This function restricts the products to be shown on index to be only one of the types of product.
 function refineElements(element){
     let data = element.srcElement.innerText;
-    search("ProductSearch=" + encodeURIComponent(data), "index.php");
+    POSTSEND("ProductSearch=" + encodeURIComponent(data), "index.php");
 }
 
 
-//This function is used to search for products on the index page.
-function searchProducts(element){
+//This function is used to POSTSEND for products on the index page.
+function POSTSENDProducts(element){
     if(element.currentTarget.id == 'Search'){
         element.currentTarget.onkeypress = (element) => {
             if (element.key == 'Enter'){
-                search("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
+                POSTSEND("Search=" + encodeURIComponent(element.currentTarget.value), "index.php");
             }
         }
     }
 }
 
-//This function is used to search for a payee on the payroll page.
-function searchPayee(element){
+//This function is used to POSTSEND for a payee on the payroll page.
+function POSTSENDPayee(element){
     if(element.currentTarget.id == 'payeeInput'){
         element.currentTarget.onkeypress = (element) => {
             if (element.key == 'Enter'){
@@ -598,18 +588,36 @@ function searchPayee(element){
     else{
         var data = document.getElementById("payeeInput").value;
     }
-    search("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
+    POSTSEND("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
 }
 
 //This function is used to pay a staff member on the payroll page.
 function payStaff(element){
-    search("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+    POSTSEND("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
 
 function payeeDetails(element){
-    search("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+    POSTSEND("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
 
 function resetSearchFields(element){
-    search("reset=1", "index.php");
+    POSTSEND("reset=1", "index.php");
+}
+
+function supplierDetails(element){
+    POSTSEND("supplierDetails="+encodeURIComponent(element.currentTarget.id), "suppliers.php");
+}
+
+function addSupplier(element){
+    var newSupplier = [];
+    newSupplier.push(document.getElementById('addNewSupplierName').value);
+    newSupplier.push(document.getElementById('addNewSupplierType').value);
+    newSupplier.push(document.getElementById('addNewSupplierEmail').value);
+    newSupplier.push(document.getElementById('addNewSupplierAddress').value);
+    if(newSupplier.includes('')){
+        alert('Please fill in all fields');
+        return;
+    }
+    console.log(newSupplier);
+    POSTSEND("addSupplier="+encodeURIComponent(newSupplier), "addNewSupplier.php");
 }
