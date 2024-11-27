@@ -20,7 +20,6 @@
     
         if ($role === "Shop Assistant" || $role === "Supervisor")
         {
-            echo "test";
             // get the employee's manager using stored procedure
             $queryManager = "CALL GetManager(:employeeID)";
             $stmtManager = $mysql->prepare($queryManager);
@@ -82,12 +81,7 @@
             INNER JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
             INNER JOIN Shop s ON se.Shop_shopID = s.ShopID
             INNER JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
-            INNER JOIN Employee m ON m.EmployeeID = (
-                    SELECT Employee_EmployeeID
-                    FROM ShopEmployee
-                    WHERE Shop_ShopID = s.ShopID
-                    AND m.Role = 'Manager'
-                    LIMIT 1)
+            INNER JOIN Employee m ON m.FirstName = :ManFirst AND m.Surname = :ManLast
             INNER JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
             INNER JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
             INNER JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
