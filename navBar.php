@@ -34,7 +34,7 @@
                 //role specific buttons
                 if ($role === "customer") { 
                     echo "<a class='button' href='orderHistory.php'>My Orders</a>";
-                    echo    '<a class="button" href="basket.html" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
+                    echo    '<a class="button" href="basket.php" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
                 } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
                     echo "<a class='button' href='Employees.php'>Employees</a>";
                     echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
@@ -57,6 +57,7 @@
                 <a id='logout' class='button' onclick='submit();' href='javascript:;' >Log Out</a>";
             } else {
                 echo "<a class='button' href='loginPage.php'>log in | sign up <i class='fa-solid fa-lock'></i></a>";
+                echo    '<a class="button" href="basket.php" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
             }
         ?>
         </ul>

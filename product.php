@@ -78,12 +78,19 @@ if ($product) {
                         <h1>+</h1>
                     </div>
                 </div>
-                <div id="addToCart" class="button">
-                    <h1>add to cart</h1>
-                </div>
-                <div id="buy" class="button">
+
+                <form action="basket.php" method="POST">
+                <input type="hidden" name="productID" value="<?php echo $productID; ?>">
+                <input type="hidden" name="quantity" id="quantityInput" value="1">
+
+                  <!-- works with a button-->
+                  <button type="submit" id="addToCart" class="button">
+                  <h1>add to cart</h1>
+                  </button>
+                  <div id="buy" class="button">
                     <h1>buy now</h1>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div id="heroProductInfo">
