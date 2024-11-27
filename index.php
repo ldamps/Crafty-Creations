@@ -212,7 +212,9 @@
         // echo $_SESSION['currentSearch'];
         $PID = $products[$i]->id - 1;
         echo "<div class='product' id=$PID>";
-        echo "<img class=productImage src=''/img>";
+        $PID = $products[$i]->id;
+        echo "<a href='product.php?ID=$PID'>"; 
+        echo "<img class='productImage' src='images/".$products[$i]->id.".png' />";
         echo "<h1 class = productName >".$products[$i]->name."</h1>";
         echo "<p class = productInfo>".$products[$i]->description."</p>";
         echo "<p class = productInfo>£".$products[$i]->price."</p>";
