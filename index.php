@@ -17,8 +17,41 @@
     if (isset($_SESSION['LoggedIn'])){
         $role = $_SESSION["LoggedIn"];
         $userID = $_COOKIE["ID"];
-    
-        if ($role === "Shop Assistant" || $role === "Supervisor")
+        if ($role === "customer")
+        {
+            echo "customer";
+             // create view dynamically so it is based on the customers ID and they only see their own information
+             $viewSQL = "DROP VIEW IF EXISTS CustomerView;
+             Create OR REPLACE View CustomerView
+             AS 
+             SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
+             o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.Customer_CustomerID,
+             p.CardNumber, p.CVV, p.ExpiryDate, 
+             a.City, a.HouseNumber, a.Postcode, a.StreetName,
+             r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
+             From Customer c  
+             LEFT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID
+             LEFT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
+             LEFT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
+             LEFT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
+             WHERE CustomerID = :userID
+             UNION
+             SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
+             o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.Customer_CustomerID,
+             p.CardNumber, p.CVV, p.ExpiryDate, 
+             a.City, a.HouseNumber, a.Postcode, a.StreetName,
+             r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
+             From Customer c 
+             RIGHT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID 
+             RIGHT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
+             RIGHT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
+             RIGHT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
+             WHERE CustomerID = :userID";  
+         $stmtCustomerView = $mysql->prepare($viewSQL);
+         $stmtCustomerView->execute(["userID" => $userID]);
+         $stmtCustomerView->closeCursor();
+        }
+        else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
             // get the employee's manager using stored procedure
             $queryManager = "CALL GetManager(:employeeID)";
@@ -91,6 +124,11 @@
             $stmtEmployeeView->execute(["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]);
             $stmtEmployeeView->closeCursor();
             //["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]
+        }
+        else if ($role === "Manager" || $role === "Assistant Manager")
+        {
+            // create manager view
+            echo "creating manager view";
         }
     }
     
