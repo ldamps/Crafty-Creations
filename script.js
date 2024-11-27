@@ -414,8 +414,7 @@ function addBuyNowHtml()
     buyNowBox.addEventListener('click', displayCheckout);
 }
 
-async function displayCheckout(element)
-{
+async function displayCheckout(element) {
     buyNow = element.currentTarget;
     await new Promise(r => setTimeout(r, 600));
     buyNow.remove();
@@ -434,13 +433,15 @@ async function displayCheckout(element)
     addressOptionsBox.setAttribute('id', 'addressOptionsBox');
     checkoutBox.appendChild(addressOptionsBox);
 
+  
+    userAddress.forEach(function(address) {
     let addressOption = document.createElement('div');
     addressOption.classList.add('addressOption');
     addressOptionsBox.appendChild(addressOption);
 
     let addressOptionName = document.createElement('h4');
     addressOptionName.classList.add('addressOptionName');
-    addressOptionName.innerHTML = 'Address Option Name';
+    addressOptionName.innerHTML = `${address.HouseNumber} ${address.StreetName}, ${address.City}, ${address.Postcode}`;
     addressOption.appendChild(addressOptionName);
 
     let addressOptionButton = document.createElement('div');
@@ -450,6 +451,7 @@ async function displayCheckout(element)
     let addressOptionRadio = document.createElement('input');
     addressOptionRadio.setAttribute('type', 'radio');
     addressOptionButton.appendChild(addressOptionRadio);
+    });
 
     let paymentHeading = document.createElement('h2');
     paymentHeading.innerHTML = 'Payment';
@@ -459,13 +461,16 @@ async function displayCheckout(element)
     paymentOptionsBox.setAttribute('id', 'paymentOptionsBox');
     checkoutBox.appendChild(paymentOptionsBox);
 
+
+    userPayments.forEach(function(payment) {
     let paymentOption = document.createElement('div');
     paymentOption.classList.add('paymentOption');
     paymentOptionsBox.appendChild(paymentOption);
 
     let paymentOptionAcc = document.createElement('h4');
     paymentOptionAcc.classList.add('paymentOptionAcc');
-    paymentOptionAcc.innerHTML = '**** **** **** 1234';
+    let cardLastFour = String(payment.CardNumber).slice(-4); // get the last 4 digits of the CardNumber
+    paymentOptionAcc.innerHTML = `**** **** **** ${cardLastFour}`;
     paymentOption.appendChild(paymentOptionAcc);
 
     let paymentOptionButton = document.createElement('div');
@@ -475,6 +480,7 @@ async function displayCheckout(element)
     let paymentOptionRadio = document.createElement('input');
     paymentOptionRadio.setAttribute('type', 'radio');
     paymentOptionButton.appendChild(paymentOptionRadio);
+    });
 
     let checkoutButton = document.createElement('div');
     checkoutButton.setAttribute('id', 'checkoutButton');
@@ -492,10 +498,11 @@ async function displayCheckout(element)
     checkoutBox.classList.add('slideUp');
     checkoutButton.classList.add('slideUp');
     checkoutBox.onanimationend = () => {
-        checkoutBox.classList.remove('slideUp');
-        checkoutButton.classList.remove('slideUp');
+    checkoutBox.classList.remove('slideUp');
+    checkoutButton.classList.remove('slideUp');
     }
 }
+
 
 async function checkoutClick(element)
 {
