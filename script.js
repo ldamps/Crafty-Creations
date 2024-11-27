@@ -308,6 +308,8 @@ async function addBasketAnimations() {
     }
 }
 
+/**
+
 function addBasketItemHtml(id, quantity)
 {
     let basketContentsBox = document.getElementById('basketContentsBox');
@@ -367,6 +369,8 @@ function addBasketItemHtml(id, quantity)
     basketItemPriceBox.appendChild(basketItemPrice);
     basketItemBox.appendChild(basketItemPriceBox);
 }
+
+ */
 
 function addTotalHtml()
 {
@@ -520,6 +524,7 @@ async function basketRemove(element)
     setTotal();
 }
 
+/* 
 function setTotal()
 {
     let totalDiv = document.getElementById('basketTotalPrice');
@@ -541,6 +546,7 @@ function setTotal()
     totalText.innerHTML = '£' + total;
 }
 
+*/
 //This function is used to send the post request to the server.
 function POSTSEND(data, page){
     const xhhtp = new XMLHttpRequest();

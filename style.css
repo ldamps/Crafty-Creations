@@ -676,3 +676,21 @@ a {
 }
 
 /* Add things below to make table in payroll pretty */
+
+
+
+/* styling for the remove button*/
+.removeButton {
+    background: none;
+    border: none;
+    font-size: 40px;
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+
+.removeButton:hover {
+    color: darkred;
+}
