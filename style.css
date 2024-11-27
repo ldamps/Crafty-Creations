@@ -675,4 +675,31 @@ a {
     font-weight: 550;
 }
 
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    padding: 0 15px; 
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+td {
+    background-color: #fff;
+}
+
 /* Add things below to make table in payroll pretty */

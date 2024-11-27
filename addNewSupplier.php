@@ -2,12 +2,16 @@
 
 <?php
 require 'db.php';
-include 'addNewSupplier.html';
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // echo "<p>post</p>";
     if(isset($_POST['addSupplier'])){
         // echo "<h1>Supplie</h1>";
+        $name = $_POST['name'];
+        $supplyType = $_POST['type'];
+        $email = $_POST['email'];
+        $address = $_POST['address'];
         $_SESSION['addSupplier'] = $_POST['addSupplier'];
     }
     if(isset($_SESSION['addSupplier'])){
@@ -15,14 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-
 if (isset($_SESSION['addSupplier'])){
-    // echo "<h1>Supplier Details</h1>";
-    $name = $newSupplier[0];
-    $address = $newSupplier[3];
-    $email = $newSupplier[2];
-    $supplyType = $newSupplier[1];
-    // echo $name." ".$address." ".$email." ".$supplyType;
 
     $query = "INSERT INTO Supplier (Name, Address, ProductTypeSupplied, Email) VALUES ('$name', '$address', '$supplyType', '$email')";
     $mysql->exec($query);
@@ -31,7 +28,10 @@ if (isset($_SESSION['addSupplier'])){
 
     unset($_SESSION['addSupplier']);
     unset($_POST['addSupplier']);
+    header("Refresh:0; url=supplierPage.php");
 }
+include 'addNewSupplier.html';
+include'footer.html';
 ?>
 
-<script type="text/javascript" src="script.js"></script>
+
