@@ -37,6 +37,7 @@ if ($role === "Supervisor" || $role === "Shop Assistant")
 }
 else if ($role === "Manager" || $role === "Assistant Manager")
 {
+     
     // === Queries for Manager
     // select all online orders
     $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ManagerView";
@@ -50,10 +51,7 @@ else if ($role === "Manager" || $role === "Assistant Manager")
     $stmtOnlineReturns = $mysql->prepare($queryOnlineReturns);
     $stmtOnlineReturns->execute();
     $OnlineReturns = $stmtOnlineReturns->fetchAll(PDO::FETCH_ASSOC);
-    //echo !empty($OnlineReturns);
-    //echo count($OnlineReturns);
-    //echo $OnlineReturns[0]['OnlineReturnID'];
-    //echo sizeof($OnlineReturns) ."";
+  
     // get all shop returns
     $queryShopReturns = "SELECT DISTINCT ShopReturnID, shopReason, ShopAmountToReturn, ShopReturnCustomer FROM ManagerView";
     $stmtShopReturns = $mysql->prepare($queryShopReturns);
@@ -74,7 +72,7 @@ else if ($role === "Manager" || $role === "Assistant Manager")
     // prepare the sql query 
     $queryUpdateStatus = "UPDATE OnlineOrder SET OrderStatus = 'Returned' WHERE OrderID = :orderID AND OrderStatus = 'Delivered'";
     $stmtUpdate = $mysql->prepare($queryUpdateStatus);
-
+    
     $stmtUpdate->execute([':orderID' => $orderID]);
     // check if any rows were updated
     if ($stmtUpdate->rowCount() > 0) {
@@ -188,7 +186,8 @@ tr:nth-child(even) {
                 </thead>
                 <tbody>
                     <?php 
-                    if (!$onlineOrders):
+                    //echo $onlineOrders[0]['OrderID'];
+                   if(isset($onlineOrders[0]['OrderID'])):
                     foreach ($onlineOrders as $order): ?>
                         <tr>
                             <td><?php echo $order['OrderID']; ?></td>
@@ -287,7 +286,7 @@ tr:nth-child(even) {
 
                     <?php 
                     //echo !empty($OnlineReturns
-                    if (!($OnlineReturns)):
+                    if(isset($OnlineReturns[0]['OnlineReturnID'])):
                     foreach ($OnlineReturns as $order): ?>
                         <tr>
                             <td><?php echo $order['OnlineReturnID']; ?></td>
@@ -341,7 +340,7 @@ tr:nth-child(even) {
                 </thead>
                 <tbody>
                     <?php 
-                    if (!($ShopOrders)):
+                    if(isset($ShopOrders[0]['PurchaseID'])):
                     foreach ($ShopOrders as $order): ?>
                         <tr>
                             <td><?php echo $order['PurchaseID']; ?></td>
@@ -426,7 +425,7 @@ tr:nth-child(even) {
                 </thead>
                 <tbody>
                     <?php
-                    if (!$ShopReturns):
+                    if(isset($ShopReturns[0]['ShopReturnID'])):
                      foreach ($ShopReturns as $order): ?>
                         <tr>
                             <td><?php echo $order['ShopReturnID']; ?></td>
