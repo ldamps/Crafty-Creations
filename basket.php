@@ -8,6 +8,29 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
+// Check if the user is logged in
+if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer") {
+    $userID = $_COOKIE['ID'] ?? null;
+
+    if ($userID) {
+
+        $queryPersonal = "SELECT * From CustomerView";
+        $stmtPersonal = $mysql->prepare($queryPersonal);
+        $stmtPersonal->execute();
+        $customerInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+    
+        $queryNumPostCodes = "SELECT Distinct HouseNumber, Postcode, StreetName, City From CustomerView";
+        $stmtPost = $mysql->prepare($queryNumPostCodes);
+        $stmtPost->execute();
+        $addresses = $stmtPost->fetchAll(PDO::FETCH_ASSOC);
+    
+        $queryPayment = "SELECT Distinct CardNumber, CVV, ExpiryDate From CustomerView";
+        $stmtPay = $mysql->prepare($queryPayment);
+        $stmtPay->execute();
+        $payments = $stmtPay->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
 // remove product
 if (isset($_POST['removeProductID'])) {
     $productID = $_POST['removeProductID'];
@@ -53,6 +76,14 @@ function getProductDetails($productID) {
 
 ?>
 
+<?php if (isset($userID)): ?>
+    <div id="userIDBox">
+        <h2>User ID</h2>
+        <p><?php echo htmlspecialchars($userID); ?></p>
+    </div>
+<?php endif; ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,6 +96,41 @@ function getProductDetails($productID) {
 </head>
 
 <body>
+    <!-- Added for debugging-->
+<div id="loggedInStatus">
+    <h2>Login Status</h2>
+    <p>
+        <?php
+        if (isset($_SESSION['LoggedIn'])) {
+            echo htmlspecialchars("Logged In as: {$_SESSION['LoggedIn']}");
+        } else {
+            echo "Not Logged In.";
+        }
+        ?>
+    </p>
+</div>
+    <?php if (!empty($customerInfo) && !empty($addresses) && !empty($payments)): ?>
+            <div id="userDetails">
+                <h2>Address</h2>
+                <?php foreach ($addresses as $address): ?>
+                    <p><?php echo htmlspecialchars("{$address['HouseNumber']} {$address['StreetName']}, {$address['City']}, {$address['Postcode']}"); ?></p>
+                <?php endforeach; ?>
+
+                <h2>Payment Methods</h2>
+                <?php if (count($payments) == 0): ?>
+                    <p>No payment methods saved.</p>
+                <?php endif; ?>
+                <?php foreach ($payments as $payment): ?>
+                    
+                    <p><strong>Card Number:</strong> **** **** **** <?php echo substr($payment['CardNumber'], -4); ?></p>
+                    <p><strong>Expiry Date:</strong> <?php echo $payment['ExpiryDate']; ?></p>
+                    <p><strong>CVV:</strong> ***</p>
+                    <br>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p>Please log in to view your address and payment details.</p>
+        <?php endif; ?>
     <div id="basketContentsBox">
     <?php
         $totalPrice = 0; // initialize total price
@@ -149,7 +215,24 @@ function getProductDetails($productID) {
         }
 
         addBuyNowHtml();
+
+
     </script>
+    
+    <script type="text/javascript">
+    //need to pass the price, customerID, shop_ID?
+    //so we can make an entry in the table at ordercomplete? 
+    var userAddress = <?php echo json_encode($addresses); ?>;
+    var userPayments = <?php echo json_encode($payments); ?>;
+    var price = <?php echo json_encode($totalPrice); ?>;
+    var customerID = <?php echo json_encode($userID); ?>;
+    // debugging
+    console.log('User Address:', userAddress);
+    console.log('User Payments:', userPayments);
+    console.log('Price:', price);
+    console.log('Customer ID:', customerID);
+  </script>
+
 </body>
 <script src="script.js"></script>
 
