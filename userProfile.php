@@ -31,7 +31,7 @@ if (isset($_SESSION['LoggedIn'])):
     }else {
         if ($role === "Manager" || $role === "Assistant Manager")
         {
-            $queryPersonal = "SELECT DISTINCT Surname, FirstName, EmailAddress, Role FROM ManagerView";
+            $queryPersonal = "SELECT DISTINCT * FROM ManagerView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
