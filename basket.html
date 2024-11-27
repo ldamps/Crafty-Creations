@@ -1,3 +1,44 @@
+<?php include 'navBar.php'; ?>
+
+<?php
+include('db.php'); 
+
+// initialize cart session
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// add products
+if (isset($_POST['productID']) && isset($_POST['quantity'])) {
+    $productID = $_POST['productID'];
+    $quantity = $_POST['quantity'];
+
+    // if product is already in the cart, update the quantity 
+    if (isset($_SESSION['cart'][$productID])) {
+        $_SESSION['cart'][$productID] += $quantity;
+    } else {
+        // if not, add product with the quantity
+        $_SESSION['cart'][$productID] = $quantity;
+    }
+
+    // redirect to the basket page after adding teh product
+    header("Location: basket.php");
+    exit();
+}
+
+// Function to get product details from the database
+function getProductDetails($productID) {
+    global $mysql;
+
+    $query = "SELECT ProductName, Price FROM Product WHERE ProductID = :productID";
+    $stmt = $mysql->prepare($query);
+    $stmt->execute([':productID' => $productID]);
+    return $stmt->fetch(PDO::FETCH_ASSOC); 
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,47 +50,58 @@
 </head>
 
 <body>
-    <nav class="topnav">
-        <a class="company" href="index.html">Crafty Creations</a>
-        <ul>
-            <img src="basketImage.svg" id="basketImage" class="button" href="#">
-            <a id='logInText' class="button" href="#">log in | sign up</a>
-        </ul>
-    </nav>
-
-    <nav class="selection">
-        <input type="text" placeholder="Search..">
-
-        <div class="yarn button">
-            <button class="dropbtn">Yarn
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="yarn-selection">
-                <a href="#">Show All</a>
-                <a href="#">Acrylic Yarn</a>
-            </div>
-        </div>
-
-        <div class="fabric button">
-            <button class="dropbtn">Fabric
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="fabric-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-
-        <div class="paint button">
-            <button class="dropbtn">Paint
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="paint-selection">
-                <a href="#">Show All</a>
-            </div>
-        </div>
-    </nav>
-
     <div id="basketContentsBox">
+    <?php
+        $totalPrice = 0; // initialize total price
+        // loop through the cart items and display them
+        foreach ($_SESSION['cart'] as $productID => $quantity) {
+            $productDetails = getProductDetails($productID); //get the product details
+            $productName = $productDetails['ProductName'];
+            $productPrice = $productDetails['Price'];
+            $imagePath = "images/" . $productID . ".png"; 
+
+            // calculate the total price for this item
+            $itemTotalPrice = $productPrice * $quantity;
+            $totalPrice += $itemTotalPrice; // ddd to the total cart price
+       
+            echo "<div class='basketItemBox'>
+                    <div class='basketItem button' href='product.html?productId=$productID'>
+                        <div class='basketItemInnerTable'>
+                            <div class='basketItemImageBox'>
+                            
+                                <img src='$imagePath' alt='$productName' class='basketItemImageBox'>
+                            </div>
+                            <div class='basketItemNameBox'>
+                                <h1>$productName</h1>
+                            </div>
+                            <div class='basketQuantity'>
+                                <h1>$quantity</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='basketItemPriceBox'>
+                        <div class='basketItemPrice'>
+                            <h1>£" . number_format($itemTotalPrice, 2) . "</h1> 
+                        </div>
+                    </div>
+                </div>";
+        }
+        ?>
+        <div id="basketTotalBox">
+            <div id="basketTotal">
+                <div id="basketTotalText">
+                    <h1>total</h1>
+                </div>
+                <div id="basketTotalPrice">
+                <h1>£<?php echo number_format($totalPrice, 2); ?></h1> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="buyNowBox" class="button">
+        <h1>buy now</h1>
+
     </div>
 
 </body>

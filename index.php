@@ -3,6 +3,7 @@
 <?php
     require 'db.php';
     include 'index.html';
+
     echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
@@ -11,6 +12,59 @@
     $increment = 40;
     if (!isset($_SESSION)){
         session_start();  
+    }
+    if (isset($_SESSION['LoggedIn'])){
+        $role = $_SESSION["LoggedIn"];
+        $userID = $_COOKIE["ID"];
+    
+        if ($role === "Shop Assistant" || $role === "Supervisor")
+        {
+            // get the employee's manager using stored procedure
+            $queryManager = "CALL GetManager(:employeeID)";
+            $stmtManager = $mysql->prepare($queryManager);
+            $stmtManager->bindParam(':employeeID', $userID, PDO::PARAM_INT);
+            $stmtManager->execute();
+            $ManagerInfo = $stmtManager->fetch();
+            $ManFirst = $ManagerInfo[0];
+            $ManLast = $ManagerInfo[1];
+            //echo $ManFirst . $ManLast;
+            $stmtManager->closeCursor();
+
+            // get the shop the employee works at using stored procedure
+            $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
+            $stmtShopWorked = $mysql->prepare($queryShopWorked);
+            $stmtShopWorked->bindParam(':employeeID', $userID, PDO::PARAM_INT);
+            $stmtShopWorked->execute();
+            $ShopWorkedInfo = $stmtShopWorked->fetchColumn();
+            $stmtShopWorked->closeCursor();
+
+            $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView2;
+            Create View ShopEmployeeView2
+            AS 
+            SELECT e.EmployeeID, e.Surname, e.FirstName, e.EmailAddress, e.Role, e.Password, e.hoursWorked, e.HourlyPay, 
+            bd.AccountName, bd.AccountNo, bd.SortCode,
+            o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.OrderDate, o.Customer_CustomerID AS customerID,
+            s.StreetName, s.Postcode, s.City, s.NumEmployees, s.TotalSales,
+            m.FirstName as ManagerFirstName, m.Surname AS ManagerSurname,
+            r.OnlineReturnID, r.Reason, r.AmountToReturn, r.Customer_CustomerID,	
+            sp.PurchaseID, sp.Price AS shopPrice, sp.PurchaseDate, sp.Customer_CustomerID AS shopCustomer, sp.Shop_shopID AS SID,
+            sr.ShopReturnID, sr.AmountToReturn as ShopAmountToReturn, sr.Reason AS shopReason, sr.Customer_CustomerID AS ShopReturnCustomer
+            From Employee e
+            LEFT JOIN BankDetails bd ON e.EmployeeID = bd.Employee_EmployeeID
+            LEFT JOIN ShopEmployee se ON e.EmployeeID = se.Employee_EmployeeID
+            LEFT JOIN Shop s ON se.Shop_shopID = s.ShopID
+            LEFT JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
+            LEFT JOIN Employee m ON  m.FirstName = :ManFirst AND m.Surname = :ManLast
+            LEFT JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
+            LEFT JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID OR r.Shop_ShopID = null)
+            WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
+            $stmtEmployeeView = $mysql->prepare($viewEmployeeSQL);
+            $stmtEmployeeView->execute(["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]);
+            $stmtEmployeeView->closeCursor();
+            //["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]
+        }
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
