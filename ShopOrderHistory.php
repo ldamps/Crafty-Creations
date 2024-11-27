@@ -8,7 +8,8 @@ $role = $_SESSION["LoggedIn"];
 $userID = $_COOKIE["ID"];
 //echo "Role: " . $role;
 
-
+if ($role === "Supervisor" || $role === "Shop Assistant")
+{
     // === Queries for Shop Employee
     // select all online orders
     $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ShopEmployeeView";
@@ -33,7 +34,34 @@ $userID = $_COOKIE["ID"];
     $stmtShopOrders = $mysql->prepare($queryShopOrders);
     $stmtShopOrders->execute();
     $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
- 
+}
+else if ($role === "Manager" || $role === "Assistant Manager")
+{
+    // === Queries for Manager
+    // select all online orders
+    $queryOnlineOrders = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo, Shop_shopID, OrderDate, customerID FROM ManagerView";
+    $stmtOnlineOrders = $mysql->prepare($queryOnlineOrders);
+    $stmtOnlineOrders->execute();
+    $onlineOrders = $stmtOnlineOrders->fetchAll(PDO::FETCH_ASSOC);
+
+    // get all online returns
+    $queryOnlineReturns = "SELECT DISTINCT OnlineReturnID, Reason, AmountToReturn, Customer_CustomerID FROM ManagerView";
+    $stmtOnlineReturns = $mysql->prepare($queryOnlineReturns);
+    $stmtOnlineReturns->execute();
+    $OnlineReturns = $stmtOnlineReturns->fetchAll(PDO::FETCH_ASSOC);
+
+    // get all shop returns
+    $queryShopReturns = "SELECT DISTINCT ShopReturnID, shopReason, ShopAmountToReturn, ShopReturnCustomer FROM ManagerView";
+    $stmtShopReturns = $mysql->prepare($queryShopReturns);
+    $stmtShopReturns->execute();
+    $ShopReturns = $stmtShopReturns->fetchAll(PDO::FETCH_ASSOC);
+
+    // shop orders
+    $queryShopOrders = "SELECT DISTINCT PurchaseID, shopPrice, PurchaseDate, shopCustomer, SID FROM ManagerView";
+    $stmtShopOrders = $mysql->prepare($queryShopOrders);
+    $stmtShopOrders->execute();
+    $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
+}
     //handle returns here
     // check if the form was submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID'])) {
@@ -138,8 +166,7 @@ tr:nth-child(even) {
     <div class="container">
         <h1>Shop Order History</h1>
         <!-- order history -->
-
-        <?php if ($role === "Shop Assistant" || $role === "Supervisor"): ?>
+        <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager"  || $role === "Assistant Manager"): ?>
         <div class="section">
             <br><h2>Online Orders</h2>
             <table class="order-history">
