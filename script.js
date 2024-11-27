@@ -2,8 +2,6 @@
 //try and get all elemnts from the page. Some elements exist on different pages.
 var p = document.getElementsByClassName('product');
 let product = Array.from(p); 
-var b = document.getElementsByClassName('button');
-let button = Array.from(b);
 var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 var PS = document.getElementsByClassName('ProductSearch');
@@ -32,7 +30,21 @@ var POSTSENDBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
+if (localStorage.getItem('basketContents') != null)
+    {
+        console.log('found');
+        basketContents = JSON.parse(localStorage.getItem('basketContents'));
+    }
+    else
+    {
+        console.log('not found');
+        basketContents = [];
+    }
 
+basketLoad();
+
+var b = document.getElementsByClassName('button');
+let button = Array.from(b);
 
 //Therefore, we need to check if the element exists before adding an event listener to it. Which is what the following if statements do.
 
@@ -103,17 +115,6 @@ if (detailsButton != null){
 if (resetSearch != null){
     resetSearch.addEventListener('click', resetSearchFields);
 }
-
-if (localStorage.getItem('basketContents') != null)
-    {
-        console.log('found');
-        basketContents = JSON.parse(localStorage.getItem('basketContents'));
-    }
-    else
-    {
-        console.log('not found');
-        basketContents = [];
-    }
 
 if (basket != null){
     basket.addEventListener('click', basketClick);
