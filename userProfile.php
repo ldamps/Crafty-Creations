@@ -29,11 +29,21 @@ if (isset($_SESSION['LoggedIn'])):
 
     
     }else {
-        echo "else";
-        $queryPersonal = "SELECT * FROM ShopEmployeeView";
-        $stmtPersonal = $mysql->prepare($queryPersonal);
-        $stmtPersonal->execute();
-        $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        if ($role === "Manager" || $role === "Assistant Manager")
+        {
+            $queryPersonal = "SELECT DISTINCT Surname, FirstName, EmailAddress, Role FROM ManagerView";
+            $stmtPersonal = $mysql->prepare($queryPersonal);
+            $stmtPersonal->execute();
+            $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        }
+        else if ($role === "Shop Assistant" || $role === "Supervisor")
+        {
+            $queryPersonal = "SELECT * FROM ShopEmployeeView";
+            $stmtPersonal = $mysql->prepare($queryPersonal);
+            $stmtPersonal->execute();
+            $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        }
+        
     }
     
     
