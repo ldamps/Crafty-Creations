@@ -289,7 +289,30 @@ function basketLoad()
         })
         addTotalHtml();
         setTotal();
+        addBasketAnimations();
         addBuyNowHtml();
+    }
+}
+
+async function addBasketAnimations() {
+    let basketItem = document.getElementsByClassName('basketItemBox');
+    let total = document.getElementById('basketTotalBox');
+
+    let basketItemArr = Array.from(basketItem);
+    let count = -1;
+
+    basketItemArr.forEach(async function(element) {
+        count++;
+        await new Promise(r => setTimeout(r, (100 * count)));
+        element.classList.add('slideUp');
+        element.onanimationend = () => {
+            element.classList.remove('slideUp');
+        }
+    });
+    await new Promise(r => setTimeout(r, (100 * count)));
+    total.classList.add('slideUp');
+    total.onanimationend = () => {
+        total.classList.remove('slideUp');
     }
 }
 
