@@ -7,7 +7,7 @@ include 'navBar.php';
 if (isset($_SESSION['LoggedIn'])):
     $role = $_SESSION["LoggedIn"];
     $userID = $_COOKIE["ID"];
-    echo $role;
+    //echo $role;
     if ($role === "customer") {
         echo "customer";
         // === Queries for Customer ===
