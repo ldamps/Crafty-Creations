@@ -272,10 +272,17 @@ a {
 }
 
 #heroProductPurchasing {
-    display: table-cell;
-    width: 350px;
+    width: 700px;
     height: 400px;
     padding: 20px;
+    margin: auto;
+}
+
+#heroProductInfo {
+    color: var(--secondary-color);
+    display: table-cell;
+    width: 350px;
+    padding-left: 10px;
 }
 
 #purchasingBox {
@@ -283,7 +290,6 @@ a {
 }
 
 #quantitySelector {
-    margin-left: 100px;
     height: 50px;
     width: 200px;
     padding:0;
