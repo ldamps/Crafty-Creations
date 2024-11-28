@@ -1,5 +1,5 @@
-<?php 
-include('navBar.php'); 
+<?php
+include('navBar.php');
 include('db.php');
 
 // get the productID from the URL
@@ -10,32 +10,62 @@ if (isset($_GET['ID'])) {
     header("Location: index.php");
     exit();
 }
+// customers see from logged out view
+if (isset($_SESSION['LoggedIn']) && $_SESSION["LoggedIn"] == "customer") {
+    $role = $_SESSION["LoggedIn"];
+    // fetch the product details
+    $query = "SELECT DISTINCT ProductName, ProductDescription, Price, Brand FROM LoggedOutView WHERE ProductID = :productID";
+    $stmt = $mysql->prepare($query);
+    $stmt->execute([':productID' => $productID]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+} 
+else if (isset($_SESSION['LoggedIn']))
+{
+    // all shop employees see from the shop stock view
+    $query = "SELECT DISTINCT ProductName, ProductDescription, Price, Brand, Supplier, Availability FROM ShopEmployeeStockView WHERE ProductID = :productID";
+    $stmt = $mysql->prepare($query);
+    $stmt->execute([':productID' => $productID]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+else {
+    // take from logged out view
+    $role = "loggedOut";
+    // fetch the product details
+    $query = "SELECT DISTINCT ProductName, ProductDescription, Price, Brand FROM LoggedOutView WHERE ProductID = :productID";
+    $stmt = $mysql->prepare($query);
+    $stmt->execute([':productID' => $productID]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-// fetch the product details
-$query = "SELECT ProductName, ProductDescription, Price, Brand FROM Product WHERE ProductID = :productID";
-$stmt = $mysql->prepare($query);
-$stmt->execute([':productID' => $productID]);
-
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // if the product exists
 if ($product) {
     $productName = $product['ProductName'];
-    $productDescription = $product['ProductDescription']; 
-    $productPrice = $product['Price'];  
-    $productBrand = $product['Brand'];  
-    $imagePath = "images/" . $productID . ".png"; 
+    $productDescription = $product['ProductDescription'];
+    $productPrice = $product['Price'];
+    $productBrand = $product['Brand'];
+    $imagePath = "images/" . $productID . ".png";
 
-    // query to get the total availability across all stores
-    $availabilityQuery = "SELECT SUM(Availability) AS totalAvailability
-                          FROM ProductAvailability
-                          WHERE Product_ProductID = :productID";
-    $stmt = $mysql->prepare($availabilityQuery);
-    $stmt->execute([':productID' => $productID]);
-    $availability = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($role === "customer" || $role === "loggedOut")
+    {
+        // query to get the total availability across all stores
+        $availabilityQuery = "SELECT SUM(Availability) AS totalAvailability
+        FROM LoggedOutView
+        WHERE Product_ProductID = :productID";
+        $stmt = $mysql->prepare($availabilityQuery);
+        $stmt->execute([':productID' => $productID]);
+        $availability = $stmt->fetch(PDO::FETCH_ASSOC);
+        // total availability value
+        $totalAvailability = $availability ? $availability['totalAvailability'] : 0;
+    }
+    else
+    {
+        $productSupplier = $product['Supplier'];
+        $productAvailability = $product['Availability'];
+    }
+    
 
-    // total availability value
-    $totalAvailability = $availability ? $availability['totalAvailability'] : 0;
+    
 } else {
     // if the product doesn't exist, redirect to home page
     header("Location: index.php");
@@ -65,48 +95,73 @@ if ($product) {
                 <img class="heroProductOtherImage" src="placeholder-image.png">
             </div>
         </div>
-        <div id="heroProductPurchasing">
-            <div id="purchasingBox">
-                <div id="quantitySelector">
-                    <div id="quantityDown" class="button" onclick="quantityAdjust(event)">
-                        <h1>-</h1>
+        <?php if ($role === "customer" || $role === "loggedOut"): ?>
+            <div id="heroProductPurchasing">
+                <div id="purchasingBox">
+                    <div id="quantitySelector">
+                        <div id="quantityDown" class="button" onclick="quantityAdjust(event)">
+                            <h1>-</h1>
+                        </div>
+                        <div id="quantity">
+                            <h1 id="quantityText">1</h1>
+                        </div>
+                        <div id="quantityUp" class="button" onclick="quantityAdjust(event)">
+                            <h1>+</h1>
+                        </div>
                     </div>
-                    <div id="quantity">
-                        <h1 id="quantityText">1</h1>
-                    </div>
-                    <div id="quantityUp" class="button" onclick="quantityAdjust(event)">
-                        <h1>+</h1>
-                    </div>
+
+                    <form action="basket.php" method="POST">
+                        <input type="hidden" name="productID" value="<?php echo $productID; ?>">
+                        <input type="hidden" name="quantity" id="quantityInput" value="1">
+
+                        <!-- works with a button-->
+                        <button type="submit" id="addToCart" class="button">
+                            <h1>add to cart</h1>
+                        </button>
+                        <div id="buy" class="button">
+                            <h1>buy now</h1>
+                        </div>
+                    </form>
                 </div>
-
-                <form action="basket.php" method="POST">
-                <input type="hidden" name="productID" value="<?php echo $productID; ?>">
-                <input type="hidden" name="quantity" id="quantityInput" value="1">
-
-                  <!-- works with a button-->
-                  <button type="submit" id="addToCart" class="button">
-                  <h1>add to cart</h1>
-                  </button>
-                  <div id="buy" class="button">
-                    <h1>buy now</h1>
-                    </div>
-                </form>
             </div>
-        </div>
+        <?php endif; ?>
+
+    </div>
+    <se id="heroProductContainer">
         <div id="heroProductInfo">
-        <h2>Product Description</h2>
-        <p><?php echo $productDescription; ?></p>
+            <h2>Product Description</h2>
+            <p><?php echo $productDescription; ?></p>
         </div>
         <div id="productPrice">
-        <h2>Price: £<?php echo number_format($productPrice, 2); ?></h2>
+            <h2>Price: </h2>
+            <?php echo "<p>£ ";
+            echo number_format($productPrice, 2);
+            "<p>" ?></h2>
         </div>
         <div id="productBrand">
-            <h2><p>Brand: <?php echo $productBrand; ?></p></h2>
+            <h2>Brand:</h2>
+            <?php echo "<p> $productBrand " ?></p>
         </div>
         <!-- this could maybe only be displayed if the stock is low-->
-        <div id="productAvailability">
-            <h2>In stock: <?php echo $totalAvailability; ?> units</h2>
+         <?php if ($role === "customer" || $role === "loggedIn"): ?>
+        <s id="productAvailability">
+            <h2>In stock: </h2>
+            <?php if ($totalAvailability < 20):
+                echo "<p class='urgent'>Only $totalAvailability left in stock!!!</p>";
+            else:
+                echo "<p>In stock</p>";
+            endif ?>
+        <!-- Shop employees can see everything available at their store and also supplier -->
+        <?php else: ?>
+        </div><div id="productBrand">
+            <h2>Supplier:</h2>
+            <?php echo "<p> $productSupplier " ?></p>
         </div>
+        </div><div id="productBrand">
+            <h2>In Stock at Store:</h2>
+            <?php echo "<p> $productAvailability " ?></p>
+        </div>
+        <?php endif; ?>
     </div>
 </body>
 <script src="script.js"></script>

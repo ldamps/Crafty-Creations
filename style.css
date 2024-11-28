@@ -1,6 +1,6 @@
 :root {
-    --primary-color: white;
-    --secondary-color: black;
+    --primary-color: rgb(248, 236, 255);
+    --secondary-color: rgb(57, 0, 101);
 }
 
 body {
@@ -720,4 +720,8 @@ td {
 
 .removeButton:hover {
     color: darkred;
+}
+
+.urgent {
+    color: red;
 }

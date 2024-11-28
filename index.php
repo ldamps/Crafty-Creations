@@ -305,14 +305,14 @@
     //Get product from database that match the search criteria.
     if (isset($_SESSION['Search']) && $_SESSION['Search'] != "") {
         $type = $_SESSION['Search'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%' OR Type LIKE '%$type%'");
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM LoggedOutView WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%' OR Type LIKE '%$type%'");
         $query->execute();
         $result = $query->fetchAll();
         $results = array();
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -329,7 +329,7 @@
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM ShopEmployeeStockView WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -338,7 +338,7 @@
     }
     //Otherwise, get all products from the database.
     else{
-        $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM ShopEmployeeStockView");
+        $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView ORDER BY ProductID");
         $query->execute();
         $results = $query->fetchAll();
     }
@@ -379,7 +379,7 @@
         echo "<p class = productInfo>".$products[$i]->description."</p>";
         echo "<p class = productInfo>£".$products[$i]->price."</p>";
         echo "<p class = productInfo>Brand: ".$products[$i]->brand."</p>";
-        echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
+        //echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
         echo "</div>";
         
         if (($i+1) % 3 == 0) {
