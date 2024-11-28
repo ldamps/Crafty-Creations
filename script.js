@@ -418,7 +418,7 @@ function addTotalHtml()
 
 function addBuyNowHtml()
 {
-    let box = document.getElementsById('emptyBox');
+    let box = document.getElementById('emptyBox');
 
     let buyNowBox = document.createElement('div');
     buyNowBox.setAttribute('id', 'buyNowBox');
