@@ -1,3 +1,6 @@
+<?php include 'navBar.php'; 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +20,11 @@
     <h3>Try not to lose it!</h3>
 </div>
 
+
 </body>
+
 <script src="script.js"></script>
+<?php include 'footer.html'; ?>
 
 </html>
+

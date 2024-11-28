@@ -447,24 +447,24 @@ async function displayCheckout(element) {
     addressOptionsBox.setAttribute('id', 'addressOptionsBox');
     checkoutBox.appendChild(addressOptionsBox);
 
-  
     userAddress.forEach(function(address) {
-    let addressOption = document.createElement('div');
-    addressOption.classList.add('addressOption');
-    addressOptionsBox.appendChild(addressOption);
+        let addressOption = document.createElement('div');
+        addressOption.classList.add('addressOption');
+        addressOptionsBox.appendChild(addressOption);
 
-    let addressOptionName = document.createElement('h4');
-    addressOptionName.classList.add('addressOptionName');
-    addressOptionName.innerHTML = `${address.HouseNumber} ${address.StreetName}, ${address.City}, ${address.Postcode}`;
-    addressOption.appendChild(addressOptionName);
+        let addressOptionName = document.createElement('h4');
+        addressOptionName.classList.add('addressOptionName');
+        addressOptionName.innerHTML = `${address.HouseNumber} ${address.StreetName}, ${address.City}, ${address.Postcode}`;
+        addressOption.appendChild(addressOptionName);
 
-    let addressOptionButton = document.createElement('div');
-    addressOptionButton.classList.add('addressOptionButton');
-    addressOption.appendChild(addressOptionButton);
+        let addressOptionButton = document.createElement('div');
+        addressOptionButton.classList.add('addressOptionButton');
+        addressOption.appendChild(addressOptionButton);
 
-    let addressOptionRadio = document.createElement('input');
-    addressOptionRadio.setAttribute('type', 'radio');
-    addressOptionButton.appendChild(addressOptionRadio);
+        let addressOptionRadio = document.createElement('input');
+        addressOptionRadio.setAttribute('type', 'radio');
+        addressOptionRadio.setAttribute('name', 'addressOption'); //radio buttons are grouped
+        addressOptionButton.appendChild(addressOptionRadio);
     });
 
     let paymentHeading = document.createElement('h2');
@@ -475,25 +475,25 @@ async function displayCheckout(element) {
     paymentOptionsBox.setAttribute('id', 'paymentOptionsBox');
     checkoutBox.appendChild(paymentOptionsBox);
 
-
     userPayments.forEach(function(payment) {
-    let paymentOption = document.createElement('div');
-    paymentOption.classList.add('paymentOption');
-    paymentOptionsBox.appendChild(paymentOption);
+        let paymentOption = document.createElement('div');
+        paymentOption.classList.add('paymentOption');
+        paymentOptionsBox.appendChild(paymentOption);
 
-    let paymentOptionAcc = document.createElement('h4');
-    paymentOptionAcc.classList.add('paymentOptionAcc');
-    let cardLastFour = String(payment.CardNumber).slice(-4); // get the last 4 digits of the CardNumber
-    paymentOptionAcc.innerHTML = `**** **** **** ${cardLastFour}`;
-    paymentOption.appendChild(paymentOptionAcc);
+        let paymentOptionAcc = document.createElement('h4');
+        paymentOptionAcc.classList.add('paymentOptionAcc');
+        let cardLastFour = String(payment.CardNumber).slice(-4); // get the last 4 digits of the CardNumber
+        paymentOptionAcc.innerHTML = `**** **** **** ${cardLastFour}`;
+        paymentOption.appendChild(paymentOptionAcc);
 
-    let paymentOptionButton = document.createElement('div');
-    paymentOptionButton.classList.add('paymentOptionButton');
-    paymentOption.appendChild(paymentOptionButton);
+        let paymentOptionButton = document.createElement('div');
+        paymentOptionButton.classList.add('paymentOptionButton');
+        paymentOption.appendChild(paymentOptionButton);
 
-    let paymentOptionRadio = document.createElement('input');
-    paymentOptionRadio.setAttribute('type', 'radio');
-    paymentOptionButton.appendChild(paymentOptionRadio);
+        let paymentOptionRadio = document.createElement('input');
+        paymentOptionRadio.setAttribute('type', 'radio');
+        paymentOptionRadio.setAttribute('name', 'paymentOption'); // radio buttons are grouped
+        paymentOptionButton.appendChild(paymentOptionRadio);
     });
 
     let checkoutButton = document.createElement('div');
@@ -512,17 +512,40 @@ async function displayCheckout(element) {
     checkoutBox.classList.add('slideUp');
     checkoutButton.classList.add('slideUp');
     checkoutBox.onanimationend = () => {
-    checkoutBox.classList.remove('slideUp');
-    checkoutButton.classList.remove('slideUp');
+        checkoutBox.classList.remove('slideUp');
+        checkoutButton.classList.remove('slideUp');
+    }
+}
+
+async function checkoutClick(element) {
+    // make sure one radio button is selected in both sections
+    let addressSelected = document.querySelector('input[name="addressOption"]:checked');
+    let paymentSelected = document.querySelector('input[name="paymentOption"]:checked');
+
+    if (!addressSelected || !paymentSelected) {
+        alert('Please select both an address and a payment option.');
+        return;
+    }
+
+    // clears the cart by sending a request to basket.php
+    try {
+        await fetch('basket.php', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'clearCart=true' 
+        });
+
+        // redirect to orderComplete.php after cart is cleared
+        window.location.href = "orderComplete.php";
+    } catch (error) {
+        console.error('Error clearing cart:', error);
+        alert('There was an error clearing the cart.');
     }
 }
 
 
-async function checkoutClick(element)
-{
-    await new Promise(r => setTimeout(r, 490));
-    window.location.href = "orderComplete.html";
-}
 
 async function basketRemove(element)
 {
