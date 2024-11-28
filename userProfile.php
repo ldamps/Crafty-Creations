@@ -163,7 +163,7 @@ if (isset($_SESSION['LoggedIn'])):
     
             </div>
             
-            <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager" || $role === "Assistant Manager"): ?>
+            <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager" || $role === "Assistant Manager" || $role = "CEO"): ?>
             <div class="section">
             <h2>Workplace Information</h2>
             <?php if ($personalInfo): ?>
@@ -197,7 +197,6 @@ if (isset($_SESSION['LoggedIn'])):
                     <?php endforeach; ?>
             </div>
             <?php endif; ?>
-            
       
             <!-- payment method - only diplays last 4 digits of card-->
             <?php if ($role === "customer"): ?>
