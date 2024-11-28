@@ -237,3 +237,5 @@ function getProductDetails($productID) {
 <script src="script.js"></script>
 
 </html>
+
+<?php include 'footer.html'; ?>

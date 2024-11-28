@@ -192,3 +192,5 @@ $lowStockData = $stmtLowStock->fetchAll(PDO::FETCH_ASSOC);
 
 </body>
 </html>
+
+<?php include 'footer.html'; ?>
