@@ -273,23 +273,25 @@ a {
 
 #heroProductPurchasing {
     width: 700px;
-    height: 400px;
     padding: 20px;
     margin: auto;
+    transform: translateY(-150px);
 }
 
 #heroProductInfo {
     color: var(--secondary-color);
     display: table-cell;
-    width: 350px;
+    width: 400px;
     padding-left: 10px;
     transform: translateY(-300px);
+    text-decoration: none;
 }
 
 #quantitySelector {
     height: 50px;
     width: 200px;
     padding:0;
+    transform: translateX(50px);
 }
 
 #quantity, #quantityDown, #quantityUp {
