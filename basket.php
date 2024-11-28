@@ -95,7 +95,7 @@ function getProductDetails($productID) {
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<>
     <!-- Added for debugging-->
 <div id="loggedInStatus">
     <h2>Login Status</h2>
@@ -154,7 +154,7 @@ function getProductDetails($productID) {
                                 <img src='$imagePath' alt='$productName' class='basketItemImageBox'>
                             </div>
                             <div class='basketItemNameBox'>
-                                <h1>$productName</h1>
+                                <h2>$productName</h2>
                             </div>
                             <div class='basketQuantity'>
                                 <h1>$quantity</h1>
@@ -188,7 +188,6 @@ function getProductDetails($productID) {
         </div>
         
     </div>
-
 
      <script>
         // function to display the buy now button
@@ -232,6 +231,9 @@ function getProductDetails($productID) {
     console.log('Price:', price);
     console.log('Customer ID:', customerID);
   </script>
+
+    <div id="emptyBox">
+    </div>
 
 </body>
 <script src="script.js"></script>
