@@ -47,7 +47,7 @@ if (isset($_SESSION['LoggedIn'])):
         }
         else if ($role === "CEO")
         {
-            $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked FROM OfficeEmployeeView WHERE EmployeeID = :ID";
+            $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked, OfficeName, Location FROM OfficeEmployeeView WHERE EmployeeID = :ID";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute(["ID"=> $userID]);
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
@@ -170,12 +170,17 @@ if (isset($_SESSION['LoggedIn'])):
             <p><strong>Store Address:</strong> <?php echo $personalInfo['StreetName'] . ', ' . $personalInfo['City'] . ', ' . $personalInfo['Postcode']; ?></p>
             <p><strong>Number of Employees:</strong> <?php echo $personalInfo['NumEmployees']; ?></p>
             <p><strong>Total Sales:</strong> $<?php echo number_format($personalInfo['TotalSales'], 2); ?></p>
-            <p><strong>Store Manager:</strong> <?php echo $personalInfo['ManagerFirstName'] . ' ' . $personalInfo['ManagerSurname']; ?></p>
-             <?php else: ?>
+            <p><strong>Store Manager:</strong> <?php echo $personalInfo['ManagerFirstName'] . ' ' . $personalInfo['ManagerSurname']; ?></p> 
+            <?php else: ?>
             <p>No workplace information available.</p>
             <?php endif; ?>
             </div>
             <?php endif; ?>
+            <?php if ($role === "CEO"):?>
+                <p><strong>Office Name:</strong> <?php echo $personalInfo['OfficeName'] ?></p>
+                <p><strong>Location:</strong> <?php echo $personalInfo['Location']; ?></p>
+            <?php endif; ?>   
+           
             
             <!-- address -->
             <?php if ($role === "customer"): ?>
@@ -191,10 +196,7 @@ if (isset($_SESSION['LoggedIn'])):
                         <br>
                     <?php endforeach; ?>
             </div>
-            <?php endif; 
-            if ($role === "CEO"): 
-            echo "test";
-            endif?>
+            <?php endif; ?>
             
       
             <!-- payment method - only diplays last 4 digits of card-->
