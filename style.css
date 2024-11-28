@@ -272,7 +272,7 @@ a {
 }
 
 #heroProductPurchasing {
-    width: 700px;
+    width: 350px;
     padding: 20px;
     margin: auto;
     transform: translateY(-150px);
@@ -291,7 +291,7 @@ a {
     height: 50px;
     width: 200px;
     padding:0;
-    transform: translateX(50px);
+    transform: translateX(100px);
 }
 
 #quantity, #quantityDown, #quantityUp {

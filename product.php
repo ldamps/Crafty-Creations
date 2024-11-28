@@ -124,8 +124,9 @@ if ($product) {
                     <h2>In Stock at Store:</h2>
                     <?php echo "<p> $productAvailability " ?></p>
                 </div>
-        </div>
+        
             <?php endif; ?>
+        </div>
     </div>
     <?php if ($role === "customer" || $role === "loggedOut"): ?>
         <div id="heroProductPurchasing">
