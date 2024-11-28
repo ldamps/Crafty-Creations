@@ -45,7 +45,7 @@
                     echo "<a class='button' href='Employees.php'>Employee Details</a>";
                     echo "<a class='button' href='payroll.php'>Payroll</a>";
                     echo "<a class='button' href='#'>Sales</a>";
-                    echo "<a class='button' href='#'>Suppliers</a>";
+                    echo "<a class='button' href='supplierPage.php'>Suppliers</a>";
                     echo "<a class='button' href='IT.php'>IT</a>";
                 } else { 
                     echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
