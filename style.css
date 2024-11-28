@@ -284,6 +284,7 @@ a {
     width: 400px;
     padding-left: 10px;
     transform: translateY(-300px);
+    text-decoration: none;
 }
 
 #quantitySelector {
