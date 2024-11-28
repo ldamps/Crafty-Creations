@@ -377,7 +377,8 @@
         echo "<img class='productImage' src='images/".$products[$i]->id.".png' />";
         echo "<h1 class = productName >".$products[$i]->name."</h1>";
         echo "<p class = productInfo>".$products[$i]->description."</p>";
-        echo "<p class = productInfo>£".$products[$i]->price."</p>";
+        $formattedPrice = number_format($products[$i]->price, 2);  // format the price with 2 decimal places
+        echo "<p class = productInfo>£".$formattedPrice."</p>";  
         echo "<p class = productInfo>Brand: ".$products[$i]->brand."</p>";
         //echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
         echo "</div>";
