@@ -4,10 +4,10 @@
 <?php
     require 'db.php';
     include 'index.html';
-    //unset($_SESSION['currentlyLoaded']);
+    //unset($_SESSION['currentlyLoaded']); - for testing
     echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
-    // get number of products from the database
-    $res = $mysql->query("SELECT COUNT(*) FROM Product");
+    // get number of products from the database using the logged out view
+    $res = $mysql->query("SELECT COUNT(*) FROM LoggedOutView");
     $numProducts = $res->fetchColumn();
     
     $increment = 40;
@@ -130,8 +130,7 @@
         else if ($role === "Manager" || $role === "Assistant Manager")
         {
             echo $userID;
-            
-
+        
             // get the shop the employee works at using stored procedure
             $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
             $stmtShopWorked = $mysql->prepare($queryShopWorked);
@@ -266,6 +265,7 @@
         }
 
         if (isset($_POST['Search'])){
+            echo "post search";
             $_SESSION['Search'] = $_POST['Search'];
         }
         elseif (!isset($_SESSION['Search'])){
@@ -304,15 +304,16 @@
 
     //Get product from database that match the search criteria.
     if (isset($_SESSION['Search']) && $_SESSION['Search'] != "") {
+        echo "searching";
         $type = $_SESSION['Search'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%' OR Type LIKE '%$type%'");
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM LoggedOutView WHERE ProductName LIKE '%$type%' OR Brand LIKE '%$type%' OR Type LIKE '%$type%'");
         $query->execute();
         $result = $query->fetchAll();
         $results = array();
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM Product WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -322,14 +323,14 @@
     //Get all products from the database of a single type.
     elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
         $narrow = $_SESSION['Narrow'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE Type LIKE '%$narrow%'");
+        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM LoggedOutView WHERE Type LIKE '%$narrow%'");
         $query->execute();
         $result = $query->fetchAll();
         $results = array();
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM ShopEmployeeStockView WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -338,7 +339,8 @@
     }
     //Otherwise, get all products from the database.
     else{
-        $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM ShopEmployeeStockView");
+        // get all products from the logged out view
+        $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView");
         $query->execute();
         $results = $query->fetchAll();
     }
@@ -379,7 +381,7 @@
         echo "<p class = productInfo>".$products[$i]->description."</p>";
         echo "<p class = productInfo>£".$products[$i]->price."</p>";
         echo "<p class = productInfo>Brand: ".$products[$i]->brand."</p>";
-        echo "<p class = productInfo>Brand: ".$products[$i]->id."</p>";
+        //echo "<p class = productInfo>ID: ".$products[$i]->id."</p>";
         echo "</div>";
         
         if (($i+1) % 3 == 0) {
