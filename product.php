@@ -151,9 +151,9 @@ if ($product) {
                     <button type="submit" id="addToCart" class="button">
                         <h1>add to cart</h1>
                     </button>
-                    <div id="buy" class="button">
-                        <h1>buy now</h1>
-                    </div>
+                    <button type="submit" id="buy" class="button">
+                      <h1>buy now</h1>
+                    </button>
                 </form>
             </div>
         </div>

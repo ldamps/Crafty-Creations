@@ -3,8 +3,8 @@
 include 'db.php';
 include 'navBar.php';
 
-
-if (isset($_SESSION['LoggedIn'])):
+// check for successful login first
+if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
     $role = $_SESSION["LoggedIn"];
     $userID = $_COOKIE["ID"];
     //echo $role;
@@ -31,8 +31,8 @@ if (isset($_SESSION['LoggedIn'])):
     }else {
         if ($role === "Manager" || $role === "Assistant Manager")
         {
-            echo "help2";
-            $queryPersonal = "SELECT * FROM ManagerView";
+            //echo "help2";
+            $queryPersonal = "SELECT *  FROM ManagerView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
@@ -40,10 +40,27 @@ if (isset($_SESSION['LoggedIn'])):
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
-            $queryPersonal = "SELECT * FROM ShopEmployeeView";
+            $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked, StreetName, City, Postcode, NumEmployees, TotalSales, ManagerFirstName, ManagerSurname FROM ShopEmployeeView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        }
+        else if ($role === "IT Support" || $role === "Website Development" || $role === "Payroll" || $role === "Administration" || $role === "Human Resources" || $role === "CEO")
+        {
+            $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked, OfficeName, Location FROM OfficeEmployeeView WHERE EmployeeID = :ID";
+            $stmtPersonal = $mysql->prepare($queryPersonal);
+            $stmtPersonal->execute(["ID"=> $userID]);
+            $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        }
+        else
+        {
+            // if not found, unauthorised access
+            echo '<div class="container">
+            <h2>Unauthorised Access</h2>
+            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+            <?php endif;?>
+            </div>';
         }
         
     }
@@ -163,12 +180,20 @@ if (isset($_SESSION['LoggedIn'])):
             <p><strong>Store Address:</strong> <?php echo $personalInfo['StreetName'] . ', ' . $personalInfo['City'] . ', ' . $personalInfo['Postcode']; ?></p>
             <p><strong>Number of Employees:</strong> <?php echo $personalInfo['NumEmployees']; ?></p>
             <p><strong>Total Sales:</strong> $<?php echo number_format($personalInfo['TotalSales'], 2); ?></p>
-            <p><strong>Store Manager:</strong> <?php echo $personalInfo['ManagerFirstName'] . ' ' . $personalInfo['ManagerSurname']; ?></p>
-             <?php else: ?>
+            <p><strong>Store Manager:</strong> <?php echo $personalInfo['ManagerFirstName'] . ' ' . $personalInfo['ManagerSurname']; ?></p> 
+            <?php else: ?>
             <p>No workplace information available.</p>
             <?php endif; ?>
             </div>
             <?php endif; ?>
+            <?php if ($role === "CEO"):?>
+                <h2>Workplace Information</h2>
+                <?php if ($personalInfo): ?>
+                <p><strong>Office Name:</strong> <?php echo $personalInfo['OfficeName'] ?></p>
+                <p><strong>Location:</strong> <?php echo $personalInfo['Location']; ?></p>
+                <?php endif ?>
+            <?php endif; ?>   
+           
             
             <!-- address -->
             <?php if ($role === "customer"): ?>
@@ -206,11 +231,13 @@ if (isset($_SESSION['LoggedIn'])):
     </body>
     </html>
     
-<?php 
-else:
-    header("Refresh:0; url=index.php");
-
-endif; ?>
+<?php else:?>
+    <div class="container">
+            <h2>Unauthorised Access</h2>
+            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+        <?php endif;?>
+        </div>
 
 <?php include 'footer.html'; ?>
 
