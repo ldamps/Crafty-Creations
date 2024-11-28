@@ -283,10 +283,7 @@ a {
     display: table-cell;
     width: 350px;
     padding-left: 10px;
-}
-
-#purchasingBox {
-    transform: translateY(-150px);
+    transform: translateY(-300px);
 }
 
 #quantitySelector {
