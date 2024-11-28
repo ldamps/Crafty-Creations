@@ -103,4 +103,16 @@
         <p class="copyright-text">Copyright &copy; 2017 All Rights Reserved by Crafty Creations</p>
     </div>
 </footer>
+
+<script>
+    let body = document.getElementsByTagName('body')[0];
+    let footer = document.getElementsByTagName('footer')[0];
+   
+    if (body.scrollHeight <= body.clientHeight)
+    {
+        footer.style.position = 'absolute';
+        footer.style.bottom = '0';
+    }
+</script>
+
 </html>
