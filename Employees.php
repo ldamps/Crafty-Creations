@@ -146,14 +146,6 @@ if (isset($_SESSION['LoggedIn'])) {
         <?php if ($role == "Manager" || $role == "Assistant Manager"): ?>
             <div class="section">
             <h2>Employees Information</h2>
-            <!-- Set initial shop to 1-->
-            <?php // get the city of the current shop
-            $queryShopName = "SELECT DISTINCT City FROM OfficeEmployeeView WHERE ShopID = :currentShop";
-            $stmtShopName = $mysql->prepare($queryShopName);
-            //$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
-            $stmtShopName->execute(['currentShop'=> $currentShop]);
-            $shopName = $stmtShopName->fetchColumn();?>
-             <?php echo "<br><h1>$shopName Shop</h1>"?>
                 <table>
                     <thead>
                         <tr>
@@ -180,9 +172,6 @@ if (isset($_SESSION['LoggedIn'])) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php
-                $currentShop = $currentShop + 1;
-                ?>
         </div>
         <?php endif; ?>
     </div>
