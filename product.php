@@ -127,7 +127,7 @@ if ($product) {
         <?php endif; ?>
 
     </div>
-    <se id="heroProductContainer">
+    <div id="heroProductContainer">
         <div id="heroProductInfo">
             <h2>Product Description</h2>
             <p><?php echo $productDescription; ?></p>
@@ -153,11 +153,11 @@ if ($product) {
             endif ?>
         <!-- Shop employees can see everything available at their store and also supplier -->
         <?php else: ?>
-        </div><div id="productBrand">
+        </div><div id="productSupplier">
             <h2>Supplier:</h2>
             <?php echo "<p> $productSupplier " ?></p>
         </div>
-        </div><div id="productBrand">
+        </div><div id="productAvailability">
             <h2>In Stock at Store:</h2>
             <?php echo "<p> $productAvailability " ?></p>
         </div>

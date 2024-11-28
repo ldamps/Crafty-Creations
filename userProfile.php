@@ -32,7 +32,7 @@ if (isset($_SESSION['LoggedIn'])):
         if ($role === "Manager" || $role === "Assistant Manager")
         {
             echo "help2";
-            $queryPersonal = "SELECT * FROM ManagerView";
+            $queryPersonal = "SELECT *  FROM ManagerView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
@@ -43,6 +43,13 @@ if (isset($_SESSION['LoggedIn'])):
             $queryPersonal = "SELECT * FROM ShopEmployeeView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
+            $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        }
+        else if ($role === "CEO")
+        {
+            $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked FROM OfficeEmployeeView WHERE EmployeeID = :ID";
+            $stmtPersonal = $mysql->prepare($queryPersonal);
+            $stmtPersonal->execute(["ID"=> $userID]);
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
         }
         
@@ -184,7 +191,11 @@ if (isset($_SESSION['LoggedIn'])):
                         <br>
                     <?php endforeach; ?>
             </div>
-            <?php endif; ?>
+            <?php endif; 
+            if ($role === "CEO"): 
+            echo "test";
+            endif?>
+            
       
             <!-- payment method - only diplays last 4 digits of card-->
             <?php if ($role === "customer"): ?>
