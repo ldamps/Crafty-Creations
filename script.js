@@ -44,8 +44,6 @@ if (localStorage.getItem('basketContents') != null)
         basketContents = [];
     }
 
-basketLoad();
-
 var b = document.getElementsByClassName('button');
 let button = Array.from(b);
 
