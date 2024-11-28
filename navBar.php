@@ -42,12 +42,11 @@
                     echo "<a class='button' href='supplierPage.php'>Supplier</a>";
                     echo "<a class='button' href='salesPage.php'>Sales</a>";
                 } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
-                    echo "<a class='button' href='systemStatus.php'>System Status</a>";
                     echo "<a class='button' href='#'>Employee Details</a>";
                     echo "<a class='button' href='payroll.php'>Payroll</a>";
                     echo "<a class='button' href='#'>Sales</a>";
                     echo "<a class='button' href='#'>Suppliers</a>";
-                    echo "<a class='button' href='https://github.com/ldamps/Crafty-Creations'>IT</a>";
+                    echo "<a class='button' href='IT.html'>IT</a>";
                 } else { 
                     echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
                     echo "<a class='button' href='ShopOrderHistory.php'>Shop Order History</a>";

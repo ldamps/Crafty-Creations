@@ -163,7 +163,7 @@ if (isset($_SESSION['LoggedIn'])):
     
             </div>
             
-            <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager" || $role === "Assistant Manager" || $role = "CEO"): ?>
+            <?php if ($role === "Shop Assistant" || $role === "Supervisor" || $role === "Manager" || $role === "Assistant Manager"): ?>
             <div class="section">
             <h2>Workplace Information</h2>
             <?php if ($personalInfo): ?>
@@ -177,8 +177,11 @@ if (isset($_SESSION['LoggedIn'])):
             </div>
             <?php endif; ?>
             <?php if ($role === "CEO"):?>
+                <h2>Workplace Information</h2>
+                <?php if ($personalInfo): ?>
                 <p><strong>Office Name:</strong> <?php echo $personalInfo['OfficeName'] ?></p>
                 <p><strong>Location:</strong> <?php echo $personalInfo['Location']; ?></p>
+                <?php endif ?>
             <?php endif; ?>   
            
             
