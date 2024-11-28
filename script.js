@@ -435,8 +435,11 @@ async function displayCheckout(element) {
     await new Promise(r => setTimeout(r, 600));
     buyNow.remove();
 
-    let checkoutBox = document.getElementsById('emptyBox');
+    let box = document.getElementById('emptyBox');
+
+    let checkoutBox = document.createElement('div');
     checkoutBox.setAttribute('id', 'checkoutBox');
+    box.appendChild(checkoutBox);
 
     let addressHeading = document.createElement('h2');
     addressHeading.innerHTML = 'Address';
@@ -502,7 +505,7 @@ async function displayCheckout(element) {
     checkoutButton.addEventListener('mouseleave', buttonMouseOut);
     checkoutButton.addEventListener('click', buttonOnClick);
     checkoutButton.addEventListener('click', checkoutClick);
-    body.appendChild(checkoutButton);
+    box.appendChild(checkoutButton);
 
     let checkoutButtonText = document.createElement('h1');
     checkoutButtonText.innerHTML = 'Checkout';
