@@ -12,8 +12,6 @@
             overflow: hidden;
             padding-left: 0.5%;
             padding-right: 0.5%;
-            box-shadow: 0 -1px 7px black;
-            position: auto;
         }
 
         footer h2 {
@@ -73,7 +71,6 @@
         }
     </style>
 </head>
-
 <footer>
     <div class="footerRow">
         <div class="column About">
@@ -106,14 +103,15 @@
 </footer>
 
 <script>
-    let body = document.getElementsByTagName('body')[0];
+    let html = document.documentElement;
     let footer = document.getElementsByTagName('footer')[0];
-   
-    if (body.scrollHeight <= body.clientHeight)
+
+    if (html.scrollHeight > html.offsetHeight)
     {
         footer.style.position = 'absolute';
         footer.style.bottom = '0';
     }
+
 </script>
 
 </html>
