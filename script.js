@@ -178,7 +178,14 @@ function buttonOnClick(element)
 async function searchButtonClick()
 {
     await new Promise(r => setTimeout(r, (450)));
-    searchButton.innerHTML = 'X'
+    if (searchButton.innerHTML == 'X')
+    {
+        searchButton.innerHTML = '⌕'
+    }
+    else
+    {
+        searchButton.innerHTML = 'X'
+    }
 }
 
 //When the mouse leaves the button, the button is animated to show that the mouse has left.
@@ -411,7 +418,7 @@ function addTotalHtml()
 
 function addBuyNowHtml()
 {
-    let body = document.getElementsByTagName('body')[0];
+    let box = document.getElementsById('emptyBox');
 
     let buyNowBox = document.createElement('div');
     buyNowBox.setAttribute('id', 'buyNowBox');
@@ -419,7 +426,7 @@ function addBuyNowHtml()
     let buyNowText = document.createElement('h1');
     buyNowText.innerHTML = "Buy Now";
     buyNowBox.appendChild(buyNowText);
-    body.appendChild(buyNowBox);
+    box.appendChild(buyNowBox);
     buyNowBox.addEventListener('click', displayCheckout);
 }
 
@@ -428,11 +435,8 @@ async function displayCheckout(element) {
     await new Promise(r => setTimeout(r, 600));
     buyNow.remove();
 
-    let body = document.getElementsByTagName('body')[0];
-
-    let checkoutBox = document.createElement('div');
+    let checkoutBox = document.getElementsById('emptyBox');
     checkoutBox.setAttribute('id', 'checkoutBox');
-    body.appendChild(checkoutBox);
 
     let addressHeading = document.createElement('h2');
     addressHeading.innerHTML = 'Address';
