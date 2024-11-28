@@ -8,6 +8,15 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
+// checks if the 'clearCart' parameter is set in the POST request
+if (isset($_POST['clearCart']) && $_POST['clearCart'] === 'true') {
+    // Clear the cart by unsetting the session variable
+    unset($_SESSION['cart']);
+    // session_destroy(); - can use this too
+    
+    echo "Cart cleared."; // respond to javascript
+}
+
 // Check if the user is logged in
 if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer") {
     $userID = $_COOKIE['ID'] ?? null;
@@ -85,6 +94,7 @@ function getProductDetails($productID) {
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,7 +105,6 @@ function getProductDetails($productID) {
     <link rel="stylesheet" href="style.css">
 </head>
 
-<>
     <!-- Added for debugging-->
 <div id="loggedInStatus">
     <h2>Login Status</h2>
@@ -190,28 +199,36 @@ function getProductDetails($productID) {
     </div>
 
      <script>
-        // function to display the buy now button
-        function addBuyNowHtml() {
-            let body = document.getElementsByTagName('body')[0];
 
-            let buyNowBox = document.createElement('div');
-            buyNowBox.setAttribute('id', 'buyNowBox');
-            buyNowBox.classList.add('button');
-            let buyNowText = document.createElement('h1');
-            buyNowText.innerHTML = "Buy Now";
-            buyNowBox.appendChild(buyNowText);
-            body.appendChild(buyNowBox);
+    // function to display the buy now button only if the cart is not empty
+     function addBuyNowHtml() {
+      // check if the cart is empty 
+       let cartItems = <?php echo json_encode($_SESSION['cart']); ?>;
+    
+       // If cart is not empty, display the Buy Now button
+       if (Object.keys(cartItems).length > 0) {
+        let body = document.getElementsByTagName('body')[0];
 
-            // add click event listener to the button
-            buyNowBox.addEventListener('click', function() {
-                // Check if the user is logged in before proceeding
-                <?php if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn']): ?>
-                    displayCheckout(event);
-                <?php else: ?>
-                    window.location.href = "loginPage.php";  
-                <?php endif; ?>
-            });
-        }
+        let buyNowBox = document.createElement('div');
+        buyNowBox.setAttribute('id', 'buyNowBox');
+        buyNowBox.classList.add('button');
+        let buyNowText = document.createElement('h1');
+        buyNowText.innerHTML = "Buy Now";
+        buyNowBox.appendChild(buyNowText);
+        body.appendChild(buyNowBox);
+
+        // add click event listener to the button
+        buyNowBox.addEventListener('click', function() {
+            // check if the user is logged in 
+            <?php if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn']): ?>
+                displayCheckout(event);
+            <?php else: ?>
+                window.location.href = "loginPage.php";  
+            <?php endif; ?>
+        });
+       }
+    }
+
 
         addBuyNowHtml();
 
