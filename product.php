@@ -112,3 +112,5 @@ if ($product) {
 <script src="script.js"></script>
 
 </html>
+
+<?php include 'footer.html'; ?>

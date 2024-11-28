@@ -212,4 +212,5 @@ else:
 
 endif; ?>
 
+<?php include 'footer.html'; ?>
 

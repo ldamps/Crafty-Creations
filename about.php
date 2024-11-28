@@ -87,34 +87,6 @@
     <p>Crafty Creations is a leading crafts chain retailer which sells a variety of craft supplies and tools, including yarn, paint, fabric and other crafting essentials. With a growing number of physical stores within the United Kingdom and an online store, Crafty Creations has become the go-to stop for both beginner and professional crafters. With its wide range of products, the company allows artists to craft their dreams into reality! </p>
     <br>
 </body>
-<footer>
-    <div class="footerRow">
-        <div class="column About">
-            <h2>About Us</h2>
-            <p>Crafty Creations is a leading crafts chain retailer which sells a variety of craft supplies and tools, including yarn, paint, fabric and other crafting essentials. With a growing number of physical stores within the UK and an online store, Crafty Creations has become the go-to stop for both beginner and professional crafters. With its wide range of products, the company allows artists to craft their dreams into reality!</p>
-        </div>
-        <div class="column Links">
-            <h2>Quick Links</h2>
-            <li><a href="loginPage.php">Log In</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="#">Tools</a></li>
-            <li><a href="#">Paint</a></li>
-            <li><a href="#">Fabric</a></li>
-            <li><a href="#">Yarn</a></li>
-            <li><a href="termsConditions.html">Terms and Conditions</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-
-        </div>
-        <div class="column Contact">
-            <h2>Contact Us</h2>
-            <ul>craftyEnquires@craftycreations.com</ul>
-            <br>
-            <ul>Alternatively if you would rather pone us, you can call us on the the following telephone number: +44 07856 987654</ul>
-        </div>
-    </div>
-
-    <div class="copyright">
-        <p class="copyright-text">Copyright &copy; 2017 All Rights Reserved by Crafty Creations</p>
-    </div>
-</footer>
 </html>
+
+<?php include 'footer.html'; ?>

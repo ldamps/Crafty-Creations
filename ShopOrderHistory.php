@@ -473,3 +473,5 @@ tr:nth-child(even) {
     header("Refresh:0; url=index.php");
 
 endif; ?>
+
+<?php include 'footer.html'; ?>

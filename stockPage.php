@@ -201,3 +201,5 @@ if (isset($_SESSION['LoggedIn'])):
     header("Refresh:0; url=index.php");
 
 endif; ?>
+
+<?php include 'footer.html'; ?>
