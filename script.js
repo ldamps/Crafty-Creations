@@ -435,7 +435,7 @@ async function displayCheckout(element) {
     await new Promise(r => setTimeout(r, 600));
     buyNow.remove();
 
-    let checkoutBox = document.getElementsById('emptyBox');
+    let checkoutBox = document.getElementById('emptyBox');
     checkoutBox.setAttribute('id', 'checkoutBox');
 
     let addressHeading = document.createElement('h2');
