@@ -12,7 +12,7 @@ include 'db.php';
 include 'navBar.php';
 
 
-if (isset($_SESSION['LoggedIn'])):
+if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
     $role = $_SESSION["LoggedIn"];
 
     if ($role === "Supervisor" || $role === "Shop Assistant") {
@@ -206,10 +206,11 @@ if (isset($_SESSION['LoggedIn'])):
         </div>
         </div>
     <?php else: ?>
-        <div class="container">
-            <p>Unauthorised Access: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-        </div>
-    <?php endif; ?>
+    <div class="container">
+            <h2>Unauthorised Access</h2>
+            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+        <?php endif;?>
     </div>
 </body>
 <?php include 'footer.html' ?>

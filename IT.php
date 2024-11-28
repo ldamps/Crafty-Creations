@@ -26,7 +26,7 @@
     <?php include 'navBar.php'?>
     <?php require 'db.php';
     // check they are from the main office before allowing access to website
-    if (isset($_SESSION['LoggedIn']) && $_SESSION["LoggedIn"] === "CEO"):?>
+    if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID']) && (($_SESSION["LoggedIn"] === "CEO") || ($_SESSION["LoggedIn"] === "Human Resources") || ($_SESSION["LoggedIn"] === "Payroll") || ($_SESSION["LoggedIn"] === "IT Support") || ($_SESSION["LoggedIn"] === "Administration") || ($_SESSION["LoggedIn"] === "Website Development"))):?>
     
     <div class="container">
     <h1 >IT Service</h1>
@@ -35,10 +35,11 @@
     
     </div>
     <?php else:?>
-        <div class="container">
-        <p>Unauthorised Access: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-        </div>
-    <?php endif;?>
+    <div class="container">
+            <h2>Unauthorised Access</h2>
+            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+        <?php endif;?>
 </body>
 
 </html>

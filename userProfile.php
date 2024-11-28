@@ -3,8 +3,8 @@
 include 'db.php';
 include 'navBar.php';
 
-
-if (isset($_SESSION['LoggedIn'])):
+// check for successful login first
+if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
     $role = $_SESSION["LoggedIn"];
     $userID = $_COOKIE["ID"];
     //echo $role;
@@ -45,12 +45,22 @@ if (isset($_SESSION['LoggedIn'])):
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
         }
-        else if ($role === "CEO")
+        else if ($role === "IT Support" || $role === "Website Development" || $role === "Payroll" || $role === "Administration" || $role === "Human Resources" || $role === "CEO")
         {
             $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked, OfficeName, Location FROM OfficeEmployeeView WHERE EmployeeID = :ID";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute(["ID"=> $userID]);
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
+        }
+        else
+        {
+            // if not found, unauthorised access
+            echo '<div class="container">
+            <h2>Unauthorised Access</h2>
+            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+            <?php endif;?>
+            </div>';
         }
         
     }
@@ -221,11 +231,13 @@ if (isset($_SESSION['LoggedIn'])):
     </body>
     </html>
     
-<?php 
-else:
-    header("Refresh:0; url=index.php");
-
-endif; ?>
+<?php else:?>
+    <div class="container">
+            <h2>Unauthorised Access</h2>
+            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+        <?php endif;?>
+        </div>
 
 <?php include 'footer.html'; ?>
 
