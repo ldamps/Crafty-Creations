@@ -67,6 +67,7 @@
     <nav class="selection">
 
         <form method="post"><input type="text" placeholder="Search.." id="Search"></form>
+        <a id="searchButton" class="button">⌕</a>
 
         <div class="yarn button">
             <form method = "post"><button class="Selector dropbtn">Yarn<i class="fa fa-caret-down"></i></button></form>

@@ -30,6 +30,9 @@ var POSTSENDBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
+var searchButton = document.getElementById('searchButton');
+searchButton.addEventListener('click', searchButtonClick);
+
 if (localStorage.getItem('basketContents') != null)
     {
         console.log('found');
@@ -170,6 +173,12 @@ function buttonOnClick(element)
             button.classList.remove('buttonClickUp');
         }
     }
+}
+
+async function searchButtonClick()
+{
+    await new Promise(r => setTimeout(r, (450)));
+    searchButton.innerHTML = 'X'
 }
 
 //When the mouse leaves the button, the button is animated to show that the mouse has left.
