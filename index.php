@@ -53,16 +53,6 @@
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
-            // get the employee's manager using stored procedure
-            $queryManager = "CALL GetManager(:employeeID)";
-            $stmtManager = $mysql->prepare($queryManager);
-            $stmtManager->bindParam(':employeeID', $userID, PDO::PARAM_INT);
-            $stmtManager->execute();
-            $ManagerInfo = $stmtManager->fetch();
-            $ManFirst = $ManagerInfo[0];
-            $ManLast = $ManagerInfo[1];
-            //echo $ManFirst . $ManLast;
-            $stmtManager->closeCursor();
 
             // get the shop the employee works at using stored procedure
             $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
@@ -71,6 +61,17 @@
             $stmtShopWorked->execute();
             $ShopWorkedInfo = $stmtShopWorked->fetchColumn();
             $stmtShopWorked->closeCursor();
+
+            // get the employee's manager using stored procedure
+            $queryManager = "CALL GetManager(:shopID)";
+            $stmtManager = $mysql->prepare($queryManager);
+            $stmtManager->bindParam(':shopID', $ShopWorkedInfo, PDO::PARAM_INT);
+            $stmtManager->execute();
+            $ManagerInfo = $stmtManager->fetch();
+            $ManFirst = $ManagerInfo[0];
+            $ManLast = $ManagerInfo[1];
+            //echo $ManFirst . $ManLast;
+            $stmtManager->closeCursor();
 
             // create stock view dynamically based on Shop ID
             $queryStockView = "DROP VIEW IF EXISTS ShopEmployeeStockView;
@@ -83,7 +84,7 @@
                     LEFT JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
                     LEFT JOIN OnlineOrder_has_Product op ON P.ProductID = op.Product_ProductID
                     LEFT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
-                    WHERE PA.Shop_ShopID = 1
+                    WHERE PA.Shop_ShopID = :SID 
                 UNION
                 SELECT P.ProductID, P.ProductName, P.Type, P.Price,	 P.Brand, P.Supplier, P.ProductDescription, PA.Availability,
                 op.Quantity, op.OnlineOrder_OrderID, op.Product_ProductID,
@@ -94,9 +95,10 @@
                     RIGHT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
                             WHERE PA.Shop_ShopID = :SID";
             $stmtStockView = $mysql->prepare($queryStockView);
-            $stmtStockView->bindParam(':SID', $shopID, PDO::PARAM_INT);
+            $stmtStockView->bindParam(':SID', $ShopWorkedInfo, PDO::PARAM_INT);
             $stmtStockView->execute();
-            $StockView = $stmtStockView->fetchColumn();
+            $StockView = $stmtStockView->fetchAll();
+            echo sizeOf($StockView);
             $stmtStockView->closeCursor();
 
             // create main employee view
@@ -117,10 +119,10 @@
             INNER JOIN Shop s ON se.Shop_shopID = s.ShopID
             INNER JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
             INNER JOIN Employee m ON m.FirstName = :ManFirst AND m.Surname = :ManLast
-            INNER JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
-            INNER JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
-            INNER JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
-            INNER JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
+            LEFT JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
+            LEFT JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
                         WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
             $stmtEmployeeView = $mysql->prepare($viewEmployeeSQL);
             $stmtEmployeeView->execute(["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]);
@@ -129,8 +131,7 @@
         }
         else if ($role === "Manager" || $role === "Assistant Manager")
         {
-            echo $userID;
-            
+            //echo $userID;
 
             // get the shop the employee works at using stored procedure
             $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";

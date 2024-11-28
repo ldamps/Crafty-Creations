@@ -1,7 +1,7 @@
 <?php
 include 'db.php';
 include 'navBar.php';
-if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
+if (isset($_SESSION['LoggedIn'])):
     $role = $_SESSION["LoggedIn"];
     $employeeID = $_SESSION['EmployeeID'];
     if ($role == "Manager" || $role == "Assistant Manager") {

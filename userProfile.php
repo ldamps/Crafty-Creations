@@ -31,7 +31,7 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
     }else {
         if ($role === "Manager" || $role === "Assistant Manager")
         {
-            echo "help2";
+            //echo "help2";
             $queryPersonal = "SELECT *  FROM ManagerView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
@@ -40,7 +40,7 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
-            $queryPersonal = "SELECT * FROM ShopEmployeeView";
+            $queryPersonal = "SELECT FirstName, Surname, EmailAddress, hoursWorked, StreetName, City, Postcode, NumEmployees, TotalSales, ManagerFirstName, ManagerSurname FROM ShopEmployeeView";
             $stmtPersonal = $mysql->prepare($queryPersonal);
             $stmtPersonal->execute();
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
