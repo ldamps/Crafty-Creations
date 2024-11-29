@@ -69,7 +69,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             if (password_verify($password, $db_password)) {
                 $isLoggedIn = true;
                 #echo "Password verified for employee.<br>"; 
-                $_SESSION["EmployeeID"] = $db_id; 
                 }
 
             } 
@@ -79,7 +78,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 
     if ($isLoggedIn) {
         $_SESSION["LoggedIn"] = $role; // storing role in session
-        setcookie("ID", $db_id, time() + (7200), "=/"); // 2-hour cookie
+        $_SESSION['ID'] = $db_id; // store ID in session
         header("Refresh:0; url=index.php"); // main page, nav changing dynamically
         exit();
     } else {
