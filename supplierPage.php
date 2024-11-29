@@ -12,10 +12,10 @@ include 'db.php';
 include 'navBar.php';
 
 
-if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "Manager" || $_SESSION['LoggedIn'] === "Assistant Manager" || ($_SESSION["LoggedIn"] === "CEO") || ($_SESSION["LoggedIn"] === "Human Resources") || ($_SESSION["LoggedIn"] === "Payroll") || ($_SESSION["LoggedIn"] === "IT Support") || ($_SESSION["LoggedIn"] === "Administration") || ($_SESSION["LoggedIn"] === "Website Development"))):
     $role = $_SESSION["LoggedIn"];
 
-    if ($role === "Supervisor" || $role === "Shop Assistant") {
+    if ($role === "Manager" || $role === "Assistant Manager") {
         // gettting supplier information
         $querySuppliers = "SELECT DISTINCT
             SupplyOrderID,
@@ -61,12 +61,7 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
         $stmtSupplierDetails = $mysql->prepare($querySupplierDetails);
         $stmtSupplierDetails->execute();
         $supplierDetails = $stmtSupplierDetails->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        echo '<div class="container">';
-        echo '<p>Unauthorised Access: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-        </div></div>';
     }
-
 
     ?>
 
@@ -84,7 +79,6 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
                 font-family: Arial, sans-serif;
                 margin: 0;
                 padding: 0;
-                background-color: #f4f7f6;
             }
 
             .container {
@@ -206,13 +200,16 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
         </div>
         </div>
     <?php else: ?>
-    <div class="container">
+        <div class="container">
             <h2>Unauthorised Access</h2>
-            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-            </div>
-        <?php endif;?>
+            <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline"
+                    href="index.php">Back to Homepage</a></p>
+        </div>
+    <?php endif; ?>
+
     </div>
 </body>
+<script type="text/javascript" src="script.js"></script>
 <?php include 'footer.html' ?>
 
 </html>
