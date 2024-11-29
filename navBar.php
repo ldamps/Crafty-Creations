@@ -17,10 +17,9 @@
             //unset($_SESSION["LoggedIn"]);
              // remove all extras
             if (isset($_POST['logout'])) {
-                // delete user cookie
-                setcookie("ID", "", time() - 3600);
                 // unset logged in session
                 unset($_SESSION["LoggedIn"]);
+                unset($_SESSION["ID"]);
             }
 
            

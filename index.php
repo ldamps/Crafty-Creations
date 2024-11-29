@@ -16,7 +16,8 @@
     }
     if (isset($_SESSION['LoggedIn'])){
         $role = $_SESSION["LoggedIn"];
-        $userID = $_COOKIE["ID"];
+        $userID = $_SESSION["ID"];
+        //echo $userID;
         if ($role === "customer")
         {
             //echo "customer";
@@ -97,10 +98,10 @@
             $stmtStockView->bindParam(':SID', $ShopWorkedInfo, PDO::PARAM_INT);
             $stmtStockView->execute();
             $StockView = $stmtStockView->fetchAll();
-            echo sizeOf($StockView);
+            //echo sizeOf($StockView);
             $stmtStockView->closeCursor();
 
-            // create main employee view
+            // create main employee view dynamically so they only see things from their shop
             $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView;
             Create OR REPLACE View ShopEmployeeView
             AS 
@@ -152,7 +153,7 @@
             $stmtManager->closeCursor();
             //echo "shop worked at: " . $ShopWorkedInfo;
             //echo "userID: " . $userID;
-            // create manager view
+            // create manager view based on shop worked at
             //echo "creating manager view";
             $viewManagerSQL = "DROP VIEW IF EXISTS ManagerView;
             Create OR REPLACE View ManagerView
