@@ -21,6 +21,8 @@
                 setcookie("ID", "", time() - 3600);
                 // unset logged in session
                 unset($_SESSION["LoggedIn"]);
+                // clear the cart
+                 unset($_SESSION['cart']);
             }
 
            
