@@ -12,6 +12,7 @@
             overflow: hidden;
             padding-left: 0.5%;
             padding-right: 0.5%;
+            margin-top: 200px;
         }
 
         footer h2 {
@@ -103,13 +104,22 @@
 </footer>
 
 <script>
-    let html = document.documentElement;
-    let footer = document.getElementsByTagName('footer')[0];
+    
+    window.onload = checkScroll();
+    window.resize = checkScroll();
 
-    if (html.scrollHeight > html.offsetHeight)
+    
+    function checkScroll()
     {
-        footer.style.position = 'absolute';
-        footer.style.bottom = '0';
+        let html = document.documentElement;
+        let footer = document.getElementsByTagName('footer')[0];
+        console.log('scrollHeight: ' + html.scrollHeight);
+        console.log('offsetHeight: ' + html.offsetHeight);
+        if (html.scrollHeight > html.offsetHeight + 1)
+        {
+            footer.style.position = 'absolute';
+            footer.style.bottom = '0';
+        }
     }
 
 </script>

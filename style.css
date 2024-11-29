@@ -67,6 +67,8 @@ footer {
 }
 
 .button {
+    all: unset;
+    font-family: Arial;
     transition: transform 0.3s;
     color: var(--secondary-color);
     background-color: none;
@@ -76,13 +78,16 @@ footer {
     padding: 5px;
 }
 
-#logInText {
-    margin-top: 12.5px;
+nav .button {
+    margin-top: 7.5px;
     margin-right: 5px;
-    border-radius: 10px;
-    padding-left: 7px;
-    padding-right: 7px;
-    color: var(--secondary-color);
+    height: 25px;
+    padding-top: 7.5px;
+}
+
+.selection .button {
+    padding-top: 0px;
+    height: 38px;
 }
 
 #basketImage {

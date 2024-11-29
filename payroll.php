@@ -158,7 +158,7 @@ require 'db.php'; ?>
                         echo "<td>" . $employee->position . "</td>";
                         echo "<td>" . $employee->hoursWorked . "</td>";
                         echo "<td>" . $employee->hoursWorked * $employee->hourlyPay . "</td>";
-                        echo "<td><form method = 'post'><button id =" . $employee->id . " class = 'detailsButton Button'>Get Details</button></form></td>";
+                        echo "<td><form method = 'post'><button id =" . $employee->id . " class = 'detailsButton button'>Get Details</button></form></td>";
                         echo "</tr>";
                     }
                     echo "</tbody>";
