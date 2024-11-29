@@ -195,7 +195,7 @@ if (isset($_SESSION['LoggedIn'])):
 
         </div>
     </body>
-
+        <script src="script.js"></script>
     </html>
 <?php else:
     header("Refresh:0; url=index.php");

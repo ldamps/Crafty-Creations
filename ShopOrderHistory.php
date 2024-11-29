@@ -64,6 +64,10 @@ else if ($role === "Manager" || $role === "Assistant Manager")
     $stmtShopOrders->execute();
     $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
 }
+else{
+    
+}
+    
     //handle returns here
     // check if the form was submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID'])) {

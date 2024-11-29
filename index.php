@@ -53,7 +53,6 @@
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
-
             // get the shop the employee works at using stored procedure
             $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
             $stmtShopWorked = $mysql->prepare($queryShopWorked);
@@ -389,15 +388,16 @@
             echo "<div>";
         }
     }
-    
     echo "</div>";
+    echo "</div>";
+
     
 
     // only display load more if all products have not already been loaded
 
     if ($_SESSION['currentlyLoaded'] < $numProducts)
     {
-        echo "<center><form method='post'><button class = 'button'  type='submit' name='loadMore'>Show 6 More</button></form></center>";
+        echo "<center><form method='post'><button class='button'  type='submit' name='loadMore'>Show 6 More</button></form></center>";
     }
     else
     {
@@ -407,7 +407,6 @@
     if($_SESSION['currentlyLoaded'] > 6){ // only show the show less button if more than 6 items are loaded 
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
-
     include 'footer.html';
 
 ?>
