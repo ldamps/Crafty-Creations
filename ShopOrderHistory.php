@@ -3,7 +3,7 @@
 include 'db.php';
 include 'navBar.php';
 
-if (isset($_SESSION['LoggedIn'])):
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" || $_SESSION["LoggedIn"]=== "Supervisor" || $_SESSION["LoggedIn"]==="Manager" || $_SESSION['LoggedIn']=== "Assistant Manager")):
     $role = $_SESSION["LoggedIn"];
     $userID = $_SESSION["ID"];
     //echo "Role: " . $role;
@@ -60,11 +60,6 @@ if (isset($_SESSION['LoggedIn'])):
         $stmtShopOrders = $mysql->prepare($queryShopOrders);
         $stmtShopOrders->execute();
         $ShopOrders = $stmtShopOrders->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        echo '<div class="container">
-            <h2>Unauthorised Access</h2>
-            <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-            </div>';
     }
 
     //handle returns here
@@ -498,13 +493,14 @@ if (isset($_SESSION['LoggedIn'])):
         <?php endif; ?>
     </div>
 </body>
-<script type="text/javascript" src="script.js"></script>
+
 <?php  else:?>
         <div class="container">
             <h2>Unauthorised Access</h2>
-            <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
             </div>
         <?php endif;?>
+        <script type="text/javascript" src="script.js"></script>
 </html>
 
 <?php include 'footer.html'; ?>

@@ -1,11 +1,11 @@
 <?php
 include 'db.php';
 include 'navBar.php';
-if (isset($_SESSION['LoggedIn'])):
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Manager" || $_SESSION['LoggedIn']=== "Assistant Manager")):
     $role = $_SESSION["LoggedIn"];
-    $employeeID = $_SESSION['EmployeeID'];
+    $employeeID = $_SESSION['ID'];
     if ($role == "Manager" || $role == "Assistant Manager") {
-
+        //echo "manager logged in";
         //shop ID where manager works using stored procedure
         $queryShopID = "CALL GetShopWorkedAt(:employeeID)";
         $stmtShopID = $mysql->prepare($queryShopID);
@@ -26,12 +26,7 @@ if (isset($_SESSION['LoggedIn'])):
         //$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
         $stmtEmployees->execute();
         $employeesData = $stmtEmployees->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        echo '<div class="container">
-                <h2>Unauthorised Access</h2>
-                <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-                </div>';
-    }
+    } 
     ?>
 
     <!DOCTYPE html>
@@ -46,7 +41,6 @@ if (isset($_SESSION['LoggedIn'])):
                 font-family: Arial, sans-serif;
                 margin: 0;
                 padding: 0;
-                background-color: #f4f7f6;
             }
 
             .container {
@@ -164,13 +158,13 @@ if (isset($_SESSION['LoggedIn'])):
                         <tbody>
                             <?php foreach ($employeesData as $employee): ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($employee['EmployeeID']); ?></td>
-                                    <td><?php echo htmlspecialchars($employee['FirstName']); ?></td>
-                                    <td><?php echo htmlspecialchars($employee['Surname']); ?></td>
-                                    <td><?php echo htmlspecialchars($employee['Role']); ?></td>
-                                    <td><?php echo htmlspecialchars($employee['EmailAddress']); ?></td>
-                                    <td><?php echo htmlspecialchars($employee['hoursWorked']); ?></td>
-                                    <td><?php echo htmlspecialchars(number_format($employee['HourlyPay'], 2)); ?></td>
+                                    <td><?php echo htmlspecialchars($employee['empID']); ?></td>
+                                    <td><?php echo htmlspecialchars($employee['empFirst']); ?></td>
+                                    <td><?php echo htmlspecialchars($employee['empSur']); ?></td>
+                                    <td><?php echo htmlspecialchars($employee['empRole']); ?></td>
+                                    <td><?php echo htmlspecialchars($employee['empEmail']); ?></td>
+                                    <td><?php echo htmlspecialchars($employee['empHours']); ?></td>
+                                    <td><?php echo htmlspecialchars(number_format($employee['empPay'], 2)); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -179,13 +173,13 @@ if (isset($_SESSION['LoggedIn'])):
             <?php endif; ?>
         </div>
 
-    <?php else: ?>
+        <?php  else:?>
         <div class="container">
             <h2>Unauthorised Access</h2>
-            <p>You may have been automatically logged out for security. Please log out and log back in again: <a
-                    style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-        </div>
-    <?php endif; ?>
+            <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            </div>
+        <?php endif;?>
+        <script type="text/javascript" src="script.js"></script>
     </div>
 </body>
 

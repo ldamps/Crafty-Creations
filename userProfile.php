@@ -4,7 +4,7 @@ include 'db.php';
 include 'navBar.php';
 
 // check for successful login first
-if (isset($_SESSION['LoggedIn'])):
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]=== "customer" || $_SESSION["LoggedIn"]==="Shop Assistant" || $_SESSION["LoggedIn"]=== "Supervisor" || $_SESSION["LoggedIn"]==="Manager" || $_SESSION['LoggedIn']=== "Assistant Manager" || $_SESSION["LoggedIn"] === "CEO" || $_SESSION["LoggedIn"] === "Human Resources" || $_SESSION["LoggedIn"] === "Payroll" || $_SESSION["LoggedIn"] === "IT Support" || $_SESSION["LoggedIn"] === "Administration" || $_SESSION["LoggedIn"] === "Website Development")):
     $role = $_SESSION["LoggedIn"];
     $userID = $_SESSION["ID"];
     //echo $role;
@@ -52,16 +52,6 @@ if (isset($_SESSION['LoggedIn'])):
             $stmtPersonal->execute(["ID"=> $userID]);
             $personalInfo = $stmtPersonal->fetch(PDO::FETCH_ASSOC);
         }
-        else
-        {
-            // if not found, unauthorised access
-            echo '
-                <div class="container">
-                    <h2>Unauthorised Access</h2>
-                    <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-                    </div>';
-        }
-        
     }
     
     
@@ -158,7 +148,7 @@ if (isset($_SESSION['LoggedIn'])):
             <h2>Personal Information</h2>
                 <?php if (isset($_SESSION["LoggedIn"])):
                  if ($role === "customer"): 
-                    ##echo "customer "?> 
+                    #echo "customer "?> 
                     <p><strong>Name:</strong> <?php echo $customerInfo['Title'] . ' ' . $customerInfo['FirstName'] . ' ' . $customerInfo['LastName']; ?></p>
                     <p><strong>Email:</strong> <?php echo $customerInfo['EmailAddress']; ?></p>
                     <p><strong>Phone:</strong> <?php echo $customerInfo['PhoneNumber']; ?></p>
@@ -228,14 +218,16 @@ if (isset($_SESSION['LoggedIn'])):
             <?php endif; ?>
         </div>
     </body>
-    </html>
-    
     <?php  else:?>
         <div class="container">
             <h2>Unauthorised Access</h2>
-            <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
             </div>
         <?php endif;?>
+        <script type="text/javascript" src="script.js"></script>
+    </html>
+    
+    
 
 <?php include 'footer.html'; ?>
 

@@ -2,8 +2,8 @@
 include 'db.php';
 include 'navBar.php';
 
-if (isset($_SESSION['LoggedIn'])):
-    if (isset($_COOKIE['ID'])) {
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" || $_SESSION["LoggedIn"]=== "Supervisor" || $_SESSION["LoggedIn"]==="Manager" || $_SESSION['LoggedIn']=== "Assistant Manager")):
+    if (isset($_SESSION['ID'])) {
         $employeeID = $_SESSION['ID'];
 
         // fetching shop ID where employee works
@@ -70,12 +70,7 @@ if (isset($_SESSION['LoggedIn'])):
         } else {
             echo "Shop information not found for the logged-in employee.";
         }
-    } else {
-           echo '<div class="container">
-                <h2>Unauthorised Access</h2>
-                <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-                </div>';
-    }
+    } 
     ?>
 
     <!DOCTYPE html>
@@ -194,15 +189,16 @@ if (isset($_SESSION['LoggedIn'])):
 
         </div>
     </body>
-    <script src="script.js"></script>
-
-    </html>
-<?php else: ?>
+    <?php else: ?>
     <div class="container">
         <h2>Unauthorised Access</h2>
-        <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline"
+        <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline"
                 href="index.php">Back to Homepage</a></p>
     </div>
-<?php endif; ?>
+    <?php endif; ?>
+    <script type="text/javascript" src="script.js"></script>
+    </html>
+
+
 
 <?php include 'footer.html'; ?>
