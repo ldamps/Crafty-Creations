@@ -4,7 +4,7 @@ include 'navBar.php';
 
 if (isset($_SESSION['LoggedIn'])):
     if (isset($_COOKIE['ID'])) {
-        $employeeID = $_COOKIE['ID'];
+        $employeeID = $_SESSION['ID'];
 
         // fetching shop ID where employee works
         // use stored procedure to get shop worked at
@@ -15,10 +15,6 @@ if (isset($_SESSION['LoggedIn'])):
         $stmtShopID->execute();
         $shopID = $stmtShopID->fetchColumn();
         $stmtShopID->closeCursor();
-
-        // create stock view dynamically based on Shop ID
-        
-
 
         // if shop ID exiss
         if ($shopID) {
@@ -75,7 +71,10 @@ if (isset($_SESSION['LoggedIn'])):
             echo "Shop information not found for the logged-in employee.";
         }
     } else {
-        echo "Employee ID is not set in the session.";
+           echo '<div class="container">
+                <h2>Unauthorised Access</h2>
+                <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+                </div>';
     }
     ?>
 
@@ -176,7 +175,7 @@ if (isset($_SESSION['LoggedIn'])):
                                         <input type="hidden" name="orderProductID"
                                             value="<?php echo htmlspecialchars($stock['ProductID']); ?>">
                                         <input type="number" name="orderQuantity" min="1" value="1" required>
-                                        <button type="submit">Order</button>
+                                        <button class="button" type="submit">Order</button>
                                     </form>
                                 </td>
                             </tr>
@@ -195,11 +194,15 @@ if (isset($_SESSION['LoggedIn'])):
 
         </div>
     </body>
-        <script src="script.js"></script>
-    </html>
-<?php else:
-    header("Refresh:0; url=index.php");
+    <script src="script.js"></script>
 
-endif; ?>
+    </html>
+<?php else: ?>
+    <div class="container">
+        <h2>Unauthorised Access</h2>
+        <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline"
+                href="index.php">Back to Homepage</a></p>
+    </div>
+<?php endif; ?>
 
 <?php include 'footer.html'; ?>

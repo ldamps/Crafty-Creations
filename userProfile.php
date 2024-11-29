@@ -4,9 +4,9 @@ include 'db.php';
 include 'navBar.php';
 
 // check for successful login first
-if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
+if (isset($_SESSION['LoggedIn'])):
     $role = $_SESSION["LoggedIn"];
-    $userID = $_COOKIE["ID"];
+    $userID = $_SESSION["ID"];
     //echo $role;
     if ($role === "customer") {
         //echo "customer";
@@ -55,12 +55,11 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
         else
         {
             // if not found, unauthorised access
-            echo '<div class="container">
-            <h2>Unauthorised Access</h2>
-            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-            </div>
-            <?php endif;?>
-            </div>';
+            echo '
+                <div class="container">
+                    <h2>Unauthorised Access</h2>
+                    <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+                    </div>';
         }
         
     }
@@ -231,13 +230,12 @@ if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
     </body>
     </html>
     
-<?php else:?>
-    <div class="container">
+    <?php  else:?>
+        <div class="container">
             <h2>Unauthorised Access</h2>
-            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
+            <p>You are not authorised to view this page. Please log in: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
             </div>
         <?php endif;?>
-        </div>
 
 <?php include 'footer.html'; ?>
 
