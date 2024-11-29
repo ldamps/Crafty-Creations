@@ -260,7 +260,7 @@ tr:nth-child(even) {
                                 <?php if (strtolower($order['OrderStatus']) === 'delivered'): ?>
                                     <form action="orderHistory.php" method="POST">
                                         <input type="hidden" name="orderID" value="<?php echo $order['OrderID']; ?>">
-                                        <button type="submit" class="return-button">Return</button>
+                                        <button class="button" type="submit" class="return-button">Return</button>
                                     </form>
                                 <?php else: ?>
                                     N/A
@@ -472,6 +472,7 @@ tr:nth-child(even) {
         <?php endif; ?>
     </div>
 </body>
+<script type="text/javascript" src="script.js"></script>
 </html>
 <?php else:
     header("Refresh:0; url=index.php");
