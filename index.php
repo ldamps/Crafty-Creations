@@ -119,9 +119,9 @@
             INNER JOIN Shop s ON se.Shop_shopID = s.ShopID
             INNER JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
             INNER JOIN Employee m ON m.FirstName = :ManFirst AND m.Surname = :ManLast
-            LEFT JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
+            LEFT JOIN OnlineOrder o ON o.Shop_ShopID =  s.ShopID
             LEFT JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
-            LEFT JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN ShopReturn sr ON sr.Shop_shopID = s.ShopID
             LEFT JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
                         WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
             $stmtEmployeeView = $mysql->prepare($viewEmployeeSQL);
