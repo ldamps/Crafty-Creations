@@ -19,7 +19,11 @@
             if (isset($_POST['logout'])) {
                 // unset logged in session
                 unset($_SESSION["LoggedIn"]);
+
+                // clear the cart
+                unset($_SESSION['cart']);
                 unset($_SESSION["ID"]);
+
             }
 
            

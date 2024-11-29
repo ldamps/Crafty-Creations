@@ -3,6 +3,88 @@
 <?php
 include('db.php'); 
 
+$availableShops = [];
+
+
+// Function to check if a product is available in a specific store
+function isProductAvailableInStore($productID, $storeID, $quantity) {
+    global $mysql;
+
+    $query = "SELECT Availability FROM ProductAvailability 
+              WHERE Product_ProductID = :productID AND Shop_ShopID = :storeID";
+    $stmt = $mysql->prepare($query);
+    $stmt->execute([':productID' => $productID, ':storeID' => $storeID]);
+    $availability = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $availability ? $availability['Availability'] >= $quantity : false;
+}
+
+// Function to find all stores that have the products of the entire cart
+function findStoresForCart($cart) {
+    global $mysql;
+
+    // get all store details
+    $storesQuery = "SELECT ShopID, StreetName, City, Postcode FROM Shop";
+    $storesStmt = $mysql->prepare($storesQuery);
+    $storesStmt->execute();
+    $stores = $storesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $eligibleStores = [];
+
+    foreach ($stores as $store) {
+        $storeID = $store['ShopID'];
+        $allProductsAvailable = true;
+
+        // check each products availability in the current store
+        foreach ($cart as $productID => $quantity) {
+            if (!isProductAvailableInStore($productID, $storeID, $quantity)) {
+                $allProductsAvailable = false;
+                break;
+            }
+        }
+
+        // if all products avaiable then add to the list
+        if ($allProductsAvailable) {
+            $eligibleStores[] = $store;
+        }
+    }
+
+    return $eligibleStores;
+}
+
+// find all stores for the current cart
+if (!empty($_SESSION['cart'])) {
+    $stores = findStoresForCart($_SESSION['cart']);
+    if (!empty($stores)) {
+        $availableShops = $stores;
+    } else {
+        $availableShops = []; // no shops have all the products
+    }
+}
+
+// Display cart products
+if (!empty($_SESSION['cart'])) {
+    echo "<h2>Your Cart</h2><ul>";
+    foreach ($_SESSION['cart'] as $productID => $quantity) {
+        $productDetails = getProductDetails($productID);
+        echo "<li>{$productDetails['ProductName']} - Quantity: {$quantity} - Price: {$productDetails['Price']}</li>";
+    }
+    echo "</ul>";
+
+    // Display available shops
+    echo "<h3>Collection Stores:</h3><ul>";
+    if (!empty($availableShops)) {
+        foreach ($availableShops as $shop) {
+            echo "<li>" . htmlspecialchars("{$shop['StreetName']}, {$shop['City']}, {$shop['Postcode']}") . "</li>";
+        }
+    } else {
+        echo "<li>No single store has all products available for collection.</li>";
+    }
+    echo "</ul>";
+} else {
+    echo "<p>Your cart is empty.</p>";
+}
+
 // initialize cart session
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
@@ -242,11 +324,15 @@ function getProductDetails($productID) {
     var userPayments = <?php echo json_encode($payments); ?>;
     var price = <?php echo json_encode($totalPrice); ?>;
     var customerID = <?php echo json_encode($userID); ?>;
+    var availableShops = <?php echo json_encode($availableShops); ?>;
+    
+   
     // debugging
     console.log('User Address:', userAddress);
     console.log('User Payments:', userPayments);
     console.log('Price:', price);
     console.log('Customer ID:', customerID);
+    console.log('Shops available for collection:', availableShops); 
   </script>
 
     <div id="emptyBox">

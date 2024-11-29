@@ -439,8 +439,10 @@ async function displayCheckout(element) {
     checkoutBox.setAttribute('id', 'checkoutBox');
     box.appendChild(checkoutBox);
 
+
+    //address section
     let addressHeading = document.createElement('h2');
-    addressHeading.innerHTML = 'Address';
+    addressHeading.innerHTML = 'Home Delivery';
     checkoutBox.appendChild(addressHeading);
 
     let addressOptionsBox = document.createElement('div');
@@ -463,9 +465,48 @@ async function displayCheckout(element) {
 
         let addressOptionRadio = document.createElement('input');
         addressOptionRadio.setAttribute('type', 'radio');
-        addressOptionRadio.setAttribute('name', 'addressOption'); //radio buttons are grouped
+        addressOptionRadio.setAttribute('name', 'deliveryOptionRadio'); //radio buttons are grouped
         addressOptionButton.appendChild(addressOptionRadio);
     });
+
+    //collection section
+    let collectionHeading = document.createElement('h2');
+    collectionHeading.innerHTML = 'Collect in Store';
+    checkoutBox.appendChild(collectionHeading);
+    let collectionOptionsBox = document.createElement('div');
+    collectionOptionsBox.setAttribute('id', 'collectionOptionsBox');
+    checkoutBox.appendChild(collectionOptionsBox);
+
+
+    if (availableShops && availableShops.length > 0) {
+        availableShops.forEach(function(shop) {
+            let collectionOption = document.createElement('div');
+            collectionOption.classList.add('collectionOption');
+            collectionOptionsBox.appendChild(collectionOption);
+
+            let collectionOptionName = document.createElement('h4');
+            collectionOptionName.classList.add('collectionOptionName');
+            collectionOptionName.innerHTML = `${shop.StreetName}, ${shop.City}, ${shop.Postcode}`;
+            collectionOption.appendChild(collectionOptionName);
+
+            let collectionOptionButton = document.createElement('div');
+            collectionOptionButton.classList.add('collectionOptionButton');
+            collectionOption.appendChild(collectionOptionButton);
+
+            let collectionOptionRadio = document.createElement('input');
+            collectionOptionRadio.setAttribute('type', 'radio');
+            collectionOptionRadio.setAttribute('name', 'deliveryOptionRadio'); // Group radio buttons
+            collectionOptionButton.appendChild(collectionOptionRadio);
+        });
+    } else {
+        let noShopsMessage = document.createElement('p');
+        noShopsMessage.classList.add('noShopsMessage');
+        noShopsMessage.innerHTML = 'No shops available for collection';
+        collectionOptionsBox.appendChild(noShopsMessage);
+    }
+    
+
+  
 
     let paymentHeading = document.createElement('h2');
     paymentHeading.innerHTML = 'Payment';
@@ -521,9 +562,10 @@ async function checkoutClick(element) {
     // make sure one radio button is selected in both sections
     let addressSelected = document.querySelector('input[name="addressOption"]:checked');
     let paymentSelected = document.querySelector('input[name="paymentOption"]:checked');
+    let collectionSelected = document.querySelector('input[name="collectionOption"]:checked');
 
-    if (!addressSelected || !paymentSelected) {
-        alert('Please select both an address and a payment option.');
+    if ((!addressSelected || !addressSelected) & !paymentSelected) {
+        alert('Please select both a delivery and a payment option.');
         return;
     }
 

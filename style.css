@@ -481,25 +481,25 @@ nav .button {
     border-radius: 10px;
 }
 
-#paymentOptionsBox, #addressOptionsBox {
+#paymentOptionsBox, #addressOptionsBox, #addressOptionsBox {
     display: table;
     overflow: hidden;
     width: 100%;
 }
 
-.paymentOption, .addressOption {
+.paymentOption, .addressOption, .collectionOption {
     display: table-row;
     height: 40px;
 }
 
-.paymentOptionAcc, .addressOptionName, .paymentOptionButton, .addressOptionButton {
+.paymentOptionAcc, .addressOptionName, .paymentOptionButton, .addressOptionButton, .collectionOptionName, .collectionOptionButton {
     display: table-cell;
     vertical-align: middle;
     border-bottom: solid;
     border-color: var(--secondary-color);
 }
 
-.paymentOptionAcc, .addressOptionName {
+.paymentOptionAcc, .addressOptionName, .collectionOptionName {
     width: 560px;
 }
 
