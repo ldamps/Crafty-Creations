@@ -63,6 +63,9 @@ require 'db.php'; ?>
                 if (isset($_POST['PayeeSearch'])) {
                     $_SESSION['PayeeSearch'] = $_POST['PayeeSearch'];
                 }
+                if (isset($_POST['reset'])) {
+                    unset($_SESSION['PayeeSearch']);
+                }
 
 
             }
@@ -130,6 +133,8 @@ require 'db.php'; ?>
                 <h1 id="staffHeading">Staff hours</h1>
                 <form method="post"><input id="payeeInput" placeholder="Search for payee or position"><button
                 id="payeeSearchButton" class="button" >Search</button></form>
+                <br><form method='post'><button class='button' id = 'PayeeResetButton'>Reset Search</button></form></br>
+
                 <?php
                 if (count($employees) != 0) {
 

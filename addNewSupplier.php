@@ -19,10 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $newSupplier = explode(",",$_SESSION['addSupplier']);
     }
 }
+if (isset($_SESSION['addSupplier']) && !($name == "" || $supplyType == "" || $email == "" || $address == "")){
 
-if (isset($_SESSION['addSupplier'])){
-
-    // lock table for transaction concurrency
     $query = "INSERT INTO Supplier (Name, Address, ProductTypeSupplied, Email) VALUES ('$name', '$address', '$supplyType', '$email')";
     $mysql->exec($query);
     // echo "<h1>Supplier Added</h1>";

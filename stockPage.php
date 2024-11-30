@@ -15,61 +15,80 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
         $stmtShopID->execute();
         $shopID = $stmtShopID->fetchColumn();
         $stmtShopID->closeCursor();
-
+        $shopID = "1";
         // if shop ID exiss
         if ($shopID) {
             //detailed stock info
-            $queryStock = "SELECT * FROM ShopEmployeeStockView";
-            $stmtStock = $mysql->prepare($queryStock);
-            $stmtStock->execute();
-            $stockData = $stmtStock->fetchAll(PDO::FETCH_ASSOC);
-            $stmtStock->closeCursor();
-
+            
 
             // handling stock order request
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderProductID'])) {
-                $orderProductID = $_POST['orderProductID'];
-                $orderQuantity = $_POST['orderQuantity'];
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if(isset($_POST['reset'])){
+                    unset($_SESSION['stockSearch']);
+                }
 
-                // inserting new supply order
-                $queryOrder = "INSERT INTO SupplyOrder (ProductType, Supplier_SupplierID, ShopID)
-                           VALUES ((SELECT Type FROM Product WHERE ProductID = :productID),
-                                   (SELECT SupplierID FROM Supplier WHERE Name = (SELECT Supplier FROM Product WHERE ProductID = :productID)),
-                                   :shopID);";
-                $stmtOrder = $mysql->prepare($queryOrder);
-                $stmtOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
-                $stmtOrder->bindParam(':shopID', $shopID, PDO::PARAM_INT);
-                $stmtOrder->execute();
-                $stmtOrder->closeCursor();
+                if(isset($_POST['stockSearch'])){
+                    echo "searching";
+                    $_SESSION['stockSearch'] = $_POST['stockSearch'];
+                    $search = $_SESSION['stockSearch'];
+                    $queryStock = "SELECT * FROM ShopEmployeeStockView WHERE ProductName LIKE '%$search%' OR Type LIKE '%$search%' OR Brand LIKE '%$search%' OR Supplier LIKE '%$search%'";
+                }
+                else{
+                    echo "not searching";
+                    $queryStock = "SELECT * FROM ShopEmployeeStockView";
+                    
+                }
+                echo "\n";
+                $stmtStock = $mysql->prepare($queryStock);
+                $stmtStock->execute();
+                $stockData = $stmtStock->fetchAll(PDO::FETCH_ASSOC);
+                $stmtStock->closeCursor();
+
+                if(isset($_POST['orderProductID'])){
+                    $orderProductID = $_POST['orderProductID'];
+                    $orderQuantity = $_POST['orderQuantity'];
+
+                    // inserting new supply order
+                    $queryOrder = "INSERT INTO SupplyOrder (ProductType, Supplier_SupplierID, ShopID)
+                            VALUES ((SELECT Type FROM Product WHERE ProductID = :productID),
+                                    (SELECT SupplierID FROM Supplier WHERE Name = (SELECT Supplier FROM Product WHERE ProductID = :productID)),
+                                    :shopID);";
+                    $stmtOrder = $mysql->prepare($queryOrder);
+                    $stmtOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
+                    $stmtOrder->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+                    $stmtOrder->execute();
+                    $stmtOrder->closeCursor();
 
 
-                $supplyOrderID = $mysql->lastInsertId();
+                    $supplyOrderID = $mysql->lastInsertId();
 
-                // linking product to supply order
-                $queryProductOrder = "INSERT INTO Product_has_SupplyOrder (Product_ProductID, SupplyOrder_SupplyOrderID)
-                                  VALUES (:productID, :supplyOrderID)";
-                $stmtProductOrder = $mysql->prepare($queryProductOrder);
-                $stmtProductOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
-                $stmtProductOrder->bindParam(':supplyOrderID', $supplyOrderID, PDO::PARAM_INT);
-                $stmtProductOrder->execute();
-
-
-                //updating product availability
-                $queryUpdateAvailability = "UPDATE ProductAvailability
-                                        SET Availability = Availability + :orderQuantity
-                                        WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID";
-                $stmtUpdateAvailability = $mysql->prepare($queryUpdateAvailability);
-                $stmtUpdateAvailability->bindParam(':orderQuantity', $orderQuantity, PDO::PARAM_INT);
-                $stmtUpdateAvailability->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
-                $stmtUpdateAvailability->bindParam(':shopID', $shopID, PDO::PARAM_INT);
-                $stmtUpdateAvailability->execute();
+                    // linking product to supply order
+                    $queryProductOrder = "INSERT INTO Product_has_SupplyOrder (Product_ProductID, SupplyOrder_SupplyOrderID)
+                                    VALUES (:productID, :supplyOrderID)";
+                    $stmtProductOrder = $mysql->prepare($queryProductOrder);
+                    $stmtProductOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
+                    $stmtProductOrder->bindParam(':supplyOrderID', $supplyOrderID, PDO::PARAM_INT);
+                    $stmtProductOrder->execute();
 
 
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
+                    //updating product availability
+                    $queryUpdateAvailability = "UPDATE ProductAvailability
+                                            SET Availability = Availability + :orderQuantity
+                                            WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID";
+                    $stmtUpdateAvailability = $mysql->prepare($queryUpdateAvailability);
+                    $stmtUpdateAvailability->bindParam(':orderQuantity', $orderQuantity, PDO::PARAM_INT);
+                    $stmtUpdateAvailability->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
+                    $stmtUpdateAvailability->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+                    $stmtUpdateAvailability->execute();
+
+
+                    header("Location: " . $_SERVER['PHP_SELF']);
+                    exit();
+                }
+                else {
+                    echo "Shop information not found for the logged-in employee.";
+                } 
             }
-        } else {
-            echo "Shop information not found for the logged-in employee.";
         }
     } 
     ?>
@@ -140,7 +159,9 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
 
         <div class="container">
             <h1>Stock Dashboard</h1>
-
+            <form method="post"><input id="stockSearchInput" placeholder="Search for stock item"><button
+            id="stockSearchButton" class="button" >Search</button></form>
+            <br><form method='post'><button class='button' id = 'stockResetSearch'>Reset Search</button></form></br>
             <!-- Stock Information Section -->
             <table>
                 <thead>

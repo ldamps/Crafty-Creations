@@ -22,6 +22,7 @@ var basket = document.getElementById('basketImage');
 var basketContents;
 
 var resetSearch = document.getElementById('resetButton');
+var PayeeSearchReset = document.getElementById('PayeeResetButton');
 var payeeInput = document.getElementById('payeeInput');
 var payeeButton = document.getElementById('payeeSearchButton');
 
@@ -32,6 +33,10 @@ var quantityDown = document.getElementById('quantityDown');
 
 var searchButton = document.getElementById('searchButton');
 searchButton.addEventListener('click', searchButtonClick);
+
+var stockSearchinput = document.getElementById('stockSearchInput');
+var stockSearchButton = document.getElementById('stockSearchButton');
+var stockSearchReset = document.getElementById('stockResetSearch');
 
 if (localStorage.getItem('basketContents') != null)
     {
@@ -105,6 +110,10 @@ if (payButton != null){
     });
 }
 
+if (PayeeSearchReset != null){
+    PayeeSearchReset.addEventListener('click', resetPayeeSearch);
+}
+
 if (detailsButton != null){
     detailsButton.forEach(element => {
         element.addEventListener('click', payeeDetails);
@@ -135,6 +144,14 @@ if (addSupplierButton != null){
         element.addEventListener('click', addSupplier);
     });
 }
+
+if (stockSearchButton != null){
+    stockSearchButton.addEventListener('click', stockSearch);
+}
+if (stockSearchinput != null){
+    stockSearchinput.addEventListener('keypress', stockSearch);
+}
+
 
 //Functions of the event listeners
 
@@ -711,6 +728,10 @@ function resetSearchFields(element){
     POSTSEND("reset=1", "index.php");
 }
 
+function resetPayeeSearch(element){
+    POSTSEND("reset=1", "payroll.php");
+}
+
 function supplierDetails(element){
     POSTSEND("supplierDetails="+encodeURIComponent(element.currentTarget.id), "suppliers.php");
 }
@@ -728,3 +749,15 @@ function addSupplier(element){
     console.log(newSupplier);
     POSTSEND("addSupplier="+encodeURIComponent(newSupplier), "addNewSupplier.php");
 }
+
+function stockSearch(element){
+    if(element.currentTarget.id == 'stockSearchButton'){
+        POSTSEND("stockSearch="+encodeURIComponent(stockSearchinput.value), "stockPage.php");
+    }
+    else if (element.key == 'Enter'){
+        POSTSEND("stockSearch="+encodeURIComponent(stockSearchinput.value), "stockPage.php");
+    }
+}
+function stockSearchReset(element){
+    POSTSEND("reset=1", "stockPage.php");
+}   
