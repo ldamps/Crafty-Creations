@@ -101,7 +101,7 @@ if (isset($_POST['clearCart']) && $_POST['clearCart'] === 'true') {
 
 // Check if the user is logged in
 if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer") {
-    $userID = $_COOKIE['ID'] ?? null;
+    $userID = $_SESSION['ID'] ?? null;
 
     if ($userID) {
 
