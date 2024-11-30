@@ -6,8 +6,6 @@ var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 var PS = document.getElementsByClassName('ProductSearch');
 let POSTSENDProductType = Array.from(PS);
-var pb = document.getElementsByClassName('payeeSearchButton');
-let payeeButton = Array.from(pb);
 var payB = document.getElementsByClassName('payButton');
 let payButton = Array.from(payB);
 var detailsB = document.getElementsByClassName('detailsButton');
@@ -25,6 +23,8 @@ var basketContents;
 
 var resetSearch = document.getElementById('resetButton');
 var payeeInput = document.getElementById('payeeInput');
+var payeeButton = document.getElementById('payeeSearchButton');
+
 var POSTSENDBar = document.getElementById('Search');
 
 var quantityUp = document.getElementById('quantityUp');
@@ -92,9 +92,7 @@ if(selector != null){
 }
 
 if (payeeButton != null){
-        payeeButton.forEach(element => {
-            element.addEventListener('click', POSTSENDPayee);
-        });
+    payeeButton.addEventListener('click', POSTSENDPayee);
 }
 
 if (payeeInput != null){
@@ -593,6 +591,7 @@ function setTotal()
 */
 //This function is used to send the post request to the server.
 function POSTSEND(data, page){
+    console.log(data);
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', page, true);
     xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -607,6 +606,8 @@ function POSTSEND(data, page){
     //         }
     //     }
     // }
+    console.log(data);
+
     xhhtp.send(data);
 }
 
@@ -630,17 +631,29 @@ function POSTSENDProducts(element){
 
 //This function is used to POSTSEND for a payee on the payroll page.
 function POSTSENDPayee(element){
+    var data;
     if(element.currentTarget.id == 'payeeInput'){
         element.currentTarget.onkeypress = (element) => {
             if (element.key == 'Enter'){
-                var data = element.currentTarget.value;
+                // console.log(element.currentTarget.value);
+
+                data = element.currentTarget.value;
+                console.log(data);
             }
         }
     }
-    else{
-        var data = document.getElementById("payeeInput").value;
+    else if ( element.currentTarget.id === 'payeeSearchButton'){
+        data = document.getElementById("payeeInput").value;
+        console.log(data);
     }
-    POSTSEND("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
+
+    if(typeof data === 'undefined'){
+        console.log("Undefined");
+    }
+    else{
+        console.log("aaa");
+        POSTSEND("PayeeSearch=" + encodeURIComponent(data), "payroll.php");
+    }
 }
 
 //This function is used to pay a staff member on the payroll page.

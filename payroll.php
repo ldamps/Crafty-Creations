@@ -112,7 +112,6 @@ require 'db.php'; ?>
                 $res = $query->fetchAll();
             }
 
-
             //For each employee, create an employee object and add it to the array
             foreach ($res as $employee) {
                 $e = new Employee();
@@ -131,7 +130,7 @@ require 'db.php'; ?>
             <div class="container">
                 <h1 id="staffHeading">Staff hours</h1>
                 <form method="post"><input id="payeeInput" placeholder="Search for payee or position"><button
-                        class="button">Search</button></form>
+                id="payeeSearchButton" class="button" >Search</button></form>
                 <?php
                 if (count($employees) != 0) {
 
@@ -186,4 +185,4 @@ require 'db.php'; ?>
 </html>
 <script type="text/javascript" src="script.js"></script>
 
-<?php include 'footer.html'; ?>
+<!-- <?php include 'footer.html'; ?> -->

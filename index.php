@@ -407,7 +407,7 @@
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
 
-    include 'footer.html';
-
+    
 ?>
+<?php include 'footer.html'; ?>
 <script type="text/javascript" src="script.js"></script>
