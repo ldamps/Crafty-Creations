@@ -32,16 +32,15 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                 $orderQuantity = $_POST['orderQuantity'];
 
                 // inserting new supply order
-                $queryOrder = "LOCK TABLES SupplyOrder WRITE, Product, Supplier READ;
-                INSERT INTO SupplyOrder (ProductType, Supplier_SupplierID, ShopID)
+                $queryOrder = "INSERT INTO SupplyOrder (ProductType, Supplier_SupplierID, ShopID)
                            VALUES ((SELECT Type FROM Product WHERE ProductID = :productID),
                                    (SELECT SupplierID FROM Supplier WHERE Name = (SELECT Supplier FROM Product WHERE ProductID = :productID)),
-                                   :shopID);
-                                   UNLOCK TABLES";
+                                   :shopID);";
                 $stmtOrder = $mysql->prepare($queryOrder);
                 $stmtOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
                 $stmtOrder->bindParam(':shopID', $shopID, PDO::PARAM_INT);
                 $stmtOrder->execute();
+                $stmtOrder->closeCursor();
 
 
                 $supplyOrderID = $mysql->lastInsertId();
