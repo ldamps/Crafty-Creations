@@ -82,20 +82,15 @@
         <ul>
             <?php
                 if (isset($_SESSION["LoggedIn"])) {
-    
                     //getting role of user
                     $role = $_SESSION["LoggedIn"]; 
 
                     if ($role === "customer") {
-                        echo "<div class='column Links'><h2>quick links</h2></li><li><a href='index.php'>Homepage</a></li></li><li><a href='about.php'>about us</a></li> <li><a href='#'>tools</a></li><li><a href='#'>paint</a></li><li><a href='#'>fabric</a></li><li><a href='#'>yarn</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
+                        echo "<div class='column Links'><h2>quick links</h2></li><li><a href='index.php'>homepage</a></li><li><a href='about.php'>about us</a></li> <li><a href='#'>tools</a></li><li><a href='#'>paint</a></li><li><a href='#'>fabric</a></li><li><a href='#'>yarn</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
                     } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
-                        echo "<div class='column Links'><h2>quick links</h2></li<li><a href='index.php'>Homepage</a></li>><li><a href='about.php'>about us</a></li><li><a href='Employees.php'>homepage</a></li><li><a href='stockPage.php'>stock levels</a></li><li><a href='ShopOrderHistory.php'>shop order history</a></li><li><a href='supplierPage.php'>supplier</a></li><li><a href='salesPage.php'>sales</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
+                        echo "<div class='column Links'><h2>quick links</h2></li><li><a href='index.php'>homepage</a></li><li><a href='about.php'>about us</a></li><li><a href='Employees.php'>employees</a></li><li><a href='stockPage.php'>stock levels</a></li><li><a href='ShopOrderHistory.php'>shop order history</a></li><li><a href='supplierPage.php'>supplier</a></li><li><a href='salesPage.php'>sales</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
                     } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
-                        echo "<a class='button' href='Employees.php'>Employee Details</a>";
-                        echo "<a class='button' href='payroll.php'>Payroll</a>";
-                        echo "<a class='button' href='salesPage.php'>Sales</a>";
-                        echo "<a class='button' href='supplierPage.php'>Suppliers</a>";
-                        echo "<a class='button' href='IT.php'>IT</a>";
+                        echo "<div class='column Links'><h2>quick links</h2><li><a href='index.php'>homepage</a></li><li><a href='about.php'>about us</a></li> <li><a href='employees.html'>employee details</a></li><li><a href='payroll.php'>payroll</a></li><li><a href='salesPage.php'>sales</a></li><li><a href='supplierPage.php'>suppliers</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='IT.php'>IT</a></li></div>";
                     } else {
                         echo "<div class='column Links'><h2>quick links</h2><li><a href='about.php'>about us</a></li> <li><a href='stockPage.html'>stock levels</a></li><li><a href='ShopOrderHistory.php'>shop order history</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
                     }
