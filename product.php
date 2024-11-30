@@ -105,7 +105,7 @@ if ($product) {
                 <?php echo "<p> $productBrand " ?></p>
             </div>
             <!-- this could maybe only be displayed if the stock is low-->
-            <?php if ($role === "customer" || $role === "loggedIn"): ?>
+            <?php if ($role === "customer" || $role === "loggedOut"): ?>
                 <div id="productAvailability">
                     <h2>In stock: </h2>
                     <?php if ($totalAvailability < 20):

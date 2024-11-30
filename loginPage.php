@@ -83,7 +83,14 @@ if (!isset($_SESSION['LoggedIn'])) {
             echo "Invalid email or password. Please try again.";
         }
     }
+    include 'loginPage.html';
 }
+
+//php -S localhost:8000
+//http://localhost:8000/loginPage.php
+
+
+
 else
 {
     echo '<div class="container">
@@ -91,11 +98,6 @@ else
             <p>You are already logged in! To log in with another account, please log out first. Return to homepage: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
             </div>';
 }
-//php -S localhost:8000
-//http://localhost:8000/loginPage.php
-
-
-include 'loginPage.html';
 echo '<script type="text/javascript" src="script.js"></script>';
 include 'footer.html';
 ?>
