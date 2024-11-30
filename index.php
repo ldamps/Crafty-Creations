@@ -10,7 +10,7 @@
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
     
-    $increment = 40;
+    $increment = 6;
     if (!isset($_SESSION)){
         session_start();  
     }
@@ -313,7 +313,7 @@
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -330,7 +330,7 @@
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
