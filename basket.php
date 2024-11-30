@@ -3,7 +3,12 @@
 <?php
 include('db.php'); 
 
+
+
 $availableShops = [];
+$userAddress = [];
+$userPayments = [];
+
 
 
 // Function to check if a product is available in a specific store
@@ -101,7 +106,7 @@ if (isset($_POST['clearCart']) && $_POST['clearCart'] === 'true') {
 
 // Check if the user is logged in
 if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer") {
-    $userID = $_COOKIE['ID'] ?? null;
+    $userID = $_SESSION['ID'] ?? null;
 
     if ($userID) {
 
@@ -333,6 +338,7 @@ function getProductDetails($productID) {
     console.log('Price:', price);
     console.log('Customer ID:', customerID);
     console.log('Shops available for collection:', availableShops); 
+
   </script>
 
     <div id="emptyBox">

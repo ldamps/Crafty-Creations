@@ -463,26 +463,34 @@ async function displayCheckout(element) {
     let addressOptionsBox = document.createElement('div');
     addressOptionsBox.setAttribute('id', 'addressOptionsBox');
     checkoutBox.appendChild(addressOptionsBox);
+    
 
-    userAddress.forEach(function(address) {
-        let addressOption = document.createElement('div');
-        addressOption.classList.add('addressOption');
-        addressOptionsBox.appendChild(addressOption);
-
-        let addressOptionName = document.createElement('h4');
-        addressOptionName.classList.add('addressOptionName');
-        addressOptionName.innerHTML = `${address.HouseNumber} ${address.StreetName}, ${address.City}, ${address.Postcode}`;
-        addressOption.appendChild(addressOptionName);
-
-        let addressOptionButton = document.createElement('div');
-        addressOptionButton.classList.add('addressOptionButton');
-        addressOption.appendChild(addressOptionButton);
-
-        let addressOptionRadio = document.createElement('input');
-        addressOptionRadio.setAttribute('type', 'radio');
-        addressOptionRadio.setAttribute('name', 'deliveryOptionRadio'); //radio buttons are grouped
-        addressOptionButton.appendChild(addressOptionRadio);
-    });
+    if (userAddress && userAddress.length > 0) {
+        userAddress.forEach(function(address) {
+            let addressOption = document.createElement('div');
+            addressOption.classList.add('addressOption');
+            addressOptionsBox.appendChild(addressOption);
+    
+            let addressOptionName = document.createElement('h4');
+            addressOptionName.classList.add('addressOptionName');
+            addressOptionName.innerHTML = `${address.HouseNumber} ${address.StreetName}, ${address.City}, ${address.Postcode}`;
+            addressOption.appendChild(addressOptionName);
+    
+            let addressOptionButton = document.createElement('div');
+            addressOptionButton.classList.add('addressOptionButton');
+            addressOption.appendChild(addressOptionButton);
+    
+            let addressOptionRadio = document.createElement('input');
+            addressOptionRadio.setAttribute('type', 'radio');
+            addressOptionRadio.setAttribute('name', 'deliveryOptionRadio'); // Radio buttons are grouped
+            addressOptionButton.appendChild(addressOptionRadio);
+        });
+    } else {
+        let noAddressMessage = document.createElement('p');
+        noAddressMessage.classList.add('noAddressMessage');
+        noAddressMessage.innerHTML = 'No addresses available for home delivery';
+        addressOptionsBox.appendChild(noAddressMessage);
+    }
 
     //collection section
     let collectionHeading = document.createElement('h2');
@@ -531,14 +539,16 @@ async function displayCheckout(element) {
     paymentOptionsBox.setAttribute('id', 'paymentOptionsBox');
     checkoutBox.appendChild(paymentOptionsBox);
 
-    userPayments.forEach(function(payment) {
+    // Check if userPayments is not empty or undefined
+if (userPayments && userPayments.length > 0) {
+    userPayments.forEach(function (payment) {
         let paymentOption = document.createElement('div');
         paymentOption.classList.add('paymentOption');
         paymentOptionsBox.appendChild(paymentOption);
 
         let paymentOptionAcc = document.createElement('h4');
         paymentOptionAcc.classList.add('paymentOptionAcc');
-        let cardLastFour = String(payment.CardNumber).slice(-4); // get the last 4 digits of the CardNumber
+        let cardLastFour = String(payment.CardNumber).slice(-4); // Get the last 4 digits of the CardNumber
         paymentOptionAcc.innerHTML = `**** **** **** ${cardLastFour}`;
         paymentOption.appendChild(paymentOptionAcc);
 
@@ -548,9 +558,15 @@ async function displayCheckout(element) {
 
         let paymentOptionRadio = document.createElement('input');
         paymentOptionRadio.setAttribute('type', 'radio');
-        paymentOptionRadio.setAttribute('name', 'paymentOption'); // radio buttons are grouped
+        paymentOptionRadio.setAttribute('name', 'paymentOption'); // Radio buttons are grouped
         paymentOptionButton.appendChild(paymentOptionRadio);
     });
+} else {
+    let noPaymentMessage = document.createElement('p');
+    noPaymentMessage.classList.add('noPaymentMessage');
+    noPaymentMessage.innerHTML = 'No saved payment methods available.';
+    paymentOptionsBox.appendChild(noPaymentMessage);
+}
 
     let checkoutButton = document.createElement('div');
     checkoutButton.setAttribute('id', 'checkoutButton');
