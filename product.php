@@ -18,14 +18,21 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION["LoggedIn"] == "customer") {
     $stmt = $mysql->prepare($query);
     $stmt->execute([':productID' => $productID]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
-} else if (isset($_SESSION['LoggedIn'])) {
+} else if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "Shop Assistant" || $_SESSION["LoggedIn"] === "Supervisor" || $_SESSION["LoggedIn"] === "Manager" || $_SESSION['LoggedIn'] === "Assistant Manager")) {
+    $role = $_SESSION["LoggedIn"];
     // all shop employees see from the shop stock view
     $query = "SELECT DISTINCT ProductName, ProductDescription, Price, Brand, Supplier, Availability FROM ShopEmployeeStockView WHERE ProductID = :productID";
     $stmt = $mysql->prepare($query);
     $stmt->execute([':productID' => $productID]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
+} else if (isset($_SESSION['LoggedIn']) && (($_SESSION["LoggedIn"] === "CEO") || ($_SESSION["LoggedIn"] === "Human Resources") || ($_SESSION["LoggedIn"] === "Payroll") || ($_SESSION["LoggedIn"] === "IT Support") || ($_SESSION["LoggedIn"] === "Administration") || ($_SESSION["LoggedIn"] === "Website Development"))) {
+    // office employees see stock levels at all stores
+    $query = "SELECT DISTINCT ProductName, ProductDescription, Price, Brand, Supplier FROM OfficeStockView WHERE ProductID = :productID";
+    $stmt = $mysql->prepare($query);
+    $stmt->execute([':productID' => $productID]);
+    $product = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
-    // take from logged out view
+    // take from logged out view - this will be office employees and logged out people. office employees dont deal with stock levels    
     $role = "loggedOut";
     // fetch the product details
     $query = "SELECT DISTINCT ProductName, ProductDescription, Price, Brand FROM LoggedOutView WHERE ProductID = :productID";
@@ -36,7 +43,7 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION["LoggedIn"] == "customer") {
 
 
 // if the product exists
-if ($product) {
+if ($product && ($role === "customer" || $role === "loggedOut" || $role === "Manager" || $role === "Assistant Manager" || $role === "Supervisor" || $role === "Shop Assistant")) {
     $productName = $product['ProductName'];
     $productDescription = $product['ProductDescription'];
     $productPrice = $product['Price'];
@@ -53,13 +60,19 @@ if ($product) {
         $availability = $stmt->fetch(PDO::FETCH_ASSOC);
         // total availability value
         $totalAvailability = $availability ? $availability['totalAvailability'] : 0;
-    } else {
+    } else if ($role === "Manager" || $role === "Assistant Manager" || $role === "Supervisor" || $role === "Shop Assistant") {
         $productSupplier = $product['Supplier'];
         $productAvailability = $product['Availability'];
     }
 
 
-
+} else if ($role === "CEO") {
+    $productName = $product[0]['ProductName'];
+    $productDescription = $product[0]['ProductDescription'];
+    $productPrice = $product[0]['Price'];
+    $productBrand = $product[0]['Brand'];
+    $imagePath = "images/" . $productID . ".png";
+    $productSupplier = $product[0]['Supplier'];
 } else {
     // if the product doesn't exist, redirect to home page
     header("Location: index.php");
@@ -115,16 +128,45 @@ if ($product) {
                     endif ?>
                     <!-- Shop employees can see everything available at their store and also supplier -->
                 </div>
-            <?php else: ?>
-                <div id="productBrand">
-                    <h2>Supplier:</h2>
-                    <?php echo "<p> $productSupplier " ?></p>
-                </div>
-                <div id="productBrand">
-                    <h2>In Stock at Store:</h2>
-                    <?php echo "<p> $productAvailability " ?></p>
-                </div>
-        
+            <?php else:
+                if ($role === "Manager" || $role === "Assistant Manager" || $role === "Supervisor" || $role === "Shop Assistant"): ?>
+                    <div id="productBrand">
+                        <h2>Supplier:</h2>
+                        <?php echo "<p> $productSupplier " ?></p>
+                    </div>
+                    <div id="productBrand">
+                        <h2>In Stock at Store:</h2>
+                        <?php echo "<p> $productAvailability " ?></p>
+                    </div>
+                <?php else: ?>
+                    <div id="productBrand">
+                        <h2>Supplier:</h2>
+                        <?php echo "<p> $productSupplier " ?></p>
+                    </div>
+                    <?php $currentShop = 1;
+                    echo "<br><h1>Stock Levels</h1>";
+                    while ($currentShop <= 10):
+                        // get the name of the current shop
+                        $queryShopName = "SELECT DISTINCT City FROM OfficeEmployeeView WHERE ShopID = :currentShop";
+                        $stmtShopName = $mysql->prepare($queryShopName);
+                        //$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+                        $stmtShopName->execute(['currentShop' => $currentShop]);
+                        $shopName = $stmtShopName->fetchColumn();
+
+                        $queryAvail = "SELECT DISTINCT Availability FROM OfficeStockView WHERE ProductID = :productID and Shop_ShopID = :shopID";
+                        $stmtAvail = $mysql->prepare($queryAvail);
+                        $stmtAvail->execute(['productID' => $productID, "shopID"=> $currentShop]);
+                        $availability = $stmtAvail->fetchColumn(); 
+                        //echo $availability ?>
+                        
+                        <?php echo "<br><h2>$shopName Shop</h2>" ?>
+                        <div id="productBrand">
+                                <h3>In Stock at Store:</h3>
+                                <?php echo "<p> $availability " ?></p>
+                            </div>
+                        <?php $currentShop = $currentShop + 1; ?>
+                    <?php endwhile; ?>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
@@ -152,7 +194,7 @@ if ($product) {
                         <h1>add to cart</h1>
                     </button>
                     <button type="submit" id="buy" class="button">
-                      <h1>buy now</h1>
+                        <h1>buy now</h1>
                     </button>
                 </form>
             </div>
