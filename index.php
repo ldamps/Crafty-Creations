@@ -149,7 +149,7 @@
             $ManagerInfo = $stmtManager->fetch();
             $ManFirst = $ManagerInfo[0];
             $ManLast = $ManagerInfo[1];
-            echo $ManFirst . $ManLast;
+            //echo $ManFirst . $ManLast;
             $stmtManager->closeCursor();
             //echo "shop worked at: " . $ShopWorkedInfo;
             //echo "userID: " . $userID;
@@ -223,7 +223,7 @@
             $stmtStockView->bindParam(':SID', $ShopWorkedInfo, PDO::PARAM_INT);
             $stmtStockView->execute();
             $StockView = $stmtStockView->fetchAll();
-            echo sizeOf($StockView);
+            //echo sizeOf($StockView);
             $stmtStockView->closeCursor();
         }
     }

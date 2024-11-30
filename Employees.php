@@ -1,7 +1,7 @@
 <?php
 include 'db.php';
 include 'navBar.php';
-if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Manager" || $_SESSION['LoggedIn']=== "Assistant Manager")):
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Manager" || $_SESSION['LoggedIn']=== "Assistant Manager" || ($_SESSION["LoggedIn"] === "CEO") || ($_SESSION["LoggedIn"] === "Human Resources") || ($_SESSION["LoggedIn"] === "Payroll") || ($_SESSION["LoggedIn"] === "IT Support") || ($_SESSION["LoggedIn"] === "Administration") || ($_SESSION["LoggedIn"] === "Website Development"))):
     $role = $_SESSION["LoggedIn"];
     $employeeID = $_SESSION['ID'];
     if ($role == "Manager" || $role == "Assistant Manager") {
@@ -97,7 +97,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Manager" || $_SESS
                     <h2>Employees Information</h2>
                     <!-- Set initial shop to 1-->
                     <?php $currentShop = 1;
-                    // there are ten shops, so create a new table for each shop
+                    // there are 8 shops, so create a new table for each shop
                     while ($currentShop <= 10):
                         // get the city of the current shop
                         $queryShopName = "SELECT DISTINCT City FROM OfficeEmployeeView WHERE ShopID = :currentShop";
