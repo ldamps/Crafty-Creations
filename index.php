@@ -408,7 +408,9 @@
     if($_SESSION['currentlyLoaded'] > 6){ // only show the show less button if more than 6 items are loaded 
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
+
     include 'footer.html';
 
 ?>
+
 <script type="text/javascript" src="script.js"></script>
