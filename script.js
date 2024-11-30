@@ -151,7 +151,9 @@ if (stockSearchButton != null){
 if (stockSearchinput != null){
     stockSearchinput.addEventListener('keypress', stockSearch);
 }
-
+if (stockSearchReset != null){
+    stockSearchReset.addEventListener('click', resetStockSearch);
+}
 
 //Functions of the event listeners
 
@@ -767,6 +769,7 @@ function addSupplier(element){
 }
 
 function stockSearch(element){
+    console.log("stockSearch");
     if(element.currentTarget.id == 'stockSearchButton'){
         POSTSEND("stockSearch="+encodeURIComponent(stockSearchinput.value), "stockPage.php");
     }
@@ -774,6 +777,6 @@ function stockSearch(element){
         POSTSEND("stockSearch="+encodeURIComponent(stockSearchinput.value), "stockPage.php");
     }
 }
-function stockSearchReset(element){
+function resetStockSearch(element){
     POSTSEND("reset=1", "stockPage.php");
 }   

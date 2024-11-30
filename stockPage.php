@@ -23,26 +23,9 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
 
             // handling stock order request
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if(isset($_POST['reset'])){
-                    unset($_SESSION['stockSearch']);
+                if(!isset($_SESSION['stockSearch'])){
+                    $_SESSION['stockSearch'] = "";
                 }
-
-                if(isset($_POST['stockSearch'])){
-                    echo "searching";
-                    $_SESSION['stockSearch'] = $_POST['stockSearch'];
-                    $search = $_SESSION['stockSearch'];
-                    $queryStock = "SELECT * FROM ShopEmployeeStockView WHERE ProductName LIKE '%$search%' OR Type LIKE '%$search%' OR Brand LIKE '%$search%' OR Supplier LIKE '%$search%'";
-                }
-                else{
-                    echo "not searching";
-                    $queryStock = "SELECT * FROM ShopEmployeeStockView";
-                    
-                }
-                echo "\n";
-                $stmtStock = $mysql->prepare($queryStock);
-                $stmtStock->execute();
-                $stockData = $stmtStock->fetchAll(PDO::FETCH_ASSOC);
-                $stmtStock->closeCursor();
 
                 if(isset($_POST['orderProductID'])){
                     $orderProductID = $_POST['orderProductID'];
@@ -85,11 +68,37 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                     header("Location: " . $_SERVER['PHP_SELF']);
                     exit();
                 }
-                else {
-                    echo "Shop information not found for the logged-in employee.";
-                } 
+
+                if(isset($_POST['reset'])){
+                    unset($_SESSION['stockSearch']);
+                    unset($_POST['stockSearch']);
+                    unset($_POST['reset']);
+                }
+
+                if(isset($_POST['stockSearch']) && $_POST['stockSearch'] != ""){
+                    $_SESSION['stockSearch'] = $_POST['stockSearch'];
+
+                }                
             }
+            if (isset($_SESSION['stockSearch']) && $_SESSION['stockSearch'] != "") {
+                $search = $_SESSION['stockSearch'];
+                $queryStock = "SELECT * FROM ShopEmployeeStockView WHERE ProductName LIKE '%$search%' OR Type LIKE '%$search%' OR Brand LIKE '%$search%' OR Supplier LIKE '%$search%'";
+            }
+            else{
+                $queryStock = "SELECT * FROM ShopEmployeeStockView";
+            }
+
+            $stmtStock = $mysql->prepare($queryStock);
+                $stmtStock->execute();
+                $stockData = $stmtStock->fetchAll(PDO::FETCH_ASSOC);
+                $stmtStock->closeCursor();
+
         }
+        else {
+            echo "Shop information not found for the logged-in employee.";
+        } 
+
+
     } 
     ?>
 
