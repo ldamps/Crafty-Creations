@@ -65,8 +65,10 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
 
     // prepare the SQL statement
-    $stmt = $mysql->prepare("INSERT INTO Customer (Title, FirstName, LastName, PhoneNumber, EmailAddress, Password)
-    VALUES (:Title, :FirstName, :LastName, :PhoneNumber, :EmailAddress, :Password)");
+    $stmt = $mysql->prepare("LOCK TABLES Customer WRITE;
+    INSERT INTO Customer (Title, FirstName, LastName, PhoneNumber, EmailAddress, Password)
+    VALUES (:Title, :FirstName, :LastName, :PhoneNumber, :EmailAddress, :Password);
+    UNLOCK TABLES");
     
 
     // bind parameters

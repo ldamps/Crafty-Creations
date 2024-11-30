@@ -22,7 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if (isset($_SESSION['addSupplier'])){
 
-    $query = "INSERT INTO Supplier (Name, Address, ProductTypeSupplied, Email) VALUES ('$name', '$address', '$supplyType', '$email')";
+    // lock table for transaction concurrency
+    $query = "LOCK TABLES Supplier Write;
+    INSERT INTO Supplier (Name, Address, ProductTypeSupplied, Email) VALUES ('$name', '$address', '$supplyType', '$email');
+    UNLOCK TABLES";
     $mysql->exec($query);
     // echo "<h1>Supplier Added</h1>";
     // echo "<a class = 'return' href = 'suppliers.php'><h4>Click to return to suppliers page</h4></a>";
