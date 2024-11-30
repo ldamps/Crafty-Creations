@@ -210,6 +210,6 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "Manager" || $_SE
     </div>
 </body>
 <script type="text/javascript" src="script.js"></script>
-<?php include 'footer.html' ?>
+<?php include 'footer.php' ?>
 
 </html>

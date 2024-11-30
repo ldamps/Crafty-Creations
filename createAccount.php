@@ -120,4 +120,4 @@ include 'createAccount.html';
     <?php endif; ?>
 </script>
 
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>

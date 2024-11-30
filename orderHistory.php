@@ -204,4 +204,4 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
 </html>
 
 
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>

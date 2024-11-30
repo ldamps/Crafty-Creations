@@ -128,4 +128,4 @@ $salesData = $stmtSales->fetchAll(PDO::FETCH_ASSOC);
     <script type="text/javascript" src="script.js"></script>
 </html>
 
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>

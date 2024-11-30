@@ -232,4 +232,4 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
 
 
 
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>

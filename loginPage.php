@@ -99,5 +99,5 @@ else
             </div>';
 }
 echo '<script type="text/javascript" src="script.js"></script>';
-include 'footer.html';
+include 'footer.php';
 ?>
