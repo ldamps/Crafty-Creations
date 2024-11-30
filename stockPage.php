@@ -82,10 +82,10 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
             }
             if (isset($_SESSION['stockSearch']) && $_SESSION['stockSearch'] != "") {
                 $search = $_SESSION['stockSearch'];
-                $queryStock = "SELECT * FROM ShopEmployeeStockView WHERE ProductName LIKE '%$search%' OR Type LIKE '%$search%' OR Brand LIKE '%$search%' OR Supplier LIKE '%$search%'";
+                $queryStock = "SELECT DISTINCT ProductName, ProductID, Availability, Type, Brand, Supplier FROM ShopEmployeeStockView WHERE ProductName LIKE '%$search%' OR Type LIKE '%$search%' OR Brand LIKE '%$search%' OR Supplier LIKE '%$search%'";
             }
             else{
-                $queryStock = "SELECT * FROM ShopEmployeeStockView";
+                $queryStock = "SELECT DISTINCT ProductName, ProductID, Availability, Type, Brand, Supplier FROM ShopEmployeeStockView";
             }
 
             $stmtStock = $mysql->prepare($queryStock);
