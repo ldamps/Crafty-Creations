@@ -24,7 +24,7 @@
 </body>
 
 <script src="script.js"></script>
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>
 
 </html>
 

@@ -184,3 +184,5 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Manager" || $_SESS
 </body>
 
 </html>
+
+<?php include 'footer.php'; ?>

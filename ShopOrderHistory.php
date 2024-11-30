@@ -503,4 +503,4 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
         <script type="text/javascript" src="script.js"></script>
 </html>
 
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>

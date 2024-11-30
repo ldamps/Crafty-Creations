@@ -229,5 +229,5 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]=== "customer" || $_SE
     
     
 
-<?php include 'footer.html'; ?>
+<?php include 'footer.php'; ?>
 

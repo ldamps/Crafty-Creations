@@ -5,6 +5,6 @@
 require 'db.php'; 
 
 include 'forgotPassword.html';
-include 'footer.html';
+include 'footer.php';
 
 ?>

@@ -41,7 +41,7 @@ include 'addNewSupplier.html';?>
     </div>
 <?php endif; ?>
 <script type="text/javascript" src="script.js"></script>
-<?php include'footer.html';
+<?php include'footer.php';
 ?>
 
 
