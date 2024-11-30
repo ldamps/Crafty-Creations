@@ -12,8 +12,7 @@
             overflow: hidden;
             padding-left: 0.5%;
             padding-right: 0.5%;
-            box-shadow: 0 -1px 7px black;
-            position: auto;
+            margin-top: 200px;
         }
 
         footer h2 {
@@ -73,7 +72,6 @@
         }
     </style>
 </head>
-
 <footer>
     <div class="footerRow">
         <div class="column About">
@@ -83,7 +81,7 @@
         <div class="column Links">
             <h2>quick links</h2>
             <li><a href="loginPage.php">log in</a></li>
-            <li><a href="about.html">about us</a></li>
+            <li><a href="about.php">about us</a></li>
             <li><a href="#">tools</a></li>
             <li><a href="#">paint</a></li>
             <li><a href="#">fabric</a></li>
@@ -106,14 +104,24 @@
 </footer>
 
 <script>
-    let body = document.getElementsByTagName('body')[0];
-    let footer = document.getElementsByTagName('footer')[0];
-   
-    if (body.scrollHeight <= body.clientHeight)
+    
+    window.onload = checkScroll();
+    window.resize = checkScroll();
+
+    
+    function checkScroll()
     {
-        footer.style.position = 'absolute';
-        footer.style.bottom = '0';
+        let html = document.documentElement;
+        let footer = document.getElementsByTagName('footer')[0];
+        console.log('scrollHeight: ' + html.scrollHeight);
+        console.log('offsetHeight: ' + html.offsetHeight);
+        if (html.scrollHeight > html.offsetHeight + 1)
+        {
+            footer.style.position = 'absolute';
+            footer.style.bottom = '0';
+        }
     }
+
 </script>
 
 </html>

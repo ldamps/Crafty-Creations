@@ -17,10 +17,13 @@
             //unset($_SESSION["LoggedIn"]);
              // remove all extras
             if (isset($_POST['logout'])) {
-                // delete user cookie
-                setcookie("ID", "", time() - 3600);
                 // unset logged in session
                 unset($_SESSION["LoggedIn"]);
+
+                // clear the cart
+                unset($_SESSION['cart']);
+                unset($_SESSION["ID"]);
+
             }
 
            
@@ -44,7 +47,7 @@
                 } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
                     echo "<a class='button' href='Employees.php'>Employee Details</a>";
                     echo "<a class='button' href='payroll.php'>Payroll</a>";
-                    echo "<a class='button' href='#'>Sales</a>";
+                    echo "<a class='button' href='salesPage.php'>Sales</a>";
                     echo "<a class='button' href='supplierPage.php'>Suppliers</a>";
                     echo "<a class='button' href='IT.php'>IT</a>";
                 } else { 

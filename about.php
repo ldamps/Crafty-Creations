@@ -12,20 +12,6 @@
         body {
             padding: 5px;
         }
-        footer {
-            background-color: #E2F8FB;
-            box-sizing: border-box;
-            overflow: hidden;
-            padding-left: 0.5%;
-            padding-right: 0.5%;
-            position:absolute;
-            bottom:0;
-        }
-
-        h2 {
-            text-decoration: underline;
-            font-size: 15;
-        }
 
         footer p {
             font-size: 12;

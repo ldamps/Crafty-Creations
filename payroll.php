@@ -31,14 +31,13 @@ require 'db.php'; ?>
         public $hourlyPay;
     }
 
+    //unset($_SESSION['PayeeSearch']);
     //Make sure session is started
     if (!isset($_SESSION)) {
         session_start();
     }
-    if (isset($_SESSION['LoggedIn']) && isset($_COOKIE['ID'])):
+    if (isset($_SESSION['LoggedIn']) && (($_SESSION["LoggedIn"] === "CEO") || ($_SESSION["LoggedIn"] === "Human Resources") || ($_SESSION["LoggedIn"] === "Payroll") || ($_SESSION["LoggedIn"] === "IT Support") || ($_SESSION["LoggedIn"] === "Administration") || ($_SESSION["LoggedIn"] === "Website Development"))):
         $role = $_SESSION["LoggedIn"];
-        if ($role === "IT Support" || $role === "Website Development" || $role === "Payroll" || $role === "Administration" || $role === "Human Resources" || $role === "CEO"):
-
 
             //Same idea as in index.php, to reset the page when a post is submitted
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -157,7 +156,7 @@ require 'db.php'; ?>
                         echo "<td>" . $employee->position . "</td>";
                         echo "<td>" . $employee->hoursWorked . "</td>";
                         echo "<td>" . $employee->hoursWorked * $employee->hourlyPay . "</td>";
-                        echo "<td><form method = 'post'><button id =" . $employee->id . " class = 'detailsButton Button'>Get Details</button></form></td>";
+                        echo "<td><form method = 'post'><button id =" . $employee->id . " class = 'detailsButton button'>Get Details</button></form></td>";
                         echo "</tr>";
                     }
                     echo "</tbody>";
@@ -166,18 +165,14 @@ require 'db.php'; ?>
                 } else {
                     echo "<br><h2>No employees found</h2></br>";
                 }
-            else:?>
-                <div class="container">
-                        <h2>Unauthorised Access</h2>
-                        <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-                        </div>
-                    <?php endif;?>
-                    </div>
+                ?>    
+                </div>
           <?php  else:?>
-        <div class="container">
+            <div class="container">
             <h2>Unauthorised Access</h2>
-            <p>You may have been automatically logged out for security. Please log out and log back in again: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-            </div>
+            <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline"
+                    href="index.php">Back to Homepage</a></p>
+        </div>
         <?php endif;?>
         </div>
 </body>

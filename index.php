@@ -10,13 +10,14 @@
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
     
-    $increment = 40;
+    $increment = 6;
     if (!isset($_SESSION)){
         session_start();  
     }
     if (isset($_SESSION['LoggedIn'])){
         $role = $_SESSION["LoggedIn"];
-        $userID = $_COOKIE["ID"];
+        $userID = $_SESSION["ID"];
+        //echo $userID;
         if ($role === "customer")
         {
             //echo "customer";
@@ -53,17 +54,6 @@
         }
         else if ($role === "Shop Assistant" || $role === "Supervisor")
         {
-            // get the employee's manager using stored procedure
-            $queryManager = "CALL GetManager(:employeeID)";
-            $stmtManager = $mysql->prepare($queryManager);
-            $stmtManager->bindParam(':employeeID', $userID, PDO::PARAM_INT);
-            $stmtManager->execute();
-            $ManagerInfo = $stmtManager->fetch();
-            $ManFirst = $ManagerInfo[0];
-            $ManLast = $ManagerInfo[1];
-            //echo $ManFirst . $ManLast;
-            $stmtManager->closeCursor();
-
             // get the shop the employee works at using stored procedure
             $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
             $stmtShopWorked = $mysql->prepare($queryShopWorked);
@@ -71,6 +61,17 @@
             $stmtShopWorked->execute();
             $ShopWorkedInfo = $stmtShopWorked->fetchColumn();
             $stmtShopWorked->closeCursor();
+
+            // get the employee's manager using stored procedure
+            $queryManager = "CALL GetManager(:shopID)";
+            $stmtManager = $mysql->prepare($queryManager);
+            $stmtManager->bindParam(':shopID', $ShopWorkedInfo, PDO::PARAM_INT);
+            $stmtManager->execute();
+            $ManagerInfo = $stmtManager->fetch();
+            $ManFirst = $ManagerInfo[0];
+            $ManLast = $ManagerInfo[1];
+            //echo $ManFirst . $ManLast;
+            $stmtManager->closeCursor();
 
             // create stock view dynamically based on Shop ID
             $queryStockView = "DROP VIEW IF EXISTS ShopEmployeeStockView;
@@ -83,7 +84,7 @@
                     LEFT JOIN ProductAvailability PA ON P.ProductID = PA.Product_ProductID
                     LEFT JOIN OnlineOrder_has_Product op ON P.ProductID = op.Product_ProductID
                     LEFT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
-                    WHERE PA.Shop_ShopID = 1
+                    WHERE PA.Shop_ShopID = :SID 
                 UNION
                 SELECT P.ProductID, P.ProductName, P.Type, P.Price,	 P.Brand, P.Supplier, P.ProductDescription, PA.Availability,
                 op.Quantity, op.OnlineOrder_OrderID, op.Product_ProductID,
@@ -94,12 +95,13 @@
                     RIGHT JOIN ShopPurchase_has_Product sp ON P.ProductID = sp.Product_ProductID
                             WHERE PA.Shop_ShopID = :SID";
             $stmtStockView = $mysql->prepare($queryStockView);
-            $stmtStockView->bindParam(':SID', $shopID, PDO::PARAM_INT);
+            $stmtStockView->bindParam(':SID', $ShopWorkedInfo, PDO::PARAM_INT);
             $stmtStockView->execute();
-            $StockView = $stmtStockView->fetchColumn();
+            $StockView = $stmtStockView->fetchAll();
+            //echo sizeOf($StockView);
             $stmtStockView->closeCursor();
 
-            // create main employee view
+            // create main employee view dynamically so they only see things from their shop
             $viewEmployeeSQL = "DROP VIEW IF EXISTS ShopEmployeeView;
             Create OR REPLACE View ShopEmployeeView
             AS 
@@ -117,10 +119,10 @@
             INNER JOIN Shop s ON se.Shop_shopID = s.ShopID
             INNER JOIN ShopEmployee mse ON mse.Shop_ShopID = s.ShopID
             INNER JOIN Employee m ON m.FirstName = :ManFirst AND m.Surname = :ManLast
-            INNER JOIN OnlineOrder o ON se.Shop_ShopID =  s.ShopID
-            INNER JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
-            INNER JOIN ShopReturn sr ON sp.Shop_shopID = s.ShopID
-            INNER JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
+            LEFT JOIN OnlineOrder o ON o.Shop_ShopID =  s.ShopID
+            LEFT JOIN ShopPurchase sp ON sp.Shop_shopID = s.ShopID
+            LEFT JOIN ShopReturn sr ON sr.Shop_shopID = s.ShopID
+            LEFT JOIN OnlineReturn r ON (r.Shop_shopID = s.ShopID)
                         WHERE e.EmployeeID = :userID AND s.ShopID = :shopID";
             $stmtEmployeeView = $mysql->prepare($viewEmployeeSQL);
             $stmtEmployeeView->execute(["userID" => $userID, "ManFirst" => $ManFirst, "ManLast" => $ManLast, "shopID" =>$ShopWorkedInfo ]);
@@ -129,8 +131,7 @@
         }
         else if ($role === "Manager" || $role === "Assistant Manager")
         {
-            echo $userID;
-            
+            //echo $userID;
 
             // get the shop the employee works at using stored procedure
             $queryShopWorked = "CALL GetShopWorkedAt(:employeeID)";
@@ -148,11 +149,11 @@
             $ManagerInfo = $stmtManager->fetch();
             $ManFirst = $ManagerInfo[0];
             $ManLast = $ManagerInfo[1];
-            echo $ManFirst . $ManLast;
+            //echo $ManFirst . $ManLast;
             $stmtManager->closeCursor();
             //echo "shop worked at: " . $ShopWorkedInfo;
             //echo "userID: " . $userID;
-            // create manager view
+            // create manager view based on shop worked at
             //echo "creating manager view";
             $viewManagerSQL = "DROP VIEW IF EXISTS ManagerView;
             Create OR REPLACE View ManagerView
@@ -222,7 +223,7 @@
             $stmtStockView->bindParam(':SID', $ShopWorkedInfo, PDO::PARAM_INT);
             $stmtStockView->execute();
             $StockView = $stmtStockView->fetchAll();
-            echo sizeOf($StockView);
+            //echo sizeOf($StockView);
             $stmtStockView->closeCursor();
         }
     }
@@ -312,7 +313,7 @@
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -329,7 +330,7 @@
 
         foreach($result as $item){
             $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
+            $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
             $query->execute();
             $result = $query->fetchAll();
             
@@ -388,15 +389,16 @@
             echo "<div>";
         }
     }
-    
     echo "</div>";
+    echo "</div>";
+
     
 
     // only display load more if all products have not already been loaded
 
     if ($_SESSION['currentlyLoaded'] < $numProducts)
     {
-        echo "<center><form method='post'><button class = 'button'  type='submit' name='loadMore'>Show 6 More</button></form></center>";
+        echo "<center><form method='post'><button class='button'  type='submit' name='loadMore'>Show 6 More</button></form></center>";
     }
     else
     {
@@ -407,7 +409,8 @@
         echo "<center><form method='post'> <button class='button' type='submit' name='showLess'>Show Less</button></form></center>";
     }
 
-    
+    include 'footer.html';
+
 ?>
-<?php include 'footer.html'; ?>
+
 <script type="text/javascript" src="script.js"></script>

@@ -1,5 +1,5 @@
 :root {
-    --primary-color: rgb(248, 236, 255);
+    --primary-color: rgb(235, 219, 245);
     --secondary-color: rgb(57, 0, 101);
 }
 
@@ -27,6 +27,10 @@ h1 {
 
 a {
     font-size: 15pt;
+}
+
+footer {
+    box-shadow: 0 -1px 7px var(--secondary-color);
 }
 
 .topnav {
@@ -63,6 +67,8 @@ a {
 }
 
 .button {
+    all: unset;
+    font-family: Arial;
     transition: transform 0.3s;
     color: var(--secondary-color);
     background-color: none;
@@ -72,13 +78,16 @@ a {
     padding: 5px;
 }
 
-#logInText {
-    margin-top: 12.5px;
+nav .button {
+    margin-top: 7.5px;
     margin-right: 5px;
-    border-radius: 10px;
-    padding-left: 7px;
-    padding-right: 7px;
-    color: var(--secondary-color);
+    height: 25px;
+    padding-top: 7.5px;
+}
+
+.selection .button {
+    padding-top: 0px;
+    height: 38px;
 }
 
 #basketImage {
@@ -472,25 +481,25 @@ a {
     border-radius: 10px;
 }
 
-#paymentOptionsBox, #addressOptionsBox {
+#paymentOptionsBox, #addressOptionsBox, #addressOptionsBox {
     display: table;
     overflow: hidden;
     width: 100%;
 }
 
-.paymentOption, .addressOption {
+.paymentOption, .addressOption, .collectionOption {
     display: table-row;
     height: 40px;
 }
 
-.paymentOptionAcc, .addressOptionName, .paymentOptionButton, .addressOptionButton {
+.paymentOptionAcc, .addressOptionName, .paymentOptionButton, .addressOptionButton, .collectionOptionName, .collectionOptionButton {
     display: table-cell;
     vertical-align: middle;
     border-bottom: solid;
     border-color: var(--secondary-color);
 }
 
-.paymentOptionAcc, .addressOptionName {
+.paymentOptionAcc, .addressOptionName, .collectionOptionName {
     width: 560px;
 }
 
