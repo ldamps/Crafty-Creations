@@ -82,22 +82,14 @@
         <ul>
             <?php
                 if (isset($_SESSION["LoggedIn"])) {
-                    //echo "<a class='button' type = 'submit' href='userProfile.php'>Profile <i class='fa-regular fa-user'></i></a>";
     
                     //getting role of user
                     $role = $_SESSION["LoggedIn"]; 
-    
-                    //change this later
-                    //role specific buttons
+
                     if ($role === "customer") {
                         echo "<div class='column Links'><h2>quick links</h2></li><li><a href='index.php'>Homepage</a></li></li><li><a href='about.php'>about us</a></li> <li><a href='#'>tools</a></li><li><a href='#'>paint</a></li><li><a href='#'>fabric</a></li><li><a href='#'>yarn</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
                     } elseif ($role === "Manager" || $role === "Assisstant Manager") { 
                         echo "<div class='column Links'><h2>quick links</h2></li<li><a href='index.php'>Homepage</a></li>><li><a href='about.php'>about us</a></li><li><a href='Employees.php'>homepage</a></li><li><a href='stockPage.php'>stock levels</a></li><li><a href='ShopOrderHistory.php'>shop order history</a></li><li><a href='supplierPage.php'>supplier</a></li><li><a href='salesPage.php'>sales</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
-                        /*echo "<a class='button' href='Employees.php'>Employees</a>";
-                        echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
-                        echo "<a class='button' href='ShopOrderHistory.php'>Shop Order History</a>";
-                        echo "<a class='button' href='supplierPage.php'>Supplier</a>";
-                        echo "<a class='button' href='salesPage.php'>Sales</a>"; */
                     } elseif ($role === "IT Support" || $role === "Website Development" ||$role ==="Payroll" || $role === "Administration" || $role === "Human Resources" || $role=== "CEO") { 
                         echo "<a class='button' href='Employees.php'>Employee Details</a>";
                         echo "<a class='button' href='payroll.php'>Payroll</a>";
@@ -105,32 +97,14 @@
                         echo "<a class='button' href='supplierPage.php'>Suppliers</a>";
                         echo "<a class='button' href='IT.php'>IT</a>";
                     } else {
-                        echo "<div class='column Links'><h2>quick links</h2><li><a href='loginPage.php'>log in</a></li><li><a href='about.php'>about us</a></li> <li><a href='stockPage.html'>stock levels</a></li><li><a href='ShopOrderHistory.php'>shop order history</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
-                        /*echo "<a class='button' href='stockPage.php'>Stock Levels</a>";
-                        echo "<a class='button' href='ShopOrderHistory.php'>Shop Order History</a>";*/
+                        echo "<div class='column Links'><h2>quick links</h2><li><a href='about.php'>about us</a></li> <li><a href='stockPage.html'>stock levels</a></li><li><a href='ShopOrderHistory.php'>shop order history</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
                     }
                     // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
-                    /*echo "<form id='form' name='logoutForm' method='post'><input type='hidden' name='logout' value='true'></form>
-                    <a id='logout' class='button' onclick='submit();' href='javascript:;' >Log Out</a>";*/
                 } else {
                     echo "<div class='column Links'><h2>quick links</h2><li><a href='loginPage.php'>log in</a></li><li><a href='index.php'>Homepage</a></li><li><a href='about.php'>about us</a></li> <li><a href='#'>tools</a></li><li><a href='#'>paint</a></li><li><a href='#'>fabric</a></li><li><a href='#'>yarn</a></li><li><a href='termsConditions.php'>terms and conditions</a></li><li><a href='privacy.php'>privacy policy</a></li></div>";
                 }
             ?>
         </ul>
-
-        <!--
-        <div class="column Links">
-            <h2>quick links</h2>
-            <li><a href="loginPage.php">log in</a></li>
-            <li><a href="about.php">about us</a></li>
-            <li><a href="#">tools</a></li>
-            <li><a href="#">paint</a></li>
-            <li><a href="#">fabric</a></li>
-            <li><a href="#">yarn</a></li>
-            <li><a href="termsConditions.php">terms and conditions</a></li>
-            <li><a href="privacy.php">privacy policy</a></li>
-        </div> -->
-
 
         <div class="column Contact">
             <h2>contact us</h2>
