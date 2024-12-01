@@ -76,8 +76,8 @@ if (button != null){
 }
 
 if (quantityUp != null){
-    quantityUp.addEventListener('click', quantityAdjust);
-    quantityDown.addEventListener('click', quantityAdjust);
+    //quantityUp.addEventListener('click', quantityAdjust);
+    //quantityDown.addEventListener('click', quantityAdjust);
 }
 
 if (POSTSENDBar != null){
