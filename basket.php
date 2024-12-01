@@ -63,9 +63,109 @@ if (isset($_POST['deliveryOption']) && isset($_POST['paymentOption'])) {
         ':orderDate' => $orderDate
     ]);
 
-    //need to also update the product availabitity here
+    // fetch the last inserted OrderID
+    $orderID = $mysql->lastInsertId();
 
+   // Iterate through the cart and update the tables
+  // If shopID is null, that means home delivery, so update the first shop that has the available products
+foreach ($_SESSION['cart'] as $productID => $quantity) {
     
+    $remainingQuantity = $quantity; // track remaining quantity for each product
+
+    if ($shopID === null) {
+        // find the shops with availability for this product
+        $findShopQuery = "
+            SELECT Shop_ShopID, Availability 
+            FROM ProductAvailability
+            WHERE Product_ProductID = :productID AND Availability > 0
+            ORDER BY Shop_ShopID
+        ";
+        $stmt = $mysql->prepare($findShopQuery);
+        $stmt->execute([':productID' => $productID]);
+
+        // track if a shop has been found that can fulfill the order
+        $foundShop = false;
+
+        while ($shop = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($remainingQuantity <= 0) break; // if remaining quantity is fulfilled then stop
+
+            $shopID = $shop['Shop_ShopID'];
+            $availableStock = $shop['Availability'];
+
+            // ff the available stock is enough for the entire remaining quantity, remove it
+            $deductQuantity = min($remainingQuantity, $availableStock);
+            $remainingQuantity -= $deductQuantity;
+
+            // remove stock and update the availability in the ProductAvailability table
+            $updateAvailabilityQuery = "
+                UPDATE ProductAvailability
+                SET Availability = Availability - :deductQuantity
+                WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID
+            ";
+            $updateStmt = $mysql->prepare($updateAvailabilityQuery);
+            $updateStmt->execute([
+                ':deductQuantity' => $deductQuantity,
+                ':productID' => $productID,
+                ':shopID' => $shopID
+            ]);
+
+            // insert tvalues in the OnlineOrder_has_Product table
+            $insertOrderProductQuery = "
+                INSERT INTO OnlineOrder_has_Product (OnlineOrder_OrderID, Product_ProductID, Quantity)
+                VALUES (:orderID, :productID, :deductQuantity)
+            ";
+            $insertStmt = $mysql->prepare($insertOrderProductQuery);
+            $insertStmt->execute([
+                ':orderID' => $orderID,
+                ':productID' => $productID,
+                ':deductQuantity' => $deductQuantity
+            ]);
+
+            // if the stock is deducted 
+            //set foundShop to true to stop searching for the current product
+            $foundShop = true;
+
+            echo "Product ID $productID: Deducted $deductQuantity from Shop $shopID.<br>";
+
+            // if the entire quantity has been found, break the loop for this paarticulat product
+            if ($remainingQuantity <= 0) break;
+        }
+
+        // if no shop has the entire quantity display an error message
+        if (!$foundShop) {
+            echo "Insufficient stock for product ID $productID.<br>";
+        }
+    } else {
+        // if shopID is provided update for that shop (e.g., home delivery case)
+        $updateAvailabilityQuery = "
+            UPDATE ProductAvailability
+            SET Availability = Availability - :quantity
+            WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID
+        ";
+        $updateStmt = $mysql->prepare($updateAvailabilityQuery);
+        $updateStmt->execute([
+            ':quantity' => $quantity,
+            ':productID' => $productID,
+            ':shopID' => $shopID
+        ]);
+
+        // insert  values into OnlineOrder_has_Product table
+        $insertOrderProductQuery = "
+            INSERT INTO OnlineOrder_has_Product (OnlineOrder_OrderID, Product_ProductID, Quantity)
+            VALUES (:orderID, :productID, :quantity)
+        ";
+        $insertStmt = $mysql->prepare($insertOrderProductQuery);
+        $insertStmt->execute([
+            ':orderID' => $orderID,
+            ':productID' => $productID,
+            ':quantity' => $quantity
+        ]);
+
+        echo "Product ID $productID: Deducted $quantity from Shop $shopID.<br>";
+    }
+}
+
+
     // debug the values
     echo "<script>
         console.log('deliveryOption: " . $_SESSION['deliveryOption'] . "');
