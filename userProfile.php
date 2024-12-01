@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["name"]) && isset($_PO
 
     $title = $nameParts[0];
     $firstname = $nameParts[1];
-    $lastname = $namePartsParts[2];
+    $lastname = $nameParts[2];
 
 
     // prepare the SQL query to update the user's information
