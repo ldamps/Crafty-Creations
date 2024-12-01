@@ -1,131 +1,107 @@
 <?php
+
 include 'db.php';
-include 'navBar.php'; 
+include 'navBar.php';
 
-if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "Manager" || $_SESSION['LoggedIn'] === "Assistant Manager" || ($_SESSION["LoggedIn"] === "CEO") || ($_SESSION["LoggedIn"] === "Human Resources") || ($_SESSION["LoggedIn"] === "Payroll") || ($_SESSION["LoggedIn"] === "IT Support") || ($_SESSION["LoggedIn"] === "Administration") || ($_SESSION["LoggedIn"] === "Website Development"))):
-
-// getting total sales report
-$querySales = "SELECT 
-    Product.ProductName,
-    COUNT(ShopPurchase_has_Product.Product_ProductID) AS TotalPurchases, 
-    SUM(ShopPurchase.Price) AS TotalSales
-FROM Product
-INNER JOIN ShopPurchase_has_Product ON Product.ProductID = ShopPurchase_has_Product.Product_ProductID
-INNER JOIN ShopPurchase ON ShopPurchase.PurchaseID = ShopPurchase_has_Product.Purchase_PurachseID
-GROUP BY Product.ProductName";
-$stmtSales = $mysql->prepare($querySales);
-$stmtSales->execute();
-$salesData = $stmtSales->fetchAll(PDO::FETCH_ASSOC);
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Manager Dashboard</title>
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f7f6;
-        }
-
-        .container {
-            width: 80%;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            padding: 0 15px; 
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f4f4f4;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        td {
-            background-color: #fff;
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-
-
-    </style>
+if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "Shop Assistant" || $_SESSION["LoggedIn"] === "Supervisor" || $_SESSION["LoggedIn"] === "Manager" || $_SESSION['LoggedIn'] === "Assistant Manager")):
     
-</head>
+    $role = $_SESSION["LoggedIn"];
+    $userID = $_SESSION["ID"];
 
-<body>
+    $totalOnlineSales = 0;
+    $totalShopSales = 0;
 
-    <div class="container">
-    <h1>Sales <span>Dashboard</span></h1>
+    if ($role === "Supervisor" || $role === "Shop Assistant") {
+        
+        //online sales query
+        $queryOnlineSales = "SELECT SUM(COALESCE(Price, 0)) AS TotalOnlineSales 
+                             FROM (
+                                 SELECT DISTINCT OrderID, Price 
+                                 FROM ShopEmployeeView 
+                                 WHERE OrderStatus IN ('Processing', 'Dispatched', 'Delivered')
+                             ) AS UniqueOrders";
 
-    <br></br>
+        $stmtOnlineSales = $mysql->prepare($queryOnlineSales);
+        $stmtOnlineSales->execute();
+        $totalOnlineSales = $stmtOnlineSales->fetch(PDO::FETCH_ASSOC)['TotalOnlineSales'] ?? 0;
 
+        //shop sales query
+        $queryShopSales = "SELECT SUM(COALESCE(shopPrice, 0)) AS TotalShopSales 
+                           FROM (
+                               SELECT DISTINCT PurchaseID, shopPrice 
+                               FROM ShopEmployeeView 
+                               WHERE OrderStatus IN ('Processing', 'Dispatched', 'Delivered')
+                           ) AS UniqueShopPurchases";
 
+        $stmtShopSales = $mysql->prepare($queryShopSales);
+        $stmtShopSales->execute();
+        $totalShopSales = $stmtShopSales->fetch(PDO::FETCH_ASSOC)['TotalShopSales'] ?? 0;
+    } else if ($role === "Manager" || $role === "Assistant Manager") {
 
-        <!-- sales Report section -->
+        $queryOnlineSales = "SELECT SUM(COALESCE(Price, 0)) AS TotalOnlineSales 
+                             FROM (
+                                 SELECT DISTINCT OrderID, Price 
+                                 FROM ManagerView 
+                                 WHERE OrderStatus IN ('Processing', 'Dispatched', 'Delivered')
+                             ) AS UniqueOrders";
 
-        <div class="section">
-            <h2>Sales Report</h2>
+        $stmtOnlineSales = $mysql->prepare($queryOnlineSales);
+        $stmtOnlineSales->execute();
+        $totalOnlineSales = $stmtOnlineSales->fetch(PDO::FETCH_ASSOC)['TotalOnlineSales'] ?? 0;
+
+     
+        $queryShopSales = "SELECT SUM(COALESCE(shopPrice, 0)) AS TotalShopSales 
+                           FROM (
+                               SELECT DISTINCT PurchaseID, shopPrice 
+                               FROM ManagerView 
+                               WHERE OrderStatus IN ('Processing', 'Dispatched', 'Delivered')
+                           ) AS UniqueShopPurchases";
+                           
+        $stmtShopSales = $mysql->prepare($queryShopSales);
+        $stmtShopSales->execute();
+        $totalShopSales = $stmtShopSales->fetch(PDO::FETCH_ASSOC)['TotalShopSales'] ?? 0;
+    }
+
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Sales Summary</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Sales Summary</h1>
             <table>
                 <thead>
+
                     <tr>
-                        <th>Product Name</th>
-                        <th>Total Quantity Sold</th>
-                        <th>Total Sales (£)</th>
+                        <th>Category</th>
+                        <th>Total Sales</th>
                     </tr>
                 </thead>
-                
                 <tbody>
-                    <?php foreach ($salesData as $sale): ?>
-                        <tr>
-                            <td><?php echo $sale['ProductName']; ?></td>
-                            <td><?php echo $sale['TotalPurchases']; ?></td>
-                            <td><?php echo number_format($sale['TotalSales'], 2); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
+
+                    <tr>
+                        <td>Online Orders</td>
+                        <td><?php echo '£' . number_format($totalOnlineSales, 2); ?></td>
+                    </tr>
+                    <tr>
+                        <td>In-Shop Purchases</td>
+                        <td><?php echo '£' . number_format($totalShopSales, 2); ?></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
+    </body>
+    </html>
 
-</body>
+
 <?php else: ?>
     <div class="container">
-        <h2>Unauthorised Access</h2>
-        <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline"
-                href="index.php">Back to Homepage</a></p>
+        <h2>Unauthorized Access</h2>
+        <p>You are not authorized to view this page. Return to homepage: <a href="index.php">Back to Homepage</a></p>
     </div>
-<?php endif;?>
-    <script type="text/javascript" src="script.js"></script>
-</html>
-
-<?php include 'footer.php'; ?>
+<?php endif; ?>
