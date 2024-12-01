@@ -31,7 +31,10 @@ var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
 var searchButton = document.getElementById('searchButton');
-searchButton.addEventListener('click', searchButtonClick);
+if (searchButton != null)
+{
+    searchButton.addEventListener('click', searchButtonClick);
+}
 
 if (localStorage.getItem('basketContents') != null)
     {
@@ -165,7 +168,7 @@ function buttonOnClick(element)
         button.classList.add('buttonClickUp');
         if (!button.classList.contains('blank'))
         {
-            button.style.backgroundImage = "url('rainbowTexture1.png')";
+            button.style.backgroundImage = "url('rainbowTexture" + button.id + ".png')";
         }
         button.onanimationend = () => {
             button.classList.remove('buttonClickUp');
@@ -204,7 +207,7 @@ function buttonMouseEnter(element)
     let button = element.currentTarget;
     if (!button.classList.contains('blank'))
         {
-            button.style.backgroundImage = "url('rainbowTexture1.png')";
+            button.style.backgroundImage = "url('rainbowTexture" + button.id + ".png')";
         }
     clearButtonListeners(button);
 }
