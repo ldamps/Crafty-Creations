@@ -3,11 +3,86 @@
 <?php
 include('db.php'); 
 
-
-
 $availableShops = [];
 $userAddress = [];
 $userPayments = [];
+
+
+// fucntion to generate a random tracking number
+function generateTrackingNo($length = 7) {
+    $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    $trackingNo = '';
+    for ($i = 0; $i < $length; $i++) {
+        $trackingNo .= $characters[random_int(0, strlen($characters) - 1)];
+    }
+    return $trackingNo;
+}
+
+// check if POST data for deliveryOption and paymentOption is received
+if (isset($_POST['deliveryOption']) && isset($_POST['paymentOption'])) {
+    $_SESSION['deliveryOption'] = $_POST['deliveryOption'];
+    $_SESSION['paymentOption'] = $_POST['paymentOption'];
+
+    $deliveryParts = explode(',', $_SESSION['deliveryOption']);
+    $postcode = trim($deliveryParts[2]); // postcode is the third part
+
+     $shopID = null;  // Set default value as null i.e it's a home delivery
+
+     // query to select ShopID based on postcode of the Shop
+     $query = "SELECT ShopID FROM Shop WHERE Postcode = :postcode";
+     $stmt = $mysql->prepare($query);
+     $stmt->execute([':postcode' => $postcode]);
+     $result = $stmt->fetch(PDO::FETCH_ASSOC); 
+ 
+     if ($result) {
+         $shopID = $result['ShopID'];
+     }
+
+    // other variables needed to update the OnlineOrder Table
+    $totalPrice = $_SESSION['totalPrice'];
+    $orderStatus = 'Processing';
+    $customerID = $_SESSION['ID'];
+    $trackingNo = generateTrackingNo();
+    // store the tracking number in the session to display on the order complete page
+    $_SESSION['trackingNo'] = $trackingNo;
+    $orderDate = date('Y-m-d'); 
+
+    // prepare the insert query to insert into the OnlineOrder table
+    $insertQuery = "
+        INSERT INTO OnlineOrder (Price, OrderStatus, Customer_CustomerID, Shop_shopID, TrackingNo, OrderDate)
+        VALUES (:price, :orderStatus, :customerID, :shopID, :trackingNo, :orderDate)
+    ";
+
+    $stmt = $mysql->prepare($insertQuery);
+    $stmt->execute([
+        ':price' => $totalPrice,
+        ':orderStatus' => $orderStatus,
+        ':customerID' => $customerID,
+        ':shopID' => $shopID,
+        ':trackingNo' => $trackingNo,
+        ':orderDate' => $orderDate
+    ]);
+
+    //need to also update the product availabitity here
+
+    
+    // debug the values
+    echo "<script>
+        console.log('deliveryOption: " . $_SESSION['deliveryOption'] . "');
+        console.log('paymentOption: " . $_SESSION['paymentOption'] . "');
+        console.log('postcode: " . $postcode . "');
+        console.log('price: " . $totalPrice . "');
+        console.log('orderStatus: " . $orderStatus . "');
+        console.log('customerID: " . $customerID . "');
+        console.log('shopID: " . $shopID . "');
+        console.log('trackingNo: " . $trackingNo . "');
+        console.log('orderDate: " . $orderDate . "');
+    </script>";
+
+    unset($_SESSION['cart']);   // clear the cart
+
+    exit();  
+}
 
 
 
@@ -95,14 +170,7 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// checks if the 'clearCart' parameter is set in the POST request
-if (isset($_POST['clearCart']) && $_POST['clearCart'] === 'true') {
-    // Clear the cart by unsetting the session variable
-    unset($_SESSION['cart']);
-    // session_destroy(); - can use this too
-    
-    echo "Cart cleared."; // respond to javascript
-}
+
 
 // Check if the user is logged in
 if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer") {
@@ -271,6 +339,9 @@ function getProductDetails($productID) {
                     </div>
                 </div>";
         }
+ 
+              // Save the total price in the session
+              $_SESSION['totalPrice'] = $totalPrice;
         ?>
         <div id="basketTotalBox">
             <div id="basketTotal">

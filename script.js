@@ -466,6 +466,7 @@ async function displayCheckout(element) {
             let addressOptionRadio = document.createElement('input');
             addressOptionRadio.setAttribute('type', 'radio');
             addressOptionRadio.setAttribute('name', 'deliveryOptionRadio'); // Radio buttons are grouped
+            addressOptionRadio.setAttribute('value', `${address.HouseNumber} ${address.StreetName}, ${address.City}, ${address.Postcode}`);
             addressOptionButton.appendChild(addressOptionRadio);
         });
     } else {
@@ -502,6 +503,7 @@ async function displayCheckout(element) {
             let collectionOptionRadio = document.createElement('input');
             collectionOptionRadio.setAttribute('type', 'radio');
             collectionOptionRadio.setAttribute('name', 'deliveryOptionRadio'); // Group radio buttons
+            collectionOptionRadio.setAttribute('value', `${shop.StreetName}, ${shop.City}, ${shop.Postcode}`);
             collectionOptionButton.appendChild(collectionOptionRadio);
         });
     } else {
@@ -542,6 +544,7 @@ if (userPayments && userPayments.length > 0) {
         let paymentOptionRadio = document.createElement('input');
         paymentOptionRadio.setAttribute('type', 'radio');
         paymentOptionRadio.setAttribute('name', 'paymentOption'); // Radio buttons are grouped
+         paymentOptionRadio.setAttribute('value', `${cardLastFour}`);
         paymentOptionButton.appendChild(paymentOptionRadio);
     });
 } else {
@@ -573,31 +576,60 @@ if (userPayments && userPayments.length > 0) {
 }
 
 async function checkoutClick(element) {
-    // make sure one radio button is selected in both sections
-    let addressSelected = document.querySelector('input[name="addressOption"]:checked');
+    // Get selected options
+    let addressSelected = document.querySelector('input[name="deliveryOptionRadio"]:checked');
     let paymentSelected = document.querySelector('input[name="paymentOption"]:checked');
-    let collectionSelected = document.querySelector('input[name="collectionOption"]:checked');
 
-    if ((!addressSelected || !addressSelected) & !paymentSelected) {
-        alert('Please select both a delivery and a payment option.');
+    if (!addressSelected) {
+        alert('Please select a delivery option.');
         return;
     }
 
-    // clears the cart by sending a request to basket.php
+    if (!paymentSelected) {
+        alert('Please select a payment option.');
+        return;
+    }
+
+    // get the selected values from the radio buttons
+    let deliveryOption = addressSelected.value; 
+    let paymentOption = paymentSelected.value;  
+
+    // debug
+    console.log('Selected Delivery Option:', deliveryOption);
+    console.log('Selected Payment Option:', paymentOption);
+
     try {
-        await fetch('basket.php', {
-            method: 'POST', 
+        // send the order info to basket.php for processing
+        let response = await fetch('basket.php', {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'clearCart=true' 
+            body: `deliveryOption=${encodeURIComponent(deliveryOption)}&paymentOption=${encodeURIComponent(paymentOption)}` 
         });
 
-        // redirect to orderComplete.php after cart is cleared
-        window.location.href = "orderComplete.php";
+        // debug
+        console.log('Response from basket.php:', response.status);
+        const responseBody = await response.text();
+        console.log('Response body from basket.php:', responseBody);
+
+        if (!response.ok) {
+            console.error('Failed to send data to basket.php:', response.statusText);
+            alert('There was an error processing your order.');
+            return;  
+        }
+
+        console.log('Data sent to basket.php successfully');
+      
+        //setTimeout(function() {
+            //window.location.href = 'orderComplete.php';
+        //}, 10000);
+        window.location.href = 'orderComplete.php';
+
+
     } catch (error) {
-        console.error('Error clearing cart:', error);
-        alert('There was an error clearing the cart.');
+        console.error('Error sending order info to basket.php:', error);
+        alert('There was an error sending the order information.');
     }
 }
 

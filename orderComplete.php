@@ -1,6 +1,14 @@
 <?php include 'navBar.php'; 
 ?>
 
+<?php
+if (isset($_SESSION['trackingNo'])) {
+    $trackingNo = $_SESSION['trackingNo'];
+} else {
+    $trackingNo = "Tracking number not available.";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,11 +23,10 @@
 
 <div id="orderCompleteBox">
     <h1>Order Complete!</h1>
-    <h3>You're order number is: </h3>
-    <h2>#123456A</h2>
+    <h3>You're tracking number is: </h3>
+    <h2>#<?php echo htmlspecialchars($trackingNo); ?></h2> 
     <h3>Try not to lose it!</h3>
 </div>
-
 
 </body>
 
