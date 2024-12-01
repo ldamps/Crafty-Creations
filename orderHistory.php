@@ -43,8 +43,9 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
             $shopID = $orderDetails['Shop_ShopID'];
 
             // insert a row into the OnlineReturn table
-            $queryInsertReturn = "INSERT INTO OnlineReturn (Reason, AmountToReturn, OnlineOrder_OrderID, Customer_CustomerID, Shop_ShopID) 
-            VALUES (:reason, :amountToReturn, :orderID, :customerID, :shopID);";
+            $queryInsertReturn = "START TRANSACTION; INSERT INTO OnlineReturn (Reason, AmountToReturn, OnlineOrder_OrderID, Customer_CustomerID, Shop_ShopID) 
+            VALUES (:reason, :amountToReturn, :orderID, :customerID, :shopID);
+            COMMIT;";
             $stmtInsertReturn = $mysql->prepare($queryInsertReturn);
             $stmtInsertReturn->execute([
                 ':reason' => $reason,

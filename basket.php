@@ -48,9 +48,10 @@ if (isset($_POST['deliveryOption']) && isset($_POST['paymentOption'])) {
     $orderDate = date('Y-m-d'); 
 
     // prepare the insert query to insert into the OnlineOrder table
-    $insertQuery = "
+    $insertQuery = "START TRANSACTION;
         INSERT INTO OnlineOrder (Price, OrderStatus, Customer_CustomerID, Shop_shopID, TrackingNo, OrderDate)
         VALUES (:price, :orderStatus, :customerID, :shopID, :trackingNo, :orderDate)
+        COMMIT;
     ";
 
     $stmt = $mysql->prepare($insertQuery);
@@ -110,9 +111,10 @@ foreach ($_SESSION['cart'] as $productID => $quantity) {
             ]);
 
             // insert tvalues in the OnlineOrder_has_Product table
-            $insertOrderProductQuery = "
+            $insertOrderProductQuery = "START TRANSACTION;
                 INSERT INTO OnlineOrder_has_Product (OnlineOrder_OrderID, Product_ProductID, Quantity)
-                VALUES (:orderID, :productID, :deductQuantity)
+                VALUES (:orderID, :productID, :deductQuantity);
+                COMMIT;
             ";
             $insertStmt = $mysql->prepare($insertOrderProductQuery);
             $insertStmt->execute([

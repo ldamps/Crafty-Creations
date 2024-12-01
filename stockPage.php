@@ -15,7 +15,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
         $stmtShopID->execute();
         $shopID = $stmtShopID->fetchColumn();
         $stmtShopID->closeCursor();
-        $shopID = "1";
+        //$shopID = "1";
         // if shop ID exiss
         if ($shopID) {
             //detailed stock info
@@ -43,16 +43,16 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                     $stmtOrder->closeCursor();
 
 
-                    $supplyOrderID = $mysql->lastInsertId();
+                    $supplyOrderID = $mysql->lastInsertId()+1;
 
                     // linking product to supply order
                     $queryProductOrder = "INSERT INTO Product_has_SupplyOrder (Product_ProductID, SupplyOrder_SupplyOrderID)
-                                    VALUES (:productID, :supplyOrderID)";
+                                    VALUES (:productID, :supplyOrderID);";
                     $stmtProductOrder = $mysql->prepare($queryProductOrder);
                     $stmtProductOrder->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
                     $stmtProductOrder->bindParam(':supplyOrderID', $supplyOrderID, PDO::PARAM_INT);
                     $stmtProductOrder->execute();
-
+                    $stmtProductOrder->closeCursor();
 
                     //updating product availability
                     $queryUpdateAvailability = "UPDATE ProductAvailability
@@ -63,6 +63,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                     $stmtUpdateAvailability->bindParam(':productID', $orderProductID, PDO::PARAM_INT);
                     $stmtUpdateAvailability->bindParam(':shopID', $shopID, PDO::PARAM_INT);
                     $stmtUpdateAvailability->execute();
+                    $stmtUpdateAvailability->closeCursor();
 
 
                     header("Location: " . $_SERVER['PHP_SELF']);
@@ -85,7 +86,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                 $queryStock = "SELECT DISTINCT ProductName, ProductID, Availability, Type, Brand, Supplier FROM ShopEmployeeStockView WHERE ProductName LIKE '%$search%' OR Type LIKE '%$search%' OR Brand LIKE '%$search%' OR Supplier LIKE '%$search%'";
             }
             else{
-                $queryStock = "SELECT DISTINCT ProductName, ProductID, Availability, Type, Brand, Supplier FROM ShopEmployeeStockView";
+                $queryStock = "SELECT DISTINCT ProductName, ProductID, Availability, Type, Brand, Supplier FROM ShopEmployeeStockView ORDER BY Availability";
             }
 
             $stmtStock = $mysql->prepare($queryStock);
@@ -194,7 +195,11 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                                 <td><?php echo htmlspecialchars($stock['Type']); ?></td>
                                 <td><?php echo htmlspecialchars($stock['Brand']); ?></td>
                                 <td><?php echo htmlspecialchars($stock['Supplier']); ?></td>
+                                <?php if ($stock['Availability'] < 10):?>
+                                    <td class="urgent">Low Stock - <?php echo htmlspecialchars($stock['Availability']); ?></td>
+                                <?php else:?>
                                 <td><?php echo htmlspecialchars($stock['Availability']); ?></td>
+                                <?php endif;?>
                                 <td>
 
                                     <form class="order-form" method="post" action="">
