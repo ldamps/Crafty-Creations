@@ -90,7 +90,7 @@
         </div>
 
         <div class="Selector Tool button">
-            <form method = "post"><button class="dropbtn">Tool<i class="fa fa-caret-down"></i></button></form>
+            <form method = "post"><button class="dropbtn">Tools<i class="fa fa-caret-down"></i></button></form>
             <div class="Tool-selection">
                 <a href="#">Show All</a>
             </div>
