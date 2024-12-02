@@ -485,12 +485,13 @@ nav .button {
 }
 
 #buyNowBox, #checkoutButton {
+    display: block;
     margin: auto;
     margin-top: 10px;
     width: 185px;
-    height: 75px;
+    height: 65px;
     text-align: center;
-    padding-top: 16px;
+    padding-top: 25px;
     border-radius: 10px;
 }
 
