@@ -737,7 +737,7 @@ function POSTSEND(data, page){
     console.log(data);
     const xhhtp = new XMLHttpRequest();
     xhhtp.open('POST', page, true);
-    xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    //xhhtp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     // xhhtp.onreadystatechange = function () {
     //     if (xhhtp.readyState === XMLHttpRequest.DONE) {
     //         console.log(xhhtp.status);

@@ -60,7 +60,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "customer" || $_S
             // check if the update was successful
             if ($stmtUpdate->execute()) {
                 //redirect to the same page to reload
-                header('Location: ' . $_SERVER['PHP_SELF']);
+                //header('Location: ' . $_SERVER['PHP_SELF']);
                 echo "Your information has been updated successfully!";
             } else {
                 echo "Error updating your information: " . $stmtUpdate->errorInfo()[2];
@@ -111,7 +111,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "customer" || $_S
                 // check if update was successful
                 if ($stmtUpdate->execute()) {
                     // redirect to the same page to reload
-                    header('Location: ' . $_SERVER['PHP_SELF']);
+                    //header('Location: ' . $_SERVER['PHP_SELF']);
                     echo "Your address has been updated successfully!";
                 } else {
                     echo "Error updating your address: " . $stmtUpdate->errorInfo()[2];
@@ -261,7 +261,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "customer" || $_S
 
                         <!-- Edit button -->
                         <button type="button" class="edit-btn" onclick="enableEditing()">Edit</button>
-                        <button type="submit" class="edit-btn" style="display:none;" id="saveBtn">Save</button>
+                        <button type="submit" class="edit-btn" style="display:none;" id="saveBtn" onclick="reload()">Save</button>
                     </form>
                     <?php else: ?> 
                     <p><strong>Name:</strong> <?php echo $personalInfo['FirstName'] . ' ' . $personalInfo['Surname']; ?></p>
@@ -390,6 +390,10 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"] === "customer" || $_S
         // show the save button for this specific address and hide the edit button
         document.getElementById("saveBtn" + i).style.display = "inline";
         document.querySelectorAll(".edit-btn")[i].style.display = "none";
+    }
+
+    function reload() {
+        window.location.reload();
     }
 
 </script>
