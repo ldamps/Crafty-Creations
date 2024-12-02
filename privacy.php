@@ -12,41 +12,6 @@
             padding: 5px;
         }
  
-        body a {
-            text-decoration: underline;
-        }
- 
- 
-        footer {
-            box-sizing: border-box;
-            overflow: hidden;
-            padding-left: 0.5%;
-            padding-right: 0.5%;
-            bottom:0;
-        }
- 
-        h2 {
-            text-decoration: underline;
-            font-size: 15;
-        }
- 
-        footer p {
-            font-size: 12;
-            color: black;
-        }
- 
-        footer a {
-            font-size: 12;
-        }
- 
-        footer a:hover {
-            color: gray;
-        }
- 
-        footer ul {
-            font-size: 12;
-        }
- 
         .column {
             float: left;
             padding: 10px;
@@ -63,14 +28,6 @@
         .Contact {
             width: 35%;
         }
- 
-        .footerRow:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
- 
-       
  
         @media screen and (max-width: 600px) {
             .column {
@@ -150,4 +107,4 @@
     <br>
 </body>
  
-<?php include('footer.php'); ?>
+<?php include 'footer.php'; ?>

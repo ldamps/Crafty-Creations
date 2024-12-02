@@ -96,7 +96,7 @@
                     }
                     // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
                 } else {
-                    echo "<div class='column Links'><h2>Quick Links</h2><li><a href='loginPage.php'>Log In</a></li><li><a href='index.php'>Homepage</a></li><li><a href='about.php'>about us</a></li><li><a href='termsConditions.php'>Terms and Conditions</a></li><li><a href='privacy.php'>Privacy Policy</a></li></div>";
+                    echo "<div class='column Links'><h2>Quick Links</h2><li><a href='loginPage.php'>Log In</a></li><li><a href='index.php'>Homepage</a></li><li><a href='about.php'>About Us</a></li><li><a href='termsConditions.php'>Terms and Conditions</a></li><li><a href='privacy.php'>Privacy Policy</a></li></div>";
                 }
             ?>
         </ul>
