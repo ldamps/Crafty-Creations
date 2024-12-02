@@ -89,9 +89,7 @@ require 'db.php'; ?>
                 echo "<h3>Hours Worked: " . $employeeToPay['hoursWorked'] . "</h3>";
                 echo "<h3>Accont Number: " . $bankDetails['AccountNo'] . "</h3>";
                 echo "<h3>Sort Code: " . $bankDetails['SortCode'] . "</h3>";
-                echo "<form method = 'post'><button id = " . $id . " class = 'payButton Button'>Pay</button></form>";
                 echo "</div>";
-
                 //After paying, update the hours worked and set to 0
                 //Not doing this as need to have a way of setting them in the first place
                 // $query = $mysql->prepare("UPDATE Employee SET HoursWorked = 0 WHERE EmployeeID = '$id'");
