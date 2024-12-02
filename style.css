@@ -79,12 +79,16 @@ footer {
 }
 
 #searchButton {
+    float: left;
+    display: block;
+    text-align: center;
     height: 38px;
-    padding-top: 10px;
     width: 38px;
+    padding-top: 3px;
     margin-left: 10px;
-    margin-top: 10px;
+    font-size: 22pt;
 }
+
 
 nav .button {
     margin-top: 7.5px;

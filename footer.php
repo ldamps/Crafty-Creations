@@ -12,7 +12,7 @@
             overflow: hidden;
             padding-left: 0.5%;
             padding-right: 0.5%;
-            margin-top: 200px;
+            margin-top: 100px;
         }
 
         footer h2 {
@@ -75,8 +75,8 @@
 <footer>
     <div class="footerRow">
         <div class="column About">
-            <h2>about us</h2>
-            <p>crafty creations is a leading crafts chain retailer which sells a variety of craft supplies and tools, including yarn, paint, fabric and other crafting essentials. With a growing number of physical stores within the UK and an online store, crafty creations has become the go-to stop for both beginner and professional crafters. with its wide range of products, the company allows artists to craft their dreams into reality!</p>
+            <h2>About Us</h2>
+            <p>Crafty Creations is a leading crafts chain retailer which sells a variety of craft supplies and tools, including yarn, paint, fabric and other crafting essentials. With a growing number of physical stores within the UK and an online store, crafty creations has become the go-to stop for both beginner and professional crafters. with its wide range of products, the company allows artists to craft their dreams into reality!</p>
         </div>
 
         <ul>
@@ -102,10 +102,10 @@
         </ul>
 
         <div class="column Contact">
-            <h2>contact us</h2>
-            <ul>craftyEnquires@craftycreations.com</ul>
+            <h2>Contact Us</h2>
+            <ul>craftyenquires@craftycreations.com</ul>
             <br>
-            <ul>alternatively if you would rather phone us, you can call us on the the following telephone number: +44 07856 987654</ul>
+            <ul>Alternatively if you would rather phone us, you can call us on the the following telephone number: +44 07856 987654</ul>
         </div>
     </div>
 

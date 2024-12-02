@@ -184,4 +184,4 @@ require 'db.php'; ?>
 </html>
 <script type="text/javascript" src="script.js"></script>
 
-<!-- <?php include 'footer.php'; ?> -->
+<?php include 'footer.php'; ?> 

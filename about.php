@@ -70,7 +70,7 @@
     <br>
     <h1>About Crafty Creations</h1>
     <br>
-    <p>Crafty Creations is a leading crafts chain retailer which sells a variety of craft supplies and tools, including yarn, paint, fabric and other crafting essentials. With a growing number of physical stores within the United Kingdom and an online store, Crafty Creations has become the go-to stop for both beginner and professional crafters. With its wide range of products, the company allows artists to craft their dreams into reality! </p>
+    <p>Crafty Creations is a leading crafts chain retailer which sells a variety of craft supplies and tools, including yarn, paint, fabric and other crafting essentials. With a growing number of physical stores within the United Kingdom and an online store, Crafty Creations has become the go-to stop for both beginner and professional crafters. With its wide range of products, the company allows artists to craft their dreams into reality!</p>
     <br>
 </body>
 </html>

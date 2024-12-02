@@ -26,7 +26,7 @@ var addToCart = document.getElementById('addToCart');
 var basket = document.getElementById('basketImage');
 var basketContents;
 
-var resetSearch = document.getElementById('resetButton');
+// var resetSearch = document.getElementById('resetButton');
 var PayeeSearchReset = document.getElementById('PayeeResetButton');
 var payeeInput = document.getElementById('payeeInput');
 var payeeButton = document.getElementById('payeeSearchButton');
@@ -36,8 +36,8 @@ var POSTSENDBar = document.getElementById('Search');
 var quantityUp = document.getElementById('quantityUp');
 var quantityDown = document.getElementById('quantityDown');
 
-var searchButton = document.getElementById('searchButton');
-searchButton.addEventListener('click', searchButtonClick);
+// var searchButton = document.getElementById('searchButton');
+
 
 var stockSearchinput = document.getElementById('stockSearchInput');
 var stockSearchButton = document.getElementById('stockSearchButton');
@@ -104,6 +104,20 @@ if (POSTSENDBar != null){
     POSTSENDBar.addEventListener('keypress', POSTSENDProducts);
 }
 
+// if (searchButton != null){
+//     if (searchButton.innerHTML == 'X')
+//     {
+//         searchButton.removeEventListener('click', POSTSENDProducts);
+//         searchButton.addEventListener('click', resetSearchFields);
+//     }
+//     else
+//     {
+//         searchButton.removeEventListener('click', resetSearchFields);
+//         searchButton.addEventListener('click', POSTSENDProducts);
+//     }
+//     searchButton.addEventListener('click', searchButtonClick);
+// }
+
 if (POSTSENDProductType != null){
     POSTSENDProductType.forEach(element => {
         addEventListener('click', POSTSENDProducts);
@@ -140,9 +154,9 @@ if (detailsButton != null){
     });
 }
 
-if (resetSearch != null){
-    resetSearch.addEventListener('click', resetSearchFields);
-}
+// if (resetSearch != null){
+//     resetSearch.addEventListener('click', resetSearchFields);
+// }
 
 if (basket != null){
     basket.addEventListener('click', basketClick);
@@ -210,18 +224,18 @@ function buttonOnClick(element)
     }
 }
 
-async function searchButtonClick()
-{
-    await new Promise(r => setTimeout(r, (450)));
-    if (searchButton.innerHTML == 'X')
-    {
-        searchButton.innerHTML = '⌕'
-    }
-    else
-    {
-        searchButton.innerHTML = 'X'
-    }
-}
+// async function searchButtonClick()
+// {
+//     await new Promise(r => setTimeout(r, (450)));
+//     if (searchButton.innerHTML == 'X')
+//     {
+//         searchButton.innerHTML = '⌕'
+//     }
+//     else
+//     {
+//         searchButton.innerHTML = 'X'
+//     }
+// }
 
 //When the mouse leaves the button, the button is animated to show that the mouse has left.
 function buttonMouseOut(element)
@@ -771,7 +785,7 @@ function POSTSENDPayee(element){
             }
         }
     }
-    else if ( element.currentTarget.id === 'payeeSearchButton'){
+    else if (element.currentTarget.id == 'payeeSearchButton'){
         data = document.getElementById("payeeInput").value;
         console.log(data);
     }
@@ -848,9 +862,9 @@ function hidePayrollDetails() {
     }
 }
 
-function resetSearchFields(element){
-    POSTSEND("reset=1", "index.php");
-}
+// function resetSearchFields(element){
+//     POSTSEND("reset=1", "index.php");
+// }
 
 function resetPayeeSearch(element){
     POSTSEND("reset=1", "payroll.php");
