@@ -678,11 +678,12 @@ nav .button {
     font-family: arial;
     font-weight: 600;
     font-size: 15pt;
+    text-align: center;
 }
 
 #alternateLogInBox {
     margin: auto;
-    width: 400px;
+    width: 450px;
     height: 50px;
     display: table;
     overflow: hidden;
@@ -692,9 +693,9 @@ nav .button {
 #alternateLogInLeft, #alternateLogInRight {
     display: table-cell;
     text-align: center;
-    height: 50px;
-    width: 150px;
-    padding-top: 18px;
+    height: 40px;
+    width: 200px;
+    padding-top: 23px;
     border-radius: 10px;
     font-family: arial;
     color: var(--secondary-color);
