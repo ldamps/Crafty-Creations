@@ -575,6 +575,18 @@ nav .button {
     100% {transform: translateY(0%);}
 }
 
+.slideDown {
+    animation-name: slideDown;
+    animation-duration: 1.2s;
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+@keyframes slideDown {
+    0% {transform: translateY(0%);}
+    75% {transform: translateY(-7%);}
+    100% {transform: translateY(200%);}
+}
+
 /* modal style used from 
    https://www.w3schools.com/howto/howto_css_modals.asp
 */

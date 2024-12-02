@@ -772,8 +772,11 @@ function payStaff(element){
 
 var payrollDetailsHover = false;
 
-function payeeDetails(element){
+async function payeeDetails(element){
     POSTSEND("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+
+    await new Promise(r => setTimeout(r, 100));
+
     var details = document.getElementById('payrollDetails');
     details.classList.add('slideUp');
     details.onanimationend = () => {
@@ -785,10 +788,12 @@ function payeeDetails(element){
             clearButtonListeners('payButton');
         }
     });
+
     var table = document.getElementsByClassName('section')[0];
-    table.style.opacity = '0.5';
     var nav = document.getElementsByTagName('nav')[0];
     var nav1 = document.getElementsByTagName('nav')[1];
+
+    table.style.opacity = '0.5';
     nav.style.opacity = '0.5';
     nav1.style.opacity = '0.5';
 
@@ -803,7 +808,11 @@ function hidePayrollDetails() {
     var details = document.getElementById('payrollDetails');
     if (payrollDetailsHover == false)
     {
-        details.remove();
+        details.classList.add('slideDown')
+        details.onanimationend = () => {
+            details.classList.remove('slideDown');
+            details.remove();
+        }
     }
     document.body.removeEventListener('click', hidePayrollDetails);
     button.forEach(element => {
