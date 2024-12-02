@@ -785,15 +785,15 @@ function payeeDetails(element){
             clearButtonListeners('payButton');
         }
     });
-    var table = document.getElementsByTagName('table')[0];
+    var table = document.getElementsByClassName('section')[0];
     table.style.opacity = '0.5';
     var nav = document.getElementsByTagName('nav')[0];
     var nav1 = document.getElementsByTagName('nav')[1];
     nav.style.opacity = '0.5';
     nav1.style.opacity = '0.5';
 
-    details.addEventListener('mouseenter', payrollDetailsHover = true);
-    details.addEventListener('mouseleave', payrollDetailsHover = false);
+    details.addEventListener('mouseenter', function(){payrollDetailsHover = true; console.log(payrollDetailsHover);});
+    details.addEventListener('mouseleave', function(){payrollDetailsHover = false; console.log(payrollDetailsHover);});
 
     document.body.addEventListener('click', hidePayrollDetails);
 
