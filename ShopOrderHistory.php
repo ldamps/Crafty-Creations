@@ -259,7 +259,7 @@ if (isset($_SESSION['LoggedIn']) && ($_SESSION["LoggedIn"]==="Shop Assistant" ||
                                         </td>
                                         <td>
                                             <?php if (strtolower($order['OrderStatus']) === 'delivered'): ?>
-                                                <form action="orderHistory.php" method="POST">
+                                                <form action="ShopOrderHistory.php" method="POST">
                                                     <input type="hidden" name="orderID" value="<?php echo $order['OrderID']; ?>">
                                                     <button class="button" type="submit" class="return-button">Return</button>
                                                 </form>
