@@ -51,6 +51,14 @@ footer {
     font-family: Arial;
 }
 
+#searchButton {
+    height: 38px;
+    padding-top: 10px;
+    width: 3px;
+    margin-left: 10px;
+    font-size: 10pt;
+}
+
 .company {
     font-size: 30pt;
     font-weight: 750;
