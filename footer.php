@@ -12,7 +12,7 @@
             overflow: hidden;
             padding-left: 0.5%;
             padding-right: 0.5%;
-            margin-top: 200px;
+            margin-top: 100px;
         }
 
         footer h2 {
