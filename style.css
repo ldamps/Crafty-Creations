@@ -78,7 +78,7 @@ footer {
     padding: 5px;
 }
 
-#searchButton {
+#searchButton, #resetButton {
     float: left;
     display: block;
     text-align: center;
@@ -87,6 +87,10 @@ footer {
     padding-top: 3px;
     margin-left: 10px;
     font-size: 22pt;
+}
+
+#resetButton {
+    font-size: 15pt;
 }
 
 

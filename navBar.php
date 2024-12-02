@@ -19,7 +19,6 @@
             if (isset($_POST['logout'])) {
                 session_destroy();
                 session_start();
-
             }
 
            
@@ -65,7 +64,8 @@
     <nav class="selection">
 
         <form method="post"><input type="text" placeholder="Search.." id="Search">
-        <a id="searchButton" class="button" onclick="submit();">⌕</a>
+        <a id="searchButton" class="button" onclick="searchButton();">⌕</a></form>
+        <form method="post"><button id="resetButton" class="button" onclick="resetSearchFields();">✖</button></form>
 
         <div class="yarn button">
             <form method = "post"><button class="Selector dropbtn">Yarn<i class="fa fa-caret-down"></i></button></form>
@@ -126,13 +126,14 @@ function submit()
 
 function searchButton(){
     var search = new FormData();
-    
+    test = document.getElementById('Search').value;
+    //console.log(test);
     search.append('Search', document.getElementById('Search').value);
-    console.log(search);
+    //console.log(search);
     $.ajax({
         type: "POST",
         url: "index.php", // post to same page
-        data: formData,
+        data: search,
         processData: false,
         contentType: false,
         error: function(jqXHR, textStatus, errorMessage) {
@@ -140,7 +141,7 @@ function searchButton(){
         },
         success: function(data) {
             window.location.reload();
-            searchButtonClick();
+            //searchButtonClick();
         }
     });
     

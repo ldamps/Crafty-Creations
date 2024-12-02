@@ -26,7 +26,7 @@ var addToCart = document.getElementById('addToCart');
 var basket = document.getElementById('basketImage');
 var basketContents;
 
-// var resetSearch = document.getElementById('resetButton');
+var resetSearch = document.getElementById('resetButton');
 var PayeeSearchReset = document.getElementById('PayeeResetButton');
 var payeeInput = document.getElementById('payeeInput');
 var payeeButton = document.getElementById('payeeSearchButton');
@@ -154,9 +154,9 @@ if (detailsButton != null){
     });
 }
 
-// if (resetSearch != null){
-//     resetSearch.addEventListener('click', resetSearchFields);
-// }
+if (resetSearch != null){
+    resetSearch.addEventListener('click', resetSearchFields);
+ }
 
 if (basket != null){
     basket.addEventListener('click', basketClick);
@@ -862,9 +862,10 @@ function hidePayrollDetails() {
     }
 }
 
-// function resetSearchFields(element){
-//     POSTSEND("reset=1", "index.php");
-// }
+function resetSearchFields(element){
+    console.log(element);
+     POSTSEND("reset=1", "index.php");
+}
 
 function resetPayeeSearch(element){
     POSTSEND("reset=1", "payroll.php");
