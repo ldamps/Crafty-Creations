@@ -84,7 +84,7 @@ require 'db.php'; ?>
                 $bankDetails = $res[0];
 
                 //echo "testing";
-                echo "<div id='employeeDetails'>";
+                echo "<div id='payrollDetails'>";
                 echo "<h2>" . $employeeToPay['FirstName'] . " " . $employeeToPay['Surname'] . "</h2>";
                 echo "<h3>Hours Worked: " . $employeeToPay['hoursWorked'] . "</h3>";
                 echo "<h3>Accont Number: " . $bankDetails['AccountNo'] . "</h3>";
