@@ -80,7 +80,8 @@ if (!isset($_SESSION['LoggedIn'])) {
             header("Refresh:0; url=index.php"); // main page, nav changing dynamically
             exit();
         } else {
-            echo "Invalid email or password. Please try again.";
+            echo "
+            <br><center><p class='urgent'>Invalid email or password. Please try again.</p></center>";
         }
     }
     include 'loginPage.html';
