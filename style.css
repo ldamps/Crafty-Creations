@@ -296,7 +296,7 @@ nav .button {
     width: 350px;
     padding: 20px;
     margin: auto;
-    transform: translateY(-150px);
+    transform: translate3d(100px, -175px, 0);
 }
 
 #heroProductInfo {
@@ -310,17 +310,17 @@ nav .button {
 
 #quantitySelector {
     height: 50px;
-    width: 200px;
+    width: 220px;
     padding:0;
-    transform: translateX(100px);
+    transform: translateX(95px);
 }
 
 #quantity, #quantityDown, #quantityUp {
     display: inline;
     float: left;
-    height: 50px;
+    height: 40px;
     text-align: center;
-    padding-top: 8px;
+    padding-top: 15px;
     font-family: Arial;
     font-size: 10pt;
     border-radius: 10px;
@@ -328,6 +328,7 @@ nav .button {
 
 #quantity {
     width: 80px;
+    height: 60px;
     border-style: solid;
     border-width: 2px;
 }

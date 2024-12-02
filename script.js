@@ -279,9 +279,9 @@ function quantityAdjust(element)
     let quantity = Number(quantityText.innerHTML);
     
     
-    if (quantityButton.id == 'quantityUp') {
+    if (quantityButton.id == 'quantityUp' && quantity < 10) {
         quantity++; 
-    } else if (quantity > 1) {
+    } else if (quantityButton.id == 'quantityDown' && quantity > 1) {
         quantity--; 
     }
 
