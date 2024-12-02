@@ -1,10 +1,11 @@
-#DROP Procedure GetProductsInShopPurchas;
+DROP Procedure IF EXISTS GetProductsInShopPurchase;
 DELIMITER //
 CREATE PROCEDURE GetProductsInShopPurchase(IN orderNumber int)
 BEGIN
-	SELECT ProductName, Price, p.Quantity FROM Product, ShopPurchase_has_Product p WHERE 
+	SELECT DISTINCT ProductName, Price, spQuantity FROM ShopEmployeeStockView WHERE 
 	ProductID IN 
-	(SELECT Product_ProductID FROM ShopPurchase_has_Product 
-		WHERE Purchase_PurachseID = orderNumber AND ProductID = p.Product_ProductID );
+	(SELECT DISTINCT spProduct FROM ShopEmployeeStockView p
+		WHERE Purchase_PurachseID = orderNumber AND ProductID = p.spProduct )
+        AND orderNumber = Purchase_PurachseID;
 END //
 DELIMITER ;

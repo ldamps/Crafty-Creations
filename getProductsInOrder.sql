@@ -2,9 +2,10 @@ DROP Procedure GetProductsInOrder;
 DELIMITER //
 CREATE PROCEDURE GetProductsInOrder(IN orderNumber int)
 BEGIN
-	SELECT ProductName, Price, Quantity FROM ShopEmployeeStockView WHERE 
+	SELECT DISTINCT ProductName, Price, Quantity FROM Product, OnlineOrder_has_Product WHERE 
 	ProductID IN 
-	(SELECT Product_ProductID FROM ShopEmployeeStockView p
-		WHERE OnlineOrder_OrderID = orderNumber AND ProductID = p.Product_ProductID );
+	(SELECT DISTINCT Product_ProductID FROM OnlineOrder_has_Product p
+		WHERE p.OnlineOrder_OrderID = orderNumber AND ProductID = p.Product_ProductID )
+        AND orderNumber = Onlineorder_OrderID;
 END //
 DELIMITER ;

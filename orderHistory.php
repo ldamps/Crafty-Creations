@@ -9,13 +9,18 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
     //echo $userID;
     // === Queries for Customer ===
     // the ID happens in the view creation, so the view here will only have things relating to their ID
-    $queryCustomerInfo = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo FROM CustomerView WHERE CustomerID = :userID";
+    $queryCustomerInfo = "SELECT DISTINCT OrderID, Price, OrderStatus, TrackingNo FROM CustomerView";
     $stmtCustomer = $mysql->prepare($queryCustomerInfo);
-    $stmtCustomer->execute([':userID' => $userID]);
-
+    $stmtCustomer->execute();
     // fetch all rows for the customer's order history
     $customerInfo = $stmtCustomer->fetchAll(PDO::FETCH_ASSOC);
 
+    // get their in person purchases
+    $queryCustomerShop = "SELECT DISTINCT PurchaseID, ShopPrice, PurchaseDate, purchaseShopID FROM CustomerView";
+    $stmtCustomerShop = $mysql->prepare($queryCustomerShop);
+    $stmtCustomerShop->execute();
+    // fetch all rows for the customer's shop order history
+    $customerShop = $stmtCustomerShop->fetchAll(PDO::FETCH_ASSOC);
     //handle returns here
     // check if the form was submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderID']) && isset($_POST['reason'])) {
@@ -28,7 +33,7 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
 
         // if successfully updated, add an entry to the OnlineReturn table
         if ($stmtUpdate->rowCount() > 0) {
-            echo "test";
+            //echo "test";
             // calculate the amount to return
             $queryOrderDetails = "
             SELECT Price, Customer_CustomerID, Shop_ShopID 
@@ -156,11 +161,12 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
             <!-- order history -->
             <?php if ($role === "customer"): ?>
                 <div class="section">
-                    <h2>Order History</h2>
+                    <h2>Online Order History</h2>
                     <table class="order-history">
                         <thead>
                             <tr>
                                 <th>Order ID</th>
+                                <th>Products In Order</th>
                                 <th>Price</th>
                                 <th>Status</th>
                                 <th>Tracking Number</th>
@@ -171,6 +177,34 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
                             <?php foreach ($customerInfo as $order): ?>
                                 <tr>
                                     <td><?php echo $order['OrderID']; ?></td>
+                                    <?php $queryProducts = "CALL GetProductsInOrder(:orderNumber)";
+                                    $stmtProducts = $mysql->prepare($queryProducts);
+                                    //$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+                                    $stmtProducts->execute(['orderNumber' => $order['OrderID']]);
+                                    $ProductsInOrder = $stmtProducts->fetchAll(); 
+                                    $stmtProducts->closeCursor(); ?>
+                                    <td>
+                                    <?php if ($stmtProducts->rowCount() > 0): ?>
+                                        <table class="order-history">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($ProductsInOrder as $product): ?>
+                                                    <tr>
+                                                        <td><?php echo $product["ProductName"] ?></td>
+                                                        <td><?php echo $product["Price"] ?></td>
+                                                        <td><?php echo $product["Quantity"] ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?php echo '£' . number_format($order['Price'], 2); ?></td>
                                     <td><?php echo $order['OrderStatus']; ?></td>
                                     <td><?php echo $order['TrackingNo']; ?></td>
@@ -190,17 +224,78 @@ if (isset($_SESSION['LoggedIn']) && $_SESSION['LoggedIn'] === "customer"):
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <br>
+                    <h2>In Person Order History</h2>
+                    <table class="order-history">
+                        <thead>
+                            <tr>
+                                <th>Purchase ID</th>
+                                <th>Products In Order</th>
+                                <th>Price</th>
+                                <th>Purchase Date</th>
+                                <th>Shop</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($customerShop as $shop): ?>
+                                <tr>
+
+                                    <?php // get the city of the current shop
+                                    $queryShopName = "SELECT DISTINCT ShopCity FROM CustomerView WHERE Shop = :currentShop";
+                                    $stmtShopName = $mysql->prepare($queryShopName);
+                                    //$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+                                    $stmtShopName->execute(['currentShop' => $shop['purchaseShopID']]);
+                                    $shopName = $stmtShopName->fetchColumn(); 
+                                    $stmtShopName->closeCursor(); ?>
+
+                                    <td><?php echo $shop['PurchaseID']; ?></td>
+                                    <?php $queryProducts = "CALL GetProductsInShopPurchase(:orderNumber)";
+                                    $stmtProducts = $mysql->prepare($queryProducts);
+                                    //$stmtEmployees->bindParam(':shopID', $shopID, PDO::PARAM_INT);
+                                    $stmtProducts->execute(['orderNumber' => $shop['PurchaseID']]);
+                                    $ProductsInOrder = $stmtProducts->fetchAll(); 
+                                    $stmtProducts->closeCursor();?>
+                                    <td>
+                                    <?php if ($stmtProducts->rowCount() > 0): ?>
+                                        <table class="order-history">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($ProductsInOrder as $product): ?>
+                                                    <tr>
+                                                        <td><?php echo $product["ProductName"] ?></td>
+                                                        <td><?php echo $product["Price"] ?></td>
+                                                        <td><?php echo $product["spQuantity"] ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                        <?php endif; ?>
+                                    <td><?php echo '£' . number_format($shop['ShopPrice'], 2); ?></td>
+                                    <td><?php echo $shop['PurchaseDate']; ?></td>                              
+                                    <td><?php echo $shopName; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             <?php endif; ?>
         </div>
     </body>
-    <?php  else:?>
-        <div class="container">
-            <h2>Unauthorised Access</h2>
-            <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline" href="index.php">Back to Homepage</a></p>
-            </div>
-        <?php endif;?>
-        <script type="text/javascript" src="script.js"></script>
+<?php else: ?>
+    <div class="container">
+        <h2>Unauthorised Access</h2>
+        <p>You are not authorised to view this page. Return to homepage: <a style="text-decoration:underline"
+                href="index.php">Back to Homepage</a></p>
+    </div>
+<?php endif; ?>
+<script type="text/javascript" src="script.js"></script>
 
 </html>
 
