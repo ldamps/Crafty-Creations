@@ -772,6 +772,13 @@ function payStaff(element){
 
 function payeeDetails(element){
     POSTSEND("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
+    var details = document.getElementById('payrollDetails');
+    details.classList.add('slideUp');
+    details.onanimationend = () => {
+        details.classList.remove('slideUp');
+    }
+    button.forEach(clearButtonListeners);
+    document.body.style.opacity = '0.5';
 }
 
 function resetSearchFields(element){

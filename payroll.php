@@ -84,13 +84,13 @@ require 'db.php'; ?>
                 $bankDetails = $res[0];
 
                 //echo "testing";
-                echo "<br></br>";
+                echo "<div id='employeeDetails'>";
                 echo "<h2>" . $employeeToPay['FirstName'] . " " . $employeeToPay['Surname'] . "</h2>";
                 echo "<h3>Hours Worked: " . $employeeToPay['hoursWorked'] . "</h3>";
                 echo "<h3>Accont Number: " . $bankDetails['AccountNo'] . "</h3>";
                 echo "<h3>Sort Code: " . $bankDetails['SortCode'] . "</h3>";
                 echo "<form method = 'post'><button id = " . $id . " class = 'payButton Button'>Pay</button></form>";
-                echo "<br></br>";
+                echo "</div>";
 
                 //After paying, update the hours worked and set to 0
                 //Not doing this as need to have a way of setting them in the first place
