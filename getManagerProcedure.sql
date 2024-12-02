@@ -1,5 +1,5 @@
 DELIMITER //
-# call using GetManager(employeeID) to get the manager of a shop
+# call using GetManager(ShopID) to get the manager of a shop
 #DROP procedure GetManager;
 DROP PROCEDURE GetManager;
 CREATE PROCEDURE GetManager(IN shop_id int)
