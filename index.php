@@ -5,7 +5,7 @@
     require 'db.php';
     include 'index.html';
     //unset($_SESSION['currentlyLoaded']);
-    echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
+    // echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();

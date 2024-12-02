@@ -64,8 +64,8 @@
 
     <nav class="selection">
 
-        <form method="post"><input type="text" placeholder="Search.." id="Search"></form>
-        <a id="searchButton" class="button">⌕</a>
+        <form method="post"><input type="text" placeholder="Search.." id="Search">
+        <a id="searchButton" class="button" onclick="submit();">⌕</a>
 
         <div class="yarn button">
             <form method = "post"><button class="Selector dropbtn">Yarn<i class="fa fa-caret-down"></i></button></form>
@@ -122,5 +122,40 @@ function submit()
             
         } 
     });
+}
+
+function searchButton(){
+    var search = new FormData();
+    
+    search.append('Search', document.getElementById('Search').value);
+    console.log(search);
+    $.ajax({
+        type: "POST",
+        url: "index.php", // post to same page
+        data: formData,
+        processData: false,
+        contentType: false,
+        error: function(jqXHR, textStatus, errorMessage) {
+            console.log(errorMessage); 
+        },
+        success: function(data) {
+            window.location.reload();
+            searchButtonClick();
+        }
+    });
+    
+}
+
+async function searchButtonClick()
+{
+    await new Promise(r => setTimeout(r, (500)));
+    if (searchButton.innerHTML == 'X')
+    {
+        searchButton.innerHTML = '⌕'
+    }
+    else
+    {
+        searchButton.innerHTML = 'X'
+    }
 }
 </script>
