@@ -389,6 +389,9 @@ function getProductDetails($productID) {
         
     </div>
 
+    <div id="emptyBox">
+    </div>
+
      <script>
 
     // function to display the buy now button only if the cart is not empty
@@ -398,7 +401,7 @@ function getProductDetails($productID) {
     
        // If cart is not empty, display the Buy Now button
        if (Object.keys(cartItems).length > 0) {
-        let body = document.getElementsByTagName('body')[0];
+        let box = document.getElementById('emptyBox');
 
         let buyNowBox = document.createElement('div');
         buyNowBox.setAttribute('id', 'buyNowBox');
@@ -406,7 +409,7 @@ function getProductDetails($productID) {
         let buyNowText = document.createElement('h1');
         buyNowText.innerHTML = "Buy Now";
         buyNowBox.appendChild(buyNowText);
-        body.appendChild(buyNowBox);
+        box.appendChild(buyNowBox);
 
         // add click event listener to the button
         buyNowBox.addEventListener('click', function() {
@@ -444,9 +447,6 @@ function getProductDetails($productID) {
     console.log('Shops available for collection:', availableShops); 
 
   </script>
-
-    <div id="emptyBox">
-    </div>
 
 </body>
 <script src="script.js"></script>
