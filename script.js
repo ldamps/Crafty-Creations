@@ -1,13 +1,16 @@
-
-//try and get all elemnts from the page. Some elements exist on different pages.
+//try and get all elements from the page. Some elements exist on different pages.
 var p = document.getElementsByClassName('product');
 let product = Array.from(p); 
+
 var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
+
 var PS = document.getElementsByClassName('ProductSearch');
 let POSTSENDProductType = Array.from(PS);
+
 var payB = document.getElementsByClassName('payButton');
 let payButton = Array.from(payB);
+
 var detailsB = document.getElementsByClassName('detailsButton');
 let detailsButton = Array.from(detailsB);
 
@@ -775,17 +778,19 @@ var payrollDetailsHover = false;
 async function payeeDetails(element){
     POSTSEND("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 1000));
 
     var details = document.getElementById('payrollDetails');
     details.classList.add('slideUp');
     details.onanimationend = () => {
         details.classList.remove('slideUp');
+        details.addEventListener('mouseenter', payrollDetailsHoverTrue);
+    details.addEventListener('mouseleave', payrollDetailsHoverFalse);
     }
     button.forEach(element => {
         if (!element.id.classList.contains('payButton'))
         {
-            clearButtonListeners('payButton');
+            clearButtonListeners(element);
         }
     });
 
@@ -797,11 +802,18 @@ async function payeeDetails(element){
     nav.style.opacity = '0.5';
     nav1.style.opacity = '0.5';
 
-    details.addEventListener('mouseenter', function(){payrollDetailsHover = true; console.log(payrollDetailsHover);});
-    details.addEventListener('mouseleave', function(){payrollDetailsHover = false; console.log(payrollDetailsHover);});
-
     document.body.addEventListener('click', hidePayrollDetails);
 
+}
+
+function payrollDetailsHoverTrue()
+{
+    payrollDetailsHover = true;
+}
+
+function payrollDetailsHoverFalse()
+{
+    payrollDetailsHover = false;
 }
 
 function hidePayrollDetails() {
