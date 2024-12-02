@@ -35,18 +35,6 @@
              LEFT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
              LEFT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
              LEFT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
-             WHERE CustomerID = :userID
-             UNION
-             SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
-             o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.Customer_CustomerID,
-             p.CardNumber, p.CVV, p.ExpiryDate, 
-             a.AddressID, a.City, a.HouseNumber, a.Postcode, a.StreetName,
-             r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
-             From Customer c 
-             RIGHT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID 
-             RIGHT JOIN CustomerAddress a ON c.CustomerID = a.Customer_CustomerID
-             RIGHT JOIN PaymentMethods p ON c.CustomerID = p.Customer_CustomerID
-             RIGHT JOIN OnlineReturn r ON c.CustomerID = r.Customer_CustomerID
              WHERE CustomerID = :userID";  
             $stmtCustomerView = $mysql->prepare($viewSQL);
             $stmtCustomerView->execute(["userID" => $userID]);
