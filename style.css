@@ -729,6 +729,8 @@ td {
     width: 300px;
     height: 300px;
     left: 50%;
+    top: 50%;
+    background-color: var(--primary-color);
     padding: 10px;
     transform: translate(-50%, -50%);
     border-radius: 10px;

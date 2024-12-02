@@ -770,6 +770,8 @@ function payStaff(element){
     POSTSEND("Pay="+encodeURIComponent(element.currentTarget.id), "payroll.php");
 }
 
+var payrollDetailsHover = false;
+
 function payeeDetails(element){
     POSTSEND("Details="+encodeURIComponent(element.currentTarget.id), "payroll.php");
     var details = document.getElementById('payrollDetails');
@@ -777,8 +779,38 @@ function payeeDetails(element){
     details.onanimationend = () => {
         details.classList.remove('slideUp');
     }
-    button.forEach(clearButtonListeners);
-    document.body.style.opacity = '0.5';
+    button.forEach(element => {
+        if (!element.id.classList.contains('payButton'))
+        {
+            clearButtonListeners('payButton');
+        }
+    });
+    var table = document.getElementsByTagName('table')[0];
+    table.style.opacity = '0.5';
+    var nav = document.getElementsByTagName('nav')[0];
+    var nav1 = document.getElementsByTagName('nav')[1];
+    nav.style.opacity = '0.5';
+    nav1.style.opacity = '0.5';
+
+    details.addEventListener('mouseenter', payrollDetailsHover = true);
+    details.addEventListener('mouseleave', payrollDetailsHover = false);
+
+    document.body.addEventListener('click', hidePayrollDetails);
+
+}
+
+function hidePayrollDetails() {
+    var details = document.getElementById('payrollDetails');
+    if (payrollDetailsHover == false)
+    {
+        details.remove();
+    }
+    document.body.removeEventListener('click', hidePayrollDetails);
+    button.forEach(element => {
+        element.addEventListener('click', buttonOnClick);
+        element.addEventListener('mouseleave', buttonMouseOut);
+        element.addEventListener('mouseenter', buttonMouseEnter);
+    });
 }
 
 function resetSearchFields(element){
