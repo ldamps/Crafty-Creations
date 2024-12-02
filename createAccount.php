@@ -3,8 +3,6 @@
 
 <?php
 
-session_start();
-
 require 'db.php'; 
 
 //if a form is submitted
@@ -65,8 +63,9 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
 
     // prepare the SQL statement
-    $stmt = $mysql->prepare("INSERT INTO Customer (Title, FirstName, LastName, PhoneNumber, EmailAddress, Password)
-    VALUES (:Title, :FirstName, :LastName, :PhoneNumber, :EmailAddress, :Password)");
+    $stmt = $mysql->prepare("START TRANSACTION; INSERT INTO Customer (Title, FirstName, LastName, PhoneNumber, EmailAddress, Password)
+    VALUES (:Title, :FirstName, :LastName, :PhoneNumber, :EmailAddress, :Password);
+    COMMIT;");
     
 
     // bind parameters
@@ -119,5 +118,5 @@ include 'createAccount.html';
         document.getElementById('errorModal').style.display = 'block';
     <?php endif; ?>
 </script>
-
+<script type="text/javascript" src="script.js"></script>
 <?php include 'footer.php'; ?>

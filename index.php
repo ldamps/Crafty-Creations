@@ -5,7 +5,7 @@
     require 'db.php';
     include 'index.html';
     //unset($_SESSION['currentlyLoaded']);
-    echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
+    // echo "<br><form method='post'><button class='button' id = 'resetButton'>Reset Search</button></form></br>";
     // get number of products from the database
     $res = $mysql->query("SELECT COUNT(*) FROM Product");
     $numProducts = $res->fetchColumn();
@@ -28,7 +28,7 @@
              SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
              o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.Customer_CustomerID,
              p.CardNumber, p.CVV, p.ExpiryDate, 
-             a.City, a.HouseNumber, a.Postcode, a.StreetName,
+             a.AddressID, a.City, a.HouseNumber, a.Postcode, a.StreetName,
              r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
              From Customer c  
              LEFT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID
@@ -40,7 +40,7 @@
              SELECT c.CustomerID, c.LastName, c.FirstName, c.EmailAddress, c.PhoneNumber, c.Password, c.Title, 
              o.OrderID, o.Price, o.OrderStatus, o.TrackingNo, o.Shop_shopID, o.Customer_CustomerID,
              p.CardNumber, p.CVV, p.ExpiryDate, 
-             a.City, a.HouseNumber, a.Postcode, a.StreetName,
+             a.AddressID, a.City, a.HouseNumber, a.Postcode, a.StreetName,
              r.OnlineReturnID, r.Reason, r.AmountToReturn, r.OnlineOrder_OrderID
              From Customer c 
              RIGHT JOIN OnlineOrder o ON c.CustomerID = o.Customer_CustomerID 
@@ -320,22 +320,19 @@
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
     }
-    //Get all products from the database of a single type.
-    elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
+      //Get all products from the database of a single type.
+      elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != "") {
         $narrow = $_SESSION['Narrow'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE Type LIKE '%$narrow%'");
+    
+        // Fetch all necessary data in a single query
+        $query = $mysql->prepare("
+            SELECT DISTINCT ProductName, ProductDescription, Price, Brand, ProductID 
+            FROM LoggedOutView 
+            WHERE Type LIKE CONCAT(:narrow, '%')
+        ");
+        $query->bindParam(':narrow', $narrow, PDO::PARAM_STR);
         $query->execute();
-        $result = $query->fetchAll();
-        $results = array();
-
-        foreach($result as $item){
-            $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
-            $query->execute();
-            $result = $query->fetchAll();
-            
-            array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
-        }
+        $results = $query->fetchAll();
     }
     //Otherwise, get all products from the database.
     else{

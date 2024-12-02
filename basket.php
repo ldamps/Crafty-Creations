@@ -48,9 +48,10 @@ if (isset($_POST['deliveryOption']) && isset($_POST['paymentOption'])) {
     $orderDate = date('Y-m-d'); 
 
     // prepare the insert query to insert into the OnlineOrder table
-    $insertQuery = "
+    $insertQuery = "START TRANSACTION;
         INSERT INTO OnlineOrder (Price, OrderStatus, Customer_CustomerID, Shop_shopID, TrackingNo, OrderDate)
         VALUES (:price, :orderStatus, :customerID, :shopID, :trackingNo, :orderDate)
+        COMMIT;
     ";
 
     $stmt = $mysql->prepare($insertQuery);
@@ -63,9 +64,110 @@ if (isset($_POST['deliveryOption']) && isset($_POST['paymentOption'])) {
         ':orderDate' => $orderDate
     ]);
 
-    //need to also update the product availabitity here
+    // fetch the last inserted OrderID
+    $orderID = $mysql->lastInsertId();
 
+   // Iterate through the cart and update the tables
+  // If shopID is null, that means home delivery, so update the first shop that has the available products
+foreach ($_SESSION['cart'] as $productID => $quantity) {
     
+    $remainingQuantity = $quantity; // track remaining quantity for each product
+
+    if ($shopID === null) {
+        // find the shops with availability for this product
+        $findShopQuery = "
+            SELECT Shop_ShopID, Availability 
+            FROM ProductAvailability
+            WHERE Product_ProductID = :productID AND Availability > 0
+            ORDER BY Shop_ShopID
+        ";
+        $stmt = $mysql->prepare($findShopQuery);
+        $stmt->execute([':productID' => $productID]);
+
+        // track if a shop has been found that can fulfill the order
+        $foundShop = false;
+
+        while ($shop = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($remainingQuantity <= 0) break; // if remaining quantity is fulfilled then stop
+
+            $shopID = $shop['Shop_ShopID'];
+            $availableStock = $shop['Availability'];
+
+            // ff the available stock is enough for the entire remaining quantity, remove it
+            $deductQuantity = min($remainingQuantity, $availableStock);
+            $remainingQuantity -= $deductQuantity;
+
+            // remove stock and update the availability in the ProductAvailability table
+            $updateAvailabilityQuery = "
+                UPDATE ProductAvailability
+                SET Availability = Availability - :deductQuantity
+                WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID
+            ";
+            $updateStmt = $mysql->prepare($updateAvailabilityQuery);
+            $updateStmt->execute([
+                ':deductQuantity' => $deductQuantity,
+                ':productID' => $productID,
+                ':shopID' => $shopID
+            ]);
+
+            // insert tvalues in the OnlineOrder_has_Product table
+            $insertOrderProductQuery = "START TRANSACTION;
+                INSERT INTO OnlineOrder_has_Product (OnlineOrder_OrderID, Product_ProductID, Quantity)
+                VALUES (:orderID, :productID, :deductQuantity);
+                COMMIT;
+            ";
+            $insertStmt = $mysql->prepare($insertOrderProductQuery);
+            $insertStmt->execute([
+                ':orderID' => $orderID,
+                ':productID' => $productID,
+                ':deductQuantity' => $deductQuantity
+            ]);
+
+            // if the stock is deducted 
+            //set foundShop to true to stop searching for the current product
+            $foundShop = true;
+
+            echo "Product ID $productID: Deducted $deductQuantity from Shop $shopID.<br>";
+
+            // if the entire quantity has been found, break the loop for this paarticulat product
+            if ($remainingQuantity <= 0) break;
+        }
+
+        // if no shop has the entire quantity display an error message
+        if (!$foundShop) {
+            echo "Insufficient stock for product ID $productID.<br>";
+        }
+    } else {
+        // if shopID is provided update for that shop (e.g., home delivery case)
+        $updateAvailabilityQuery = "
+            UPDATE ProductAvailability
+            SET Availability = Availability - :quantity
+            WHERE Product_ProductID = :productID AND Shop_ShopID = :shopID
+        ";
+        $updateStmt = $mysql->prepare($updateAvailabilityQuery);
+        $updateStmt->execute([
+            ':quantity' => $quantity,
+            ':productID' => $productID,
+            ':shopID' => $shopID
+        ]);
+
+        // insert  values into OnlineOrder_has_Product table
+        $insertOrderProductQuery = "
+            INSERT INTO OnlineOrder_has_Product (OnlineOrder_OrderID, Product_ProductID, Quantity)
+            VALUES (:orderID, :productID, :quantity)
+        ";
+        $insertStmt = $mysql->prepare($insertOrderProductQuery);
+        $insertStmt->execute([
+            ':orderID' => $orderID,
+            ':productID' => $productID,
+            ':quantity' => $quantity
+        ]);
+
+        echo "Product ID $productID: Deducted $quantity from Shop $shopID.<br>";
+    }
+}
+
+
     // debug the values
     echo "<script>
         console.log('deliveryOption: " . $_SESSION['deliveryOption'] . "');
@@ -140,29 +242,6 @@ if (!empty($_SESSION['cart'])) {
     } else {
         $availableShops = []; // no shops have all the products
     }
-}
-
-// Display cart products
-if (!empty($_SESSION['cart'])) {
-    echo "<h2>Your Cart</h2><ul>";
-    foreach ($_SESSION['cart'] as $productID => $quantity) {
-        $productDetails = getProductDetails($productID);
-        echo "<li>{$productDetails['ProductName']} - Quantity: {$quantity} - Price: {$productDetails['Price']}</li>";
-    }
-    echo "</ul>";
-
-    // Display available shops
-    echo "<h3>Collection Stores:</h3><ul>";
-    if (!empty($availableShops)) {
-        foreach ($availableShops as $shop) {
-            echo "<li>" . htmlspecialchars("{$shop['StreetName']}, {$shop['City']}, {$shop['Postcode']}") . "</li>";
-        }
-    } else {
-        echo "<li>No single store has all products available for collection.</li>";
-    }
-    echo "</ul>";
-} else {
-    echo "<p>Your cart is empty.</p>";
 }
 
 // initialize cart session
@@ -240,16 +319,6 @@ function getProductDetails($productID) {
 
 ?>
 
-<?php if (isset($userID)): ?>
-    <div id="userIDBox">
-        <h2>User ID</h2>
-        <p><?php echo htmlspecialchars($userID); ?></p>
-    </div>
-<?php endif; ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -259,42 +328,6 @@ function getProductDetails($productID) {
     <title>Basket</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
-    <!-- Added for debugging-->
-<div id="loggedInStatus">
-    <h2>Login Status</h2>
-    <p>
-        <?php
-        if (isset($_SESSION['LoggedIn'])) {
-            echo htmlspecialchars("Logged In as: {$_SESSION['LoggedIn']}");
-        } else {
-            echo "Not Logged In.";
-        }
-        ?>
-    </p>
-</div>
-    <?php if (!empty($customerInfo) && !empty($addresses) && !empty($payments)): ?>
-            <div id="userDetails">
-                <h2>Address</h2>
-                <?php foreach ($addresses as $address): ?>
-                    <p><?php echo htmlspecialchars("{$address['HouseNumber']} {$address['StreetName']}, {$address['City']}, {$address['Postcode']}"); ?></p>
-                <?php endforeach; ?>
-
-                <h2>Payment Methods</h2>
-                <?php if (count($payments) == 0): ?>
-                    <p>No payment methods saved.</p>
-                <?php endif; ?>
-                <?php foreach ($payments as $payment): ?>
-                    
-                    <p><strong>Card Number:</strong> **** **** **** <?php echo substr($payment['CardNumber'], -4); ?></p>
-                    <p><strong>Expiry Date:</strong> <?php echo $payment['ExpiryDate']; ?></p>
-                    <p><strong>CVV:</strong> ***</p>
-                    <br>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p>Please log in to view your address and payment details.</p>
-        <?php endif; ?>
     <div id="basketContentsBox">
     <?php
         $totalPrice = 0; // initialize total price
@@ -356,6 +389,9 @@ function getProductDetails($productID) {
         
     </div>
 
+    <div id="emptyBox">
+    </div>
+
      <script>
 
     // function to display the buy now button only if the cart is not empty
@@ -365,7 +401,7 @@ function getProductDetails($productID) {
     
        // If cart is not empty, display the Buy Now button
        if (Object.keys(cartItems).length > 0) {
-        let body = document.getElementsByTagName('body')[0];
+        let box = document.getElementById('emptyBox');
 
         let buyNowBox = document.createElement('div');
         buyNowBox.setAttribute('id', 'buyNowBox');
@@ -373,7 +409,7 @@ function getProductDetails($productID) {
         let buyNowText = document.createElement('h1');
         buyNowText.innerHTML = "Buy Now";
         buyNowBox.appendChild(buyNowText);
-        body.appendChild(buyNowBox);
+        box.appendChild(buyNowBox);
 
         // add click event listener to the button
         buyNowBox.addEventListener('click', function() {
@@ -412,12 +448,10 @@ function getProductDetails($productID) {
 
   </script>
 
-    <div id="emptyBox">
-    </div>
-
 </body>
 <script src="script.js"></script>
 
+<?php include 'footer.php'; ?>
+
 </html>
 
-<?php include 'footer.php'; ?>

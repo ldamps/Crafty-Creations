@@ -21,7 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 if (isset($_SESSION['addSupplier']) && !($name == "" || $supplyType == "" || $email == "" || $address == "")){
 
-    $query = "INSERT INTO Supplier (Name, Address, ProductTypeSupplied, Email) VALUES ('$name', '$address', '$supplyType', '$email')";
+    $query = "START TRANSACTION;
+    INSERT INTO Supplier (Name, Address, ProductTypeSupplied, Email) VALUES ('$name', '$address', '$supplyType', '$email');
+    COMMIT;";
     $mysql->exec($query);
     // echo "<h1>Supplier Added</h1>";
     // echo "<a class = 'return' href = 'suppliers.php'><h4>Click to return to suppliers page</h4></a>";

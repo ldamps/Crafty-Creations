@@ -8,15 +8,16 @@
 </head>
 
 <body>
+    <div class="container">
     <form name="Add New Customer Account" method="post" action="">
         <div class="formContainer">
-            <label for="title" class="required">title: </label>
+            <label for="title" class="required">Title: </label>
             <select name="title" id="title" required>
-                <option value="Miss">miss</option>
-                <option value="Mrs">mrs</option>
-                <option value="Ms">ms</option>
-                <option value="Dr">dr</option>
-                <option value="Mr">mr</option>
+                <option value="Miss">Miss</option>
+                <option value="Mrs">Mrs</option>
+                <option value="Ms">Ms</option>
+                <option value="Dr">Dr</option>
+                <option value="Mr">Mr</option>
             </select><br>
 
             <label for="firstname" class="required">First Name: </label>
@@ -34,7 +35,9 @@
             <label for="password" class="required">Password: </label>
             <input type="password" id="password" name="password" placeholder="choose password..." required><br>
 
-            <label for="repeatpassword" class="required">Repeat Password: </label>
+
+            <label for="repeatpassword" class="required">Repeat password: </label>
+
             <input type="password" id="repeatpassword" name="repeatpassword" placeholder="repeat password..." required><br>
 
             <button type="submit" class="button" name="submit" value="submit">Create</button>
