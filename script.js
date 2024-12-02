@@ -2,6 +2,8 @@
 var p = document.getElementsByClassName('product');
 let product = Array.from(p); 
 
+var details = document.getElementById('payrollDetails');
+
 var s = document.getElementsByClassName('Selector');
 let selector = Array.from(s);
 
@@ -77,6 +79,21 @@ if (button != null){
         element.addEventListener('mouseenter', buttonMouseEnter);
     })
 }
+
+if (details != null)
+    {
+        details.addEventListener('mouseenter', payrollDetailsHoverTrue);
+        details.addEventListener('mouseleave', payrollDetailsHoverFalse);
+    
+        details.classList.add('slideUp');
+        details.onanimationend = () => {
+            details.classList.remove('slideUp');
+            details.addEventListener('mouseenter', payrollDetailsHoverTrue);
+            details.addEventListener('mouseleave', payrollDetailsHoverFalse);
+        }
+    
+        document.body.addEventListener('click', hidePayrollDetails);
+    }
 
 if (quantityUp != null){
     //quantityUp.addEventListener('click', quantityAdjust);
@@ -808,11 +825,13 @@ async function payeeDetails(element){
 
 function payrollDetailsHoverTrue()
 {
+    console.log('true');
     payrollDetailsHover = true;
 }
 
 function payrollDetailsHoverFalse()
 {
+    console.log('false');
     payrollDetailsHover = false;
 }
 
@@ -825,13 +844,8 @@ function hidePayrollDetails() {
             details.classList.remove('slideDown');
             details.remove();
         }
+        document.body.removeEventListener('click', hidePayrollDetails);
     }
-    document.body.removeEventListener('click', hidePayrollDetails);
-    button.forEach(element => {
-        element.addEventListener('click', buttonOnClick);
-        element.addEventListener('mouseleave', buttonMouseOut);
-        element.addEventListener('mouseenter', buttonMouseEnter);
-    });
 }
 
 function resetSearchFields(element){
