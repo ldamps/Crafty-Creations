@@ -73,12 +73,12 @@ require 'db.php'; ?>
                 unset($_SESSION['details'], $_SESSION['pay']);
             } elseif (isset($_SESSION['details']) && $_SESSION['details'] != "") {
                 $id = $_SESSION['details'];
-                $query = $mysql->prepare("SELECT FirstName,Surname,hoursWorked, HourlyPay FROM OfficeEmployeeView WHERE EmployeeID = '$id'");
+                $query = $mysql->prepare("SELECT DISTINCT FirstName,Surname,hoursWorked, HourlyPay FROM OfficeEmployeeView WHERE EmployeeID = '$id'");
                 $query->execute();
                 $res = $query->fetchAll();
                 $employeeToPay = $res[0];
 
-                $query = $mysql->prepare("SELECT * FROM OfficeEmployeeView WHERE Employee_EmployeeID = '$id'");
+                $query = $mysql->prepare("SELECT DISTINCT AccountNo, SortCode FROM OfficeEmployeeView WHERE Employee_EmployeeID = '$id'");
                 $query->execute();
                 $res = $query->fetchAll();
                 $bankDetails = $res[0];
@@ -102,13 +102,13 @@ require 'db.php'; ?>
             //If a search is made, get the employees that match the search in any combination of first name, surname or role
             if (isset($_SESSION['PayeeSearch']) && $_SESSION['PayeeSearch'] != "") {
                 $type = $_SESSION['PayeeSearch'];
-                $query = $mysql->prepare("SELECT EmployeeID,FirstName,Surname,Role,hoursWorked,HourlyPay FROM OfficeEmployeeView WHERE FirstName LIKE '%$type%' OR Surname LIKE '%$type%' OR Role LIKE '%$type%'");
+                $query = $mysql->prepare("SELECT DISTINCT EmployeeID,FirstName,Surname,Role,hoursWorked,HourlyPay FROM OfficeEmployeeView WHERE FirstName LIKE '%$type%' OR Surname LIKE '%$type%' OR Role LIKE '%$type%'");
                 $query->execute();
                 $res = $query->fetchAll();
             }
             //Otherwise, get all employees
             else {
-                $query = $mysql->prepare("SELECT EmployeeID,FirstName,Surname,Role,hoursWorked,HourlyPay FROM OfficeEmployeeView");
+                $query = $mysql->prepare("SELECT DISTINCT EmployeeID,FirstName,Surname,Role,hoursWorked,HourlyPay FROM OfficeEmployeeView");
                 $query->execute();
                 $res = $query->fetchAll();
             }
@@ -184,4 +184,4 @@ require 'db.php'; ?>
 </html>
 <script type="text/javascript" src="script.js"></script>
 
-<!-- <?php include 'footer.php'; ?> -->
+<?php include 'footer.php'; ?> 

@@ -10,7 +10,7 @@
 </head>
 <body>
     <nav id ="help" class="topnav">
-        <a class="company" href="index.php">Crafty Creations</a>
+        <a class="company" href="index.php">Crafty Creations <i class="fa-solid fa-house fa-2xs"></i></a>
         <ul>
         <?php
             session_start();
@@ -52,7 +52,7 @@
                 }
                 // https://forums.phpfreaks.com/topic/71426-solved-sending-post-data-using-a-hyperlink/
                 echo "<form id='form' name='logoutForm' method='post'><input type='hidden' name='logout' value='true'></form>
-                <a id='logout' class='button' onclick='submit();' href='javascript:;' >Log Out</a>";
+                <a id='logout' class='button' onclick='submit();' href='javascript:;' >Log Out <i class='fa-solid fa-right-from-bracket'></i></a>";
             } else {
                 echo "<a class='button' href='loginPage.php'>log in | sign up <i class='fa-solid fa-lock'></i></a>";
                 echo    '<a class="button" href="basket.php" >Basket <i class="fa-solid fa-basket-shopping"></i></a>';
