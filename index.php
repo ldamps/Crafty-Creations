@@ -320,22 +320,19 @@
             array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
         }
     }
-    //Get all products from the database of a single type.
-    elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != ""){
+      //Get all products from the database of a single type.
+      elseif (isset($_SESSION['Narrow']) && $_SESSION['Narrow'] != "") {
         $narrow = $_SESSION['Narrow'];
-        $query = $mysql->prepare("SELECT DISTINCT ProductID FROM Product WHERE Type LIKE '%$narrow%'");
+    
+        // Fetch all necessary data in a single query
+        $query = $mysql->prepare("
+            SELECT DISTINCT ProductName, ProductDescription, Price, Brand, ProductID 
+            FROM LoggedOutView 
+            WHERE Type LIKE CONCAT(:narrow, '%')
+        ");
+        $query->bindParam(':narrow', $narrow, PDO::PARAM_STR);
         $query->execute();
-        $result = $query->fetchAll();
-        $results = array();
-
-        foreach($result as $item){
-            $id = $item["ProductID"];
-            $query = $mysql->prepare("SELECT DISTINCT ProductName,ProductDescription,Price,Brand,ProductID FROM LoggedOutView WHERE ProductID = '$id'");
-            $query->execute();
-            $result = $query->fetchAll();
-            
-            array_push($results, ["ProductName" => $result[0]["ProductName"], "ProductDescription" => $result[0]["ProductDescription"], "Price" => $result[0]["Price"], "Brand" => $result[0]["Brand"], "ProductID" => $result[0]["ProductID"]]);
-        }
+        $results = $query->fetchAll();
     }
     //Otherwise, get all products from the database.
     else{
